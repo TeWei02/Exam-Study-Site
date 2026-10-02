@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>111 英文（111） 3B1B 動態講解（整卷）</title>
+<style>
+:root{--fg:#e9eefc;--dim:#93a1c8;--gold:#ffd166;--cy:#66d9ef;--pk:#ff8fa3;}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;overflow:hidden;background:#070a14;color:var(--fg);
+  font-family:"PingFang TC","Helvetica Neue",system-ui,sans-serif;
+  background-image:radial-gradient(1100px 620px at 50% -10%,#16203c,#070a14 72%)}
+#wrap{position:fixed;left:50%;top:50%;width:1280px;height:790px;
+  transform:translate(-50%,-50%) scale(var(--k,1));transform-origin:center center}
+.nav{position:absolute;left:36px;right:36px;top:10px;height:46px;display:flex;align-items:center;gap:6px}
+.nav .ttl{font-size:15px;color:var(--dim);margin-right:10px;white-space:nowrap}
+.nav .ttl b{color:var(--cy);font-weight:600}
+.qno{width:34px;height:34px;border-radius:9px;border:1px solid #25315a;background:#111a33;color:#8fa0cc;
+  font-size:14px;cursor:pointer;font-variant-numeric:tabular-nums;transition:.2s;flex:0 0 auto}
+.qno:hover{border-color:#41558c;color:var(--fg)}
+.qno.act{background:linear-gradient(180deg,#2a3a68,#1b2748);border-color:var(--cy);color:#fff;
+  box-shadow:0 0 14px rgba(102,217,239,.35)}
+.qno.todo{opacity:.38}
+.qno.todo:hover{border-color:#31406e;color:#8fa0cc}
+.qpage{position:absolute;inset:0;display:none}
+.qpage.cur{display:block}
+.q{position:absolute;left:60px;right:60px;top:62px;text-align:center;
+  font-family:"Times New Roman",Georgia,serif;font-size:30px;letter-spacing:.5px;
+  opacity:0;transform:translateY(-14px);transition:opacity .9s ease,transform .9s ease}
+.q.on{opacity:1;transform:none}
+.q .ask{display:block;margin-top:8px;font-size:22px;color:var(--gold);font-family:inherit}
+.main{position:absolute;left:48px;right:48px;top:178px;height:462px;display:flex;gap:24px}
+.chain{flex:0 0 726px;display:flex;flex-direction:column;justify-content:center;gap:4px}
+.ln{position:relative;min-height:46px;font-family:"Times New Roman",Georgia,serif;font-size:22px}
+.ln .v{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;text-align:center;
+  padding:0 6px;line-height:1.25;
+  opacity:0;transform:translateY(14px);transition:opacity .55s ease,transform .55s ease,color .5s ease}
+.ln.on .v{transform:none}
+.ln.on .v1{opacity:1}
+.ln.on.s2 .v1{opacity:0}
+.ln.on.s2 .v2{opacity:1}
+.ln.on.s3 .v2{opacity:0}
+.ln.on.s3 .v3{opacity:1}
+.tint1{color:var(--pk)}.tint2{color:var(--cy)}
+.side{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px}
+.fig{width:100%;height:300px;display:flex;align-items:center;justify-content:center;
+  opacity:0;transform:translateY(18px) scale(.96);transition:opacity .9s ease,transform .9s ease}
+.fig.on{opacity:1;transform:none}
+.anscard{width:100%;max-width:430px;padding:16px 22px;border:2px solid var(--gold);border-radius:16px;
+  background:linear-gradient(180deg,rgba(255,209,102,.14),rgba(255,209,102,.05));
+  box-shadow:0 0 34px rgba(255,209,102,.22);text-align:center;opacity:0;transform:translateY(20px) scale(.95);
+  transition:opacity .8s ease,transform .8s ease}
+.anscard.on{opacity:1;transform:none}
+.anscard .tag{font-size:14px;letter-spacing:3px;color:var(--dim)}
+.anscard .val{margin-top:4px;font-family:"Times New Roman",Georgia,serif;font-size:30px;color:var(--gold)}
+.anscard .note{margin-top:4px;font-size:13px;color:#8b9ac6;font-family:"Menlo",monospace}
+.rule{position:absolute;left:48px;right:48px;top:656px;text-align:center;font-size:16px;color:var(--dim);
+  opacity:0;transform:translateY(10px);transition:opacity .8s ease,transform .8s ease}
+.rule.on{opacity:1;transform:none}
+.rule b{color:var(--cy);font-weight:600}
+.cap{position:absolute;left:60px;right:60px;bottom:56px;min-height:30px;text-align:center;font-size:17px;
+  color:var(--fg);font-family:"Times New Roman","PingFang TC",serif}
+.cap span{opacity:0;transition:opacity .3s ease}
+.cap span.on{opacity:.92}
+.bar{position:absolute;left:48px;right:48px;bottom:12px;height:42px;display:flex;align-items:center;gap:14px}
+.btn{width:42px;height:42px;border-radius:50%;border:1px solid #2b3a63;background:#131c33;color:var(--fg);
+  font-size:15px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:.2s;flex:0 0 auto}
+.btn:hover{background:#1c2745;border-color:#41558c}
+.track{flex:1;height:6px;border-radius:3px;background:#1a2340;position:relative;cursor:pointer}
+.track .fill{position:absolute;left:0;top:0;bottom:0;width:0;border-radius:3px;
+  background:linear-gradient(90deg,#66d9ef,#ffd166)}
+.tm{font-size:13px;color:var(--dim);font-variant-numeric:tabular-nums;flex:0 0 auto}
+.vo{font-size:13px;color:var(--dim);white-space:nowrap;flex:0 0 auto}
+.vo b{color:var(--cy);font-weight:600}
+.empty{position:absolute;left:0;right:0;top:320px;text-align:center;color:var(--dim);font-size:20px}
+.empty b{color:var(--gold)}
+/* ---- 天平（Q1） ---- */
+.beam{transform-box:fill-box;transform-origin:50% 12%;transform:rotate(-8deg);
+  transition:transform 1.1s cubic-bezier(.34,1.4,.5,1)}
+.fig.balanced .beam{transform:rotate(0deg)}
+.scale{width:100%;height:300px}
+.scale text{font-family:"Times New Roman",Georgia,serif;font-size:23px;fill:var(--fg);opacity:0;
+  transition:opacity .6s ease}
+.fig.pw .scale text{opacity:1}
+/* ---- 圖元通用（Q2–Q4） ---- */
+.fig svg.svgp{width:100%;height:auto;max-height:300px}
+.tx{fill:#8b9ac6;font-size:14px;font-family:"Menlo",monospace}
+.mk{opacity:0;transition:.6s}
+.fig.m0 .k0,.fig.m1 .k1,.fig.m2 .k2,.fig.m3 .k3{opacity:1}
+.q3fig{display:flex;flex-direction:column;gap:10px;font-family:"Menlo",monospace}
+.q3fig .ct{color:#7f8db8;font-size:13px}
+.q3fig .row{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.bx{background:#16223f;border:1px solid #2c3d6b;border-radius:8px;padding:7px 13px;font-size:17px;transition:.5s}
+.bx.hi{border-color:var(--gold);color:var(--gold)}
+.plus{color:#7f8db8}
+.ar{color:var(--cy);font-size:13px}
+.tip{margin-top:8px;color:var(--gold);font-size:14px}
+.mtx{display:flex;flex-direction:column;gap:8px;margin-left:6px}
+.mrow{display:flex;align-items:center;gap:7px;padding:6px 8px;border-radius:9px;transition:.5s}
+.mrow .vl{color:#7f8db8;font-size:13px;width:34px}
+.mrow .m,.mrow .cst{width:56px;text-align:center;background:#16223f;border:1px solid #2c3d6b;border-radius:7px;
+  padding:7px 0;font-family:"Menlo",monospace;font-size:16px}
+.mrow .cst{border-color:#3a5a9a}
+.vbar{color:#3d4a76}
+.fig.m0 .mrow:nth-child(1),.fig.m1 .mrow:nth-child(2),.fig.m2 .mrow:nth-child(3){background:#1b2b52}
+.fig.m3 .mrow:nth-child(3){border:1px dashed var(--gold)}
+body.st *{transition:none!important;animation:none!important}
+
+/* ================= 題庫型科目版面 ================= */
+.q{font-size:23px;line-height:1.3;font-family:"PingFang TC","Songti TC",serif}
+.q .ask{font-size:19px;margin-top:8px;color:var(--gold)}
+.main{top:190px;height:452px}
+.chain{flex:0 0 800px;gap:5px}
+.ln{min-height:46px;font-family:"PingFang TC","Songti TC",serif;font-size:17px}
+.ln .v{line-height:1.28}
+.opt{text-align:left}
+.opt b{margin-right:8px}
+.opt.ok{background:rgba(255,209,102,.12);border:1px solid rgba(255,209,102,.5);border-radius:10px}
+.opt.bad{opacity:.55}
+.ln.src{font-size:16px;color:#cfe0ff}
+.side{flex:1}
+.anscard{max-width:none}
+.anscard .val{font-size:22px;line-height:1.3}
+.cap{font-family:"PingFang TC","Songti TC",serif;font-size:17px}
+.rule{top:652px;font-size:15px;font-family:"PingFang TC","Songti TC",serif}
+</style></head>
+<body><div id="DBG" hidden></div>
+<div id="wrap">
+  <div class="nav" id="NAV"><span class="ttl">111 學年度　<b>英文（111）</b>　3B1B 動態講解</span><button class="qno" data-n="1" type="button">1</button><button class="qno" data-n="2" type="button">2</button><button class="qno" data-n="3" type="button">3</button><button class="qno" data-n="4" type="button">4</button><button class="qno" data-n="5" type="button">5</button><button class="qno" data-n="6" type="button">6</button><button class="qno" data-n="7" type="button">7</button><button class="qno" data-n="8" type="button">8</button><button class="qno" data-n="9" type="button">9</button><button class="qno" data-n="10" type="button">10</button><button class="qno" data-n="11" type="button">11</button><button class="qno" data-n="12" type="button">12</button><button class="qno" data-n="13" type="button">13</button><button class="qno" data-n="14" type="button">14</button><button class="qno" data-n="15" type="button">15</button><button class="qno" data-n="16" type="button">16</button><button class="qno" data-n="17" type="button">17</button><button class="qno" data-n="18" type="button">18</button><button class="qno" data-n="19" type="button">19</button><button class="qno" data-n="20" type="button">20</button><button class="qno" data-n="21" type="button">21</button><button class="qno" data-n="22" type="button">22</button><button class="qno" data-n="23" type="button">23</button><button class="qno" data-n="24" type="button">24</button><button class="qno" data-n="25" type="button">25</button></div>
+<section class="qpage" id="pg1" data-no="1"><div class="q" data-k="q">第 1 題・詞彙<span class="ask">Silence is sometimes the best way to _____ an argument.</span></div><div class="main"><div class="chain"><div class="ln opt ok" data-k="o0"><span class="v v1"><b>A</b><span class="oe">(A) settle</span></span></div><div class="ln opt bad" data-k="o1"><span class="v v1"><b>B</b><span class="oe">(B) match</span></span></div><div class="ln opt bad" data-k="o2"><span class="v v1"><b>C</b><span class="oe">(C) track</span></span></div><div class="ln opt bad" data-k="o3"><span class="v v1"><b>D</b><span class="oe">(D) provide</span></span></div><div class="ln src" data-k="l0"><span class="v v1">要點：句意為「沉默有時是平息爭論最好的方式」，settle an argument 是固定搭配。</span></div></div><div class="side"><div class="anscard" data-k="ans"><div class="tag">ANSWER</div><div class="val">(A)</div><div class="note">詞彙</div></div></div></div><div class="rule" data-k="rule"></div></section>
+<section class="qpage" id="pg2" data-no="2"><div class="q" data-k="q">第 2 題・詞彙<span class="ask">The chefs in that restaurant use fresh organic herbs to _____ the soup.</span></div><div class="main"><div class="chain"><div class="ln opt bad" data-k="o0"><span class="v v1"><b>A</b><span class="oe">(A) glance</span></span></div><div class="ln opt ok" data-k="o1"><span class="v v1"><b>B</b><span class="oe">(B) flavor</span></span></div><div class="ln opt bad" data-k="o2"><span class="v v1"><b>C</b><span class="oe">(C) drown</span></span></div><div class="ln opt bad" data-k="o3"><span class="v v1"><b>D</b><span class="oe">(D) spill</span></span></div><div class="ln src" data-k="l0"><span class="v v1">要點：以新鮮香草為湯「調味」，flavor 當動詞用，其餘三字動詞義不合。</span></div></div><div class="side"><div class="anscard" data-k="ans"><div class="tag">ANSWER</div><div class="val">(B)</div><div class="note">詞彙</div></div></div></div><div class="rule" data-k="rule"></div></section>
+<section class="qpage" id="pg3" data-no="3"><div class="q" data-k="q">第 3 題・詞彙<span class="ask">The police _____ that the man stole the money, but they cannot prove it.</span></div><div class="main"><div class="chain"><div class="ln opt bad" data-k="o0"><span class="v v1"><b>A</b><span class="oe">(A) request</span></span></div><div class="ln opt bad" data-k="o1"><span class="v v1"><b>B</b><span class="oe">(B) pretend</span></span></div><div class="ln opt bad" data-k="o2"><span class="v v1"><b>C</b><span class="oe">(C) confirm</span></span></div><div class="ln opt ok" data-k="o3"><span class="v v1"><b>D</b><span class="oe">(D) suspect</span></span></div><div class="ln src" data-k="l0"><span class="v v1">要點：由 but they cannot prove it 可知警方僅是「懷疑」，故取 suspect。</span></div></div><div class="side"><div class="anscard" data-k="ans"><div class="tag">ANSWER</div><div class="val">(D)</div><div class="note">詞彙</div></div></div></div><div class="rule" data-k="rule"></div></section>
+<section class="qpage" id="pg4" data-no="4"><div class="q" data-k="q">第 4 題・詞彙<span class="ask">Rainforests are being severely destroyed for agriculture or economic reasons. This _____ worrie…</span></div><div class="main"><div class="chain"><div class="ln opt bad" data-k="o0"><span class="v v1"><b>A</b><span class="oe">(A) function</span></span></div><div class="ln opt bad" data-k="o1"><span class="v v1"><b>B</b><span class="oe">(B) project</span></span></div><div class="ln opt bad" data-k="o2"><span class="v v1"><b>C</b><span class="oe">(C) battle</span></span></div><div class="ln opt ok" data-k="o3"><span class="v v1"><b>D</b><span class="oe">(D) crisis</span></span></div><div class="ln src" data-k="l0"><span class="v v1">要點：雨林遭嚴重破壞而令環保人士憂心，是「危機」，故選 crisis。</span></div></div><div class="side"><div class="anscard" data-k="ans"><div class="tag">ANSWER</div><div class="val">(D)</div><div class="note">詞彙</div></div></div></div><div class="rule" data-k="rule"></div></section>
+<section class="qpage" id="pg5" data-no="5"><div class="q" data-k="q">第 5 題・詞彙<span class="ask">I don’t have the answer yet. But _____ we will raise enough money. Don’t worry.</span></div><div class="main"><div class="chain"><div class="ln opt bad" data-k="o0"><span class="v v1"><b>A</b><span class="oe">(A) somewhat</span></span></div><div class="ln opt ok" data-k="o1"><span class="v v1"><b>B</b><span class="oe">(B) somehow</span></span></div><div class="ln opt bad" data-k="o2"><span class="v v1"><b>C</b><span class="oe">(C) largely</span></span></div><div class="ln opt bad" data-k="o3"><span class="v v1"><b>D</b><span class="oe">(D) roughly</span></span></div><div class="ln src" data-k="l0"><span class="v v1">要點：尚未有答案、但相信終能湊到錢，somehow 表「設法、總之」，語氣最合。</span></div></div><div class="side"><div class="anscard" data-k="ans"><div class="tag">ANSWER</div><div class="val">(B)</div><div class="note">詞彙</div></div></div></div><div class="rule" data-k="rule"></div></section>
+<section class="qpage" id="pg6" data-no="6"><div class="q" data-k="q">第 6 題・詞彙<span class="ask">TVs, computers, and cellphones are all essential electronic _____ in modern society.</span></div><div class="main"><div class="chain"><div class="ln opt bad" data-k="o0"><span class="v v1"><b>A</b><span class="oe">(A) agencies</span></span></div><div class="ln opt ok" data-k="o1"><span class="v v1"><b>B</b><span class="oe">(B) devices</span></span></div><div class="ln opt bad" data-k="o2"><span class="v v1"><b>C</b><span class="oe">(C) manufactures</span></span></div><div class="ln opt bad" data-k="o3"><span class="v v1"><b>D</b><span class="oe">(D) editions</span></span></div><div class="ln src" data-k="l0"><span class="v v1">要點：電視、電腦、手機屬電子「裝置」，electronic devices 為常見搭配。</span></div></div><div class="side"><div class="anscard" data-k="ans"><div class="tag">ANSWER</div><div class="val">(B)</div><div class="note">詞彙</div></div></div></div><div class="rule" data-k="rule"></div></section>
+<section class="qpage" id="pg7" data-no="7"><div class="q" data-k="q">第 7 題・詞彙<span class="ask">People from the Middle East, _____ between 3,000 and 4,000, are camped along the border of Pola…</span></div><div class="main"><div class="chain"><div class="ln opt ok" data-k="o0"><span class="v v1"><b>A</b><span class="oe">(A) estimated</span></span></div><div class="ln opt bad" data-k="o1"><span class="v v1"><b>B</b><span class="oe">(B) resolved</span></span></div><div class="ln opt bad" data-k="o2"><span class="v v1"><b>C</b><span class="oe">(C) demanded</span></span></div><div class="ln opt bad" data-k="o3"><span class="v v1"><b>D</b><span class="oe">(D) occupied</span></span></div><div class="ln src" data-k="l0"><span class="v v1">要點：between 3,000 and 4,000 是推估人數，故用 estimated。</span></div></div><div class="side"><div class="anscard" data-k="ans"><div class="tag">ANSWER</div><div class="val">(A)</div><div class="note">詞彙</div></div></div></div><div class="rule" data-k="rule"></div></section>
+<section class="qpage" id="pg8" data-no="8"><div class="q" data-k="q">第 8 題・詞彙<span class="ask">Holly’s health is _____. She has been in the hospital for two months.</span></div><div class="main"><div class="chain"><div class="ln opt bad" data-k="o0"><span class="v v1"><b>A</b><span class="oe">(A) offensive</span></span></div><div class="ln opt bad" data-k="o1"><span class="v v1"><b>B</b><span class="oe">(B) splendid</span></span></div><div class="ln opt ok" data-k="o2"><span class="v v1"><b>C</b><span class="oe">(C) delicate</span></span></div><div class="ln opt bad" data-k="o3"><span class="v v1"><b>D</b><span class="oe">(D) ambitious</span></span></div><div class="ln src" data-k="l0"><span class="v v1">要點：住院兩個月，健康狀況自然虛弱，delicate 合於語境。</span></div></div><div class="side"><div class="anscard" data-k="ans"><div class="tag">ANSWER</div><div class="val">(C)</div><div class="note">詞彙</div></div></div></div><div class="rule" data-k="rule"></div></section>
+<section class="qpage" id="pg9" data-no="9"><div class="q" data-k="q">第 9 題・詞彙<span class="ask">Use of nuclear power is _____. Some people like the efficiency and zero carbon footprint; other…</span></div><div class="main"><div class="chain"><div class="ln opt bad" data-k="o0"><span class="v v1"><b>A</b><span class="oe">(A) fiscal</span></span></div><div class="ln opt bad" data-k="o1"><span class="v v1"><b>B</b><span class="oe">(B) allergic</span></span></div><div class="ln opt ok" data-k="o2"><span class="v v1"><b>C</b><span class="oe">(C) controversial</span></span></div><div class="ln opt bad" data-k="o3"><span class="v v1"><b>D</b><span class="oe">(D) experimental</span></span></div><div class="ln src" data-k="l0"><span class="v v1">要點：有人支持、有人憂慮，正反並陳即 controversial。</span></div></div><div class="side"><div class="anscard" data-k="ans"><div class="tag">ANSWER</div><div class="val">(C)</div><div class="note">詞彙</div></div></div></div><div class="rule" data-k="rule"></div></section>
+<section class="qpage" id="pg10" data-no="10"><div class="q" data-k="q">第 10 題・詞彙<span class="ask">During the pandemic, teachers have found new ways to _____ the Internet for education, such as …</span></div><div class="main"><div class="chain"><div class="ln opt ok" data-k="o0"><span class="v v1"><b>A</b><span class="oe">(A) exploit</span></span></div><div class="ln opt bad" data-k="o1"><span class="v v1"><b>B</b><span class="oe">(B) portray</span></span></div><div class="ln opt bad" data-k="o2"><span class="v v1"><b>C</b><span class="oe">(C) underline</span></span></div><div class="ln opt bad" data-k="o3"><span class="v v1"><b>D</b><span class="oe">(D) browse 11-15為題組 Per…</span></span></div><div class="ln src" data-k="l0"><span class="v v1">要點：疫情期間教師以新方法「運用」網路教學，exploit 此處作善用、充分利用。</span></div></div><div class="side"><div class="anscard" data-k="ans"><div class="tag">ANSWER</div><div class="val">(A)</div><div class="note">詞彙</div></div></div></div><div class="rule" data-k="rule"></div></section>
+<section class="qpage" id="pg11" data-no="11"><div class="q" data-k="q">第 11 題・綜合測驗<span class="ask"></span></div><div class="main"><div class="chain"><div class="ln opt bad" data-k="o0"><span class="v v1"><b>A</b><span class="oe">(A) approving</span></span></div><div class="ln opt bad" data-k="o1"><span class="v v1"><b>B</b><span class="oe">(B) expecting</span></span></div><div class="ln opt bad" data-k="o2"><span class="v v1"><b>C</b><span class="oe">(C) measuring</span></span></div><div class="ln opt ok" data-k="o3"><span class="v v1"><b>D</b><span class="oe">(D) forecasting</span></span></div><div class="ln src" data-k="l0"><span class="v v1">要點：新年習俗多為「預測」來年運勢，forecasting 最合題組文意。</span></div></div><div class="side"><div class="anscard" data-k="ans"><div class="tag">ANSWER</div><div class="val">(D)</div><div class="note">綜合測驗</div></div></div></div><div class="rule" data-k="rule"></div></section>
+<section class="qpage" id="pg12" data-no="12"><div class="q" data-k="q">第 12 題・綜合測驗<span class="ask"></span></div><div class="main"><div class="chain"><div class="ln opt ok" data-k="o0"><span class="v v1"><b>A</b><span class="oe">(A) at random</span></span></div><div class="ln opt bad" data-k="o1"><span class="v v1"><b>B</b><span class="oe">(B) by accident</span></span></div><div class="ln opt bad" data-k="o2"><span class="v v1"><b>C</b><span class="oe">(C) on watch</span></span></div><div class="ln opt bad" data-k="o3"><span class="v v1"><b>D</b><span class="oe">(D) with ease</span></span></div><div class="ln src" data-k="l0"><span class="v v1">要點：題組描述隨意、碰巧的習俗行為，須比較 at random（隨機）與 by accident（偶然）的語意差異。</span></div></div><div class="side"><div class="anscard" data-k="ans"><div class="tag">ANSWER</div><div class="val">(A)</div><div class="note">綜合測驗</div></div></div></div><div class="rule" data-k="rule"></div></section>
+<section class="qpage" id="pg13" data-no="13"><div class="q" data-k="q">第 13 題・綜合測驗<span class="ask"></span></div><div class="main"><div class="chain"><div class="ln opt bad" data-k="o0"><span class="v v1"><b>A</b><span class="oe">(A) those</span></span></div><div class="ln opt ok" data-k="o1"><span class="v v1"><b>B</b><span class="oe">(B) one</span></span></div><div class="ln opt bad" data-k="o2"><span class="v v1"><b>C</b><span class="oe">(C) itself</span></span></div><div class="ln opt bad" data-k="o3"><span class="v v1"><b>D</b><span class="oe">(D) others</span></span></div><div class="ln src" data-k="l0"><span class="v v1">要點：空格須以代名詞承接前文名詞，one 用以代替單數可數名詞，避免重複。</span></div></div><div class="side"><div class="anscard" data-k="ans"><div class="tag">ANSWER</div><div class="val">(B)</div><div class="note">綜合測驗</div></div></div></div><div class="rule" data-k="rule"></div></section>
+<section class="qpage" id="pg14" data-no="14"><div class="q" data-k="q">第 14 題・綜合測驗<span class="ask"></span></div><div class="main"><div class="chain"><div class="ln opt bad" data-k="o0"><span class="v v1"><b>A</b><span class="oe">(A) at last</span></span></div><div class="ln opt ok" data-k="o1"><span class="v v1"><b>B</b><span class="oe">(B) as well</span></span></div><div class="ln opt bad" data-k="o2"><span class="v v1"><b>C</b><span class="oe">(C) on average</span></span></div><div class="ln opt bad" data-k="o3"><span class="v v1"><b>D</b><span class="oe">(D) in total</span></span></div><div class="ln src" data-k="l0"><span class="v v1">要點：空格前後為並列關係，as well 表「也、同樣」；at last、on average、in total 皆不合。</span></div></div><div class="side"><div class="anscard" data-k="ans"><div class="tag">ANSWER</div><div class="val">(B)</div><div class="note">綜合測驗</div></div></div></div><div class="rule" data-k="rule"></div></section>
+<section class="qpage" id="pg15" data-no="15"><div class="q" data-k="q">第 15 題・綜合測驗<span class="ask"></span></div><div class="main"><div class="chain"><div class="ln opt bad" data-k="o0"><span class="v v1"><b>A</b><span class="oe">(A) take over</span></span></div><div class="ln opt bad" data-k="o1"><span class="v v1"><b>B</b><span class="oe">(B) pass on</span></span></div><div class="ln opt ok" data-k="o2"><span class="v v1"><b>C</b><span class="oe">(C) scare off</span></span></div><div class="ln opt bad" data-k="o3"><span class="v v1"><b>D</b><span class="oe">(D) look after 16-20為題組…</span></span></div><div class="ln src" data-k="l0"><span class="v v1">要點：依題組文意，該習俗意在「嚇跑」不好的事物，scare off 最合；take over、pass on、look …</span></div></div><div class="side"><div class="anscard" data-k="ans"><div class="tag">ANSWER</div><div class="val">(C)</div><div class="note">綜合測驗</div></div></div></div><div class="rule" data-k="rule"></div></section>
+<section class="qpage" id="pg16" data-no="16"><div class="q" data-k="q">第 16 題・綜合測驗<span class="ask"></span></div><div class="main"><div class="chain"><div class="ln opt bad" data-k="o0"><span class="v v1"><b>A</b><span class="oe">(A) bind</span></span></div><div class="ln opt bad" data-k="o1"><span class="v v1"><b>B</b><span class="oe">(B) binding</span></span></div><div class="ln opt bad" data-k="o2"><span class="v v1"><b>C</b><span class="oe">(C) to bind</span></span></div><div class="ln opt ok" data-k="o3"><span class="v v1"><b>D</b><span class="oe">(D) bound</span></span></div><div class="ln src" data-k="l0"><span class="v v1">要點：be bound to 為固定用法，表「一定、注定」，故取過去分詞 bound。</span></div></div><div class="side"><div class="anscard" data-k="ans"><div class="tag">ANSWER</div><div class="val">(D)</div><div class="note">綜合測驗</div></div></div></div><div class="rule" data-k="rule"></div></section>
+<section class="qpage" id="pg17" data-no="17"><div class="q" data-k="q">第 17 題・綜合測驗<span class="ask"></span></div><div class="main"><div class="chain"><div class="ln opt bad" data-k="o0"><span class="v v1"><b>A</b><span class="oe">(A) than</span></span></div><div class="ln opt bad" data-k="o1"><span class="v v1"><b>B</b><span class="oe">(B) now that</span></span></div><div class="ln opt ok" data-k="o2"><span class="v v1"><b>C</b><span class="oe">(C) as</span></span></div><div class="ln opt bad" data-k="o3"><span class="v v1"><b>D</b><span class="oe">(D) only if</span></span></div><div class="ln src" data-k="l0"><span class="v v1">要點：比較結構 as...as 或表「隨著」的 as，須依題組全句判斷，than 需有比較級。</span></div></div><div class="side"><div class="anscard" data-k="ans"><div class="tag">ANSWER</div><div class="val">(C)</div><div class="note">綜合測驗</div></div></div></div><div class="rule" data-k="rule"></div></section>
+<section class="qpage" id="pg18" data-no="18"><div class="q" data-k="q">第 18 題・綜合測驗<span class="ask"></span></div><div class="main"><div class="chain"><div class="ln opt bad" data-k="o0"><span class="v v1"><b>A</b><span class="oe">(A) impact</span></span></div><div class="ln opt ok" data-k="o1"><span class="v v1"><b>B</b><span class="oe">(B) process</span></span></div><div class="ln opt bad" data-k="o2"><span class="v v1"><b>C</b><span class="oe">(C) signal</span></span></div><div class="ln opt bad" data-k="o3"><span class="v v1"><b>D</b><span class="oe">(D) event</span></span></div><div class="ln src" data-k="l0"><span class="v v1">要點：永凍土融化屬自然「過程」，process 最合文意，impact、signal、event 皆不切。</span></div></div><div class="side"><div class="anscard" data-k="ans"><div class="tag">ANSWER</div><div class="val">(B)</div><div class="note">綜合測驗</div></div></div></div><div class="rule" data-k="rule"></div></section>
+<section class="qpage" id="pg19" data-no="19"><div class="q" data-k="q">第 19 題・綜合測驗<span class="ask"></span></div><div class="main"><div class="chain"><div class="ln opt ok" data-k="o0"><span class="v v1"><b>A</b><span class="oe">(A) known as</span></span></div><div class="ln opt bad" data-k="o1"><span class="v v1"><b>B</b><span class="oe">(B) linked to</span></span></div><div class="ln opt bad" data-k="o2"><span class="v v1"><b>C</b><span class="oe">(C) made from</span></span></div><div class="ln opt bad" data-k="o3"><span class="v v1"><b>D</b><span class="oe">(D) concerned about</span></span></div><div class="ln src" data-k="l0"><span class="v v1">要點：該地質現象有特定名稱，known as 表「被稱為」，最合適。</span></div></div><div class="side"><div class="anscard" data-k="ans"><div class="tag">ANSWER</div><div class="val">(A)</div><div class="note">綜合測驗</div></div></div></div><div class="rule" data-k="rule"></div></section>
+<section class="qpage" id="pg20" data-no="20"><div class="q" data-k="q">第 20 題・綜合測驗<span class="ask"></span></div><div class="main"><div class="chain"><div class="ln opt bad" data-k="o0"><span class="v v1"><b>A</b><span class="oe">(A) In turn</span></span></div><div class="ln opt bad" data-k="o1"><span class="v v1"><b>B</b><span class="oe">(B) For example</span></span></div><div class="ln opt bad" data-k="o2"><span class="v v1"><b>C</b><span class="oe">(C) On the contrary</span></span></div><div class="ln opt ok" data-k="o3"><span class="v v1"><b>D</b><span class="oe">(D) Worst of all 21-25為…</span></span></div><div class="ln src" data-k="l0"><span class="v v1">要點：題組在列舉負面後果，Worst of all 表「最糟的是」，銜接最順。</span></div></div><div class="side"><div class="anscard" data-k="ans"><div class="tag">ANSWER</div><div class="val">(D)</div><div class="note">綜合測驗</div></div></div></div><div class="rule" data-k="rule"></div></section>
+<section class="qpage" id="pg21" data-no="21"><div class="q" data-k="q">第 21 題・閱讀測驗<span class="ask">What is the passage mainly about?</span></div><div class="main"><div class="chain"><div class="ln opt bad" data-k="o0"><span class="v v1"><b>A</b><span class="oe">(A) Congo as a hotspot …</span></span></div><div class="ln opt bad" data-k="o1"><span class="v v1"><b>B</b><span class="oe">(B) The hunger strikes …</span></span></div><div class="ln opt ok" data-k="o2"><span class="v v1"><b>C</b><span class="oe">(C) How an internationa…</span></span></div><div class="ln opt bad" data-k="o3"><span class="v v1"><b>D</b><span class="oe">(D) Who is eligible for…</span></span></div><div class="ln src" data-k="l0"><span class="v v1">要點：全文敘述一個家庭在國際援助計畫下重建生活，主旨最合者為此。</span></div></div><div class="side"><div class="anscard" data-k="ans"><div class="tag">ANSWER</div><div class="val">(C)</div><div class="note">閱讀測驗</div></div></div></div><div class="rule" data-k="rule"></div></section>
+<section class="qpage" id="pg22" data-no="22"><div class="q" data-k="q">第 22 題・閱讀測驗<span class="ask">According to the passage, which of the following is true?</span></div><div class="main"><div class="chain"><div class="ln opt ok" data-k="o0"><span class="v v1"><b>A</b><span class="oe">(A) Kisimba’s hometown …</span></span></div><div class="ln opt bad" data-k="o1"><span class="v v1"><b>B</b><span class="oe">(B) Kisimba and her hus…</span></span></div><div class="ln opt bad" data-k="o2"><span class="v v1"><b>C</b><span class="oe">(C) Kisimba’s family no…</span></span></div><div class="ln opt bad" data-k="o3"><span class="v v1"><b>D</b><span class="oe">(D) Kisimba is very sat…</span></span></div><div class="ln src" data-k="l0"><span class="v v1">要點：文中提到 Kisimba 的家鄉 Tundwa 飽受暴力與飢餓所苦，此敘述為真。</span></div></div><div class="side"><div class="anscard" data-k="ans"><div class="tag">ANSWER</div><div class="val">(A)</div><div class="note">閱讀測驗</div></div></div></div><div class="rule" data-k="rule"></div></section>
+<section class="qpage" id="pg23" data-no="23"><div class="q" data-k="q">第 23 題・閱讀測驗<span class="ask">What was the main reason why Kisimba’s family left Kalemie?</span></div><div class="main"><div class="chain"><div class="ln opt bad" data-k="o0"><span class="v v1"><b>A</b><span class="oe">(A) They missed their h…</span></span></div><div class="ln opt bad" data-k="o1"><span class="v v1"><b>B</b><span class="oe">(B) The children did no…</span></span></div><div class="ln opt bad" data-k="o2"><span class="v v1"><b>C</b><span class="oe">(C) They were fed up wi…</span></span></div><div class="ln opt ok" data-k="o3"><span class="v v1"><b>D</b><span class="oe">(D) The parents could n…</span></span></div><div class="ln src" data-k="l0"><span class="v v1">要點：離開 Kalemie 的主因是父母找不到足以維生的工作。</span></div></div><div class="side"><div class="anscard" data-k="ans"><div class="tag">ANSWER</div><div class="val">(D)</div><div class="note">閱讀測驗</div></div></div></div><div class="rule" data-k="rule"></div></section>
+<section class="qpage" id="pg24" data-no="24"><div class="q" data-k="q">第 24 題・閱讀測驗<span class="ask">What do “their worst fears” in Paragraph 3 refer to?</span></div><div class="main"><div class="chain"><div class="ln opt bad" data-k="o0"><span class="v v1"><b>A</b><span class="oe">(A) Violence and attack…</span></span></div><div class="ln opt bad" data-k="o1"><span class="v v1"><b>B</b><span class="oe">(B) Drought and hunger.</span></span></div><div class="ln opt ok" data-k="o2"><span class="v v1"><b>C</b><span class="oe">(C) Loss of their house…</span></span></div><div class="ln opt bad" data-k="o3"><span class="v v1"><b>D</b><span class="oe">(D) Failure to find the…</span></span></div><div class="ln src" data-k="l0"><span class="v v1">要點：their worst fears 指的是失去房屋與財產，須依第三段上下文判斷。</span></div></div><div class="side"><div class="anscard" data-k="ans"><div class="tag">ANSWER</div><div class="val">(C)</div><div class="note">閱讀測驗</div></div></div></div><div class="rule" data-k="rule"></div></section>
+<section class="qpage" id="pg25" data-no="25"><div class="q" data-k="q">第 25 題・閱讀測驗<span class="ask">Where would this article most likely appear?</span></div><div class="main"><div class="chain"><div class="ln opt bad" data-k="o0"><span class="v v1"><b>A</b><span class="oe">(A) In Kisimba’s novel.</span></span></div><div class="ln opt ok" data-k="o1"><span class="v v1"><b>B</b><span class="oe">(B) On the WFP’s websit…</span></span></div><div class="ln opt bad" data-k="o2"><span class="v v1"><b>C</b><span class="oe">(C) In a travel guidebo…</span></span></div><div class="ln opt bad" data-k="o3"><span class="v v1"><b>D</b><span class="oe">(D) In a book on farmin…</span></span></div><div class="ln src" data-k="l0"><span class="v v1">要點：文章內容為糧食援助組織協助家庭重建，最可能刊於 WFP 網站。</span></div></div><div class="side"><div class="anscard" data-k="ans"><div class="tag">ANSWER</div><div class="val">(B)</div><div class="note">閱讀測驗</div></div></div></div><div class="rule" data-k="rule"></div></section>
+  <div class="cap" id="CAPG" data-k="cap"><span></span></div>
+  <div class="bar">
+    <button class="btn" id="BT">▶</button>
+    <button class="btn" id="RP" title="重播">↺</button>
+    <div class="track" id="TK"><div class="fill" id="FL"></div></div>
+    <div class="tm" id="TM">0:00 / 0:00</div>
+    <div class="vo">旁白・<b>曉曉</b>　第 <span id="CN">1</span> 題</div>
+  </div>
+</div>
+<script>
+const PAGES = [{"no": 1, "has": 1, "dur": 26.56, "audio": "audio/q1.mp3", "steps": [["fig", "on", 0.6], ["q", "on", 1.13], ["o0", "on ok", 10.54], ["o1", "on bad", 12.06], ["o2", "on bad", 13.8], ["o3", "on bad", 15.57], ["l0", "on", 17.5], ["ans", "on", 25.1], ["rule", "on", 25.9]], "caps": [["第 1 題，Silence is sometimes the best way to _____ an argument.", 0.1], ["四個選項：A，(A) settle；B，(B) match；C，(C) track；D，(D) provide", 8.86], ["解題要點：句意為「沉默有時是平息爭論最好的方式」，settle an argument 是固定搭配。", 17.13], ["答案：(A)", 25.4]]}, {"no": 2, "has": 1, "dur": 26.65, "audio": "audio/q2.mp3", "steps": [["fig", "on", 0.6], ["q", "on", 1.1], ["o0", "on bad", 11.4], ["o1", "on ok", 12.93], ["o2", "on bad", 14.85], ["o3", "on bad", 16.53], ["l0", "on", 18.34], ["ans", "on", 25.22], ["rule", "on", 26.02]], "caps": [["第 2 題，The chefs in that restaurant use fresh organic herbs to…", 0.0], ["四個選項：A，(A) glance；B，(B) flavor；C，(C) drown；D，(D) spill", 9.73], ["解題要點：以新鮮香草為湯「調味」，flavor 當動詞用，其餘三字動詞義不合。", 17.98], ["答案：(B)", 25.52]]}, {"no": 3, "has": 1, "dur": 26.37, "audio": "audio/q3.mp3", "steps": [["fig", "on", 0.6], ["q", "on", 1.18], ["o0", "on bad", 11.18], ["o1", "on bad", 12.83], ["o2", "on bad", 14.84], ["o3", "on ok", 16.69], ["l0", "on", 18.79], ["ans", "on", 24.93], ["rule", "on", 25.73]], "caps": [["第 3 題，The police _____ that the man stole the money, but they…", 0.1], ["四個選項：A，(A) request；B，(B) pretend；C，(C) confirm；D，(D) suspect", 9.48], ["解題要點：由 but they cannot prove it 可知警方僅是「懷疑」，故取 suspect。", 18.42], ["答案：(D)", 25.23]]}, {"no": 4, "has": 1, "dur": 29.14, "audio": "audio/q4.mp3", "steps": [["fig", "on", 0.6], ["q", "on", 1.15], ["o0", "on bad", 13.32], ["o1", "on bad", 14.88], ["o2", "on bad", 16.95], ["o3", "on ok", 18.72], ["l0", "on", 20.82], ["ans", "on", 27.69], ["rule", "on", 28.49]], "caps": [["第 4 題，Rainforests are being severely destroyed for agricultur…", 0.1], ["四個選項：A，(A) function；B，(B) project；C，(C) battle；D，(D) crisis", 11.66], ["解題要點：雨林遭嚴重破壞而令環保人士憂心，是「危機」，故選 crisis。", 20.45], ["答案：(D)", 27.99]]}, {"no": 5, "has": 1, "dur": 29.36, "audio": "audio/q5.mp3", "steps": [["fig", "on", 0.6], ["q", "on", 1.1], ["o0", "on bad", 12.93], ["o1", "on ok", 14.57], ["o2", "on bad", 16.5], ["o3", "on bad", 18.4], ["l0", "on", 20.28], ["ans", "on", 21.36], ["rule", "on", 22.16]], "caps": [["第 5 題，I don’t have the answer yet. But _____ we will raise en…", 0.1], ["四個選項：A，(A) somewhat；B，(B) somehow；C，(C) largely；D，(D) roughly", 11.25], ["解題要點：尚未有答案、但相信終能湊到錢，somehow 表「設法、總之」，語氣最合。", 19.92], ["答案：(B)", 28.23]]}, {"no": 6, "has": 1, "dur": 30.77, "audio": "audio/q6.mp3", "steps": [["fig", "on", 0.6], ["q", "on", 1.09], ["o0", "on bad", 13.36], ["o1", "on ok", 15.23], ["o2", "on bad", 17.37], ["o3", "on bad", 19.68], ["l0", "on", 21.8], ["ans", "on", 29.34], ["rule", "on", 30.14]], "caps": [["第 6 題，TVs, computers, and cellphones are all essential electr…", 0.1], ["四個選項：A，(A) agencies；B，(B) devices；C，(C) manufactures；D，(D) ed…", 11.65], ["解題要點：電視、電腦、手機屬電子「裝置」，electronic devices 為常見搭配。", 21.42], ["答案：(B)", 29.64]]}, {"no": 7, "has": 1, "dur": 28.3, "audio": "audio/q7.mp3", "steps": [["fig", "on", 0.6], ["q", "on", 1.17], ["o0", "on ok", 12.98], ["o1", "on bad", 14.97], ["o2", "on bad", 17.04], ["o3", "on bad", 19.08], ["l0", "on", 21.14], ["ans", "on", 26.84], ["rule", "on", 27.64]], "caps": [["第 7 題，People from the Middle East, _____ between 3,000 and 4,…", 0.1], ["四個選項：A，(A) estimated；B，(B) resolved；C，(C) demanded；D，(D) occu…", 11.26], ["解題要點：between 3,000 and 4,000 是推估人數，故用 estimated。", 20.77], ["答案：(A)", 27.14]]}, {"no": 8, "has": 1, "dur": 27.42, "audio": "audio/q8.mp3", "steps": [["fig", "on", 0.6], ["q", "on", 1.18], ["o0", "on bad", 11.77], ["o1", "on bad", 13.46], ["o2", "on ok", 15.56], ["o3", "on bad", 17.59], ["l0", "on", 19.75], ["ans", "on", 25.95], ["rule", "on", 26.75]], "caps": [["第 8 題，Holly’s health is _____. She has been in the hospital f…", 0.1], ["四個選項：A，(A) offensive；B，(B) splendid；C，(C) delicate；D，(D) ambi…", 10.04], ["解題要點：住院兩個月，健康狀況自然虛弱，delicate 合於語境。", 19.38], ["答案：(C)", 26.25]]}, {"no": 9, "has": 1, "dur": 28.91, "audio": "audio/q9.mp3", "steps": [["fig", "on", 0.6], ["q", "on", 1.18], ["o0", "on bad", 13.4], ["o1", "on bad", 15.01], ["o2", "on ok", 17.18], ["o3", "on bad", 19.4], ["l0", "on", 21.86], ["ans", "on", 27.44], ["rule", "on", 28.24]], "caps": [["第 9 題，Use of nuclear power is _____. Some people like the eff…", 0.1], ["四個選項：A，(A) fiscal；B，(B) allergic；C，(C) controversial；D，(D) ex…", 11.73], ["解題要點：有人支持、有人憂慮，正反並陳即 controversial。", 21.49], ["答案：(C)", 27.74]]}, {"no": 10, "has": 1, "dur": 32.7, "audio": "audio/q10.mp3", "steps": [["fig", "on", 0.6], ["q", "on", 1.15], ["o0", "on ok", 13.14], ["o1", "on bad", 15.05], ["o2", "on bad", 17.01], ["o3", "on bad", 19.07], ["l0", "on", 23.03], ["ans", "on", 31.24], ["rule", "on", 32.04]], "caps": [["第 10 題，During the pandemic, teachers have found new ways to _…", 0.1], ["四個選項：A，(A) exploit；B，(B) portray；C，(C) underline；D，(D) browse…", 11.44], ["解題要點：疫情期間教師以新方法「運用」網路教學，exploit 此處作善用、充分利用。", 22.66], ["答案：(A)", 31.54]]}, {"no": 11, "has": 1, "dur": 18.98, "audio": "audio/q11.mp3", "steps": [["fig", "on", 0.6], ["q", "on", 0.1], ["o0", "on bad", 3.44], ["o1", "on bad", 5.07], ["o2", "on bad", 7.27], ["o3", "on ok", 9.18], ["l0", "on", 11.34], ["ans", "on", 17.53], ["rule", "on", 18.33]], "caps": [["第 11 題，", 0.1], ["四個選項：A，(A) approving；B，(B) expecting；C，(C) measuring；D，(D) fo…", 1.74], ["解題要點：新年習俗多為「預測」來年運勢，forecasting 最合題組文意。", 10.97], ["答案：(D)", 17.83]]}, {"no": 12, "has": 1, "dur": 22.67, "audio": "audio/q12.mp3", "steps": [["fig", "on", 0.6], ["q", "on", 0.1], ["o0", "on ok", 3.44], ["o1", "on bad", 5.31], ["o2", "on bad", 7.71], ["o3", "on bad", 9.71], ["l0", "on", 11.81], ["ans", "on", 21.22], ["rule", "on", 22.02]], "caps": [["第 12 題，", 0.1], ["四個選項：A，(A) at random；B，(B) by accident；C，(C) on watch；D，(D) w…", 1.73], ["解題要點：題組描述隨意、碰巧的習俗行為，須比較 at random（隨機）與 by accident（偶然）的語意差異。", 11.45], ["答案：(A)", 21.52]]}, {"no": 13, "has": 1, "dur": 20.39, "audio": "audio/q13.mp3", "steps": [["fig", "on", 0.6], ["q", "on", 0.1], ["o0", "on bad", 3.46], ["o1", "on ok", 4.91], ["o2", "on bad", 6.45], ["o3", "on bad", 8.46], ["l0", "on", 10.4], ["ans", "on", 18.95], ["rule", "on", 19.75]], "caps": [["第 13 題，", 0.1], ["四個選項：A，(A) those；B，(B) one；C，(C) itself；D，(D) others", 1.78], ["解題要點：空格須以代名詞承接前文名詞，one 用以代替單數可數名詞，避免重複。", 10.03], ["答案：(B)", 19.25]]}, {"no": 14, "has": 1, "dur": 22.14, "audio": "audio/q14.mp3", "steps": [["fig", "on", 0.6], ["q", "on", 0.1], ["o0", "on bad", 3.5], ["o1", "on ok", 5.31], ["o2", "on bad", 7.3], ["o3", "on bad", 9.52], ["l0", "on", 11.58], ["ans", "on", 20.71], ["rule", "on", 21.51]], "caps": [["第 14 題，", 0.1], ["四個選項：A，(A) at last；B，(B) as well；C，(C) on average；D，(D) in to…", 1.79], ["解題要點：空格前後為並列關係，as well 表「也、同樣」；at last、on average、in total 皆不…", 11.21], ["答案：(B)", 21.01]]}, {"no": 15, "has": 1, "dur": 24.87, "audio": "audio/q15.mp3", "steps": [["fig", "on", 0.6], ["q", "on", 0.1], ["o0", "on bad", 3.4], ["o1", "on bad", 5.16], ["o2", "on ok", 7.17], ["o3", "on bad", 9.39], ["l0", "on", 13.35], ["ans", "on", 23.4], ["rule", "on", 24.2]], "caps": [["第 15 題，", 0.1], ["四個選項：A，(A) take over；B，(B) pass on；C，(C) scare off；D，(D) look…", 1.73], ["解題要點：依題組文意，該習俗意在「嚇跑」不好的事物，scare off 最合；take over、pass on、look…", 12.98], ["答案：(C)", 23.7]]}, {"no": 16, "has": 1, "dur": 18.07, "audio": "audio/q16.mp3", "steps": [["fig", "on", 0.6], ["q", "on", 0.1], ["o0", "on bad", 3.48], ["o1", "on bad", 4.92], ["o2", "on bad", 6.77], ["o3", "on ok", 8.66], ["l0", "on", 10.36], ["ans", "on", 16.63], ["rule", "on", 17.43]], "caps": [["第 16 題，", 0.1], ["四個選項：A，(A) bind；B，(B) binding；C，(C) to bind；D，(D) bound", 1.81], ["解題要點：be bound to 為固定用法，表「一定、注定」，故取過去分詞 bound。", 9.99], ["答案：(D)", 16.93]]}, {"no": 17, "has": 1, "dur": 20.07, "audio": "audio/q17.mp3", "steps": [["fig", "on", 0.6], ["q", "on", 0.1], ["o0", "on bad", 3.5], ["o1", "on bad", 4.85], ["o2", "on ok", 6.88], ["o3", "on bad", 8.59], ["l0", "on", 10.66], ["ans", "on", 18.6], ["rule", "on", 19.4]], "caps": [["第 17 題，", 0.1], ["四個選項：A，(A) than；B，(B) now that；C，(C) as；D，(D) only if", 1.79], ["解題要點：比較結構 as...as 或表「隨著」的 as，須依題組全句判斷，than 需有比較級。", 10.29], ["答案：(C)", 18.9]]}, {"no": 18, "has": 1, "dur": 20.88, "audio": "audio/q18.mp3", "steps": [["fig", "on", 0.6], ["q", "on", 0.1], ["o0", "on bad", 3.47], ["o1", "on ok", 5.24], ["o2", "on bad", 7.34], ["o3", "on bad", 9.21], ["l0", "on", 11.09], ["ans", "on", 19.45], ["rule", "on", 20.25]], "caps": [["第 18 題，", 0.1], ["四個選項：A，(A) impact；B，(B) process；C，(C) signal；D，(D) event", 1.75], ["解題要點：永凍土融化屬自然「過程」，process 最合文意，impact、signal、event 皆不切。", 10.72], ["答案：(B)", 19.75]]}, {"no": 19, "has": 1, "dur": 19.08, "audio": "audio/q19.mp3", "steps": [["fig", "on", 0.6], ["q", "on", 0.1], ["o0", "on ok", 3.44], ["o1", "on bad", 5.12], ["o2", "on bad", 7.11], ["o3", "on bad", 9.07], ["l0", "on", 11.46], ["ans", "on", 17.63], ["rule", "on", 18.43]], "caps": [["第 19 題，", 0.1], ["四個選項：A，(A) known as；B，(B) linked to；C，(C) made from；D，(D) con…", 1.78], ["解題要點：該地質現象有特定名稱，known as 表「被稱為」，最合適。", 11.09], ["答案：(A)", 17.93]]}, {"no": 20, "has": 1, "dur": 22.17, "audio": "audio/q20.mp3", "steps": [["fig", "on", 0.6], ["q", "on", 0.1], ["o0", "on bad", 3.38], ["o1", "on bad", 5.03], ["o2", "on bad", 7.42], ["o3", "on ok", 9.67], ["l0", "on", 14.07], ["ans", "on", 20.72], ["rule", "on", 21.52]], "caps": [["第 20 題，", 0.1], ["四個選項：A，(A) In turn；B，(B) For example；C，(C) On the contrary；D，…", 1.68], ["解題要點：題組在列舉負面後果，Worst of all 表「最糟的是」，銜接最順。", 13.7], ["答案：(D)", 21.02]]}, {"no": 21, "has": 1, "dur": 26.32, "audio": "audio/q21.mp3", "steps": [["fig", "on", 0.6], ["q", "on", 1.47], ["o0", "on bad", 5.79], ["o1", "on bad", 8.75], ["o2", "on ok", 11.45], ["o3", "on bad", 14.07], ["l0", "on", 17.33], ["ans", "on", 24.85], ["rule", "on", 25.65]], "caps": [["第 21 題，What is the passage mainly about?", 0.1], ["四個選項：A，(A) Congo as a hotspot fo…；B，(B) The hunger strikes an…", 4.08], ["解題要點：全文敘述一個家庭在國際援助計畫下重建生活，主旨最合者為此。", 16.97], ["答案：(C)", 25.15]]}, {"no": 22, "has": 1, "dur": 27.3, "audio": "audio/q22.mp3", "steps": [["fig", "on", 0.6], ["q", "on", 1.41], ["o0", "on ok", 7.13], ["o1", "on bad", 9.48], ["o2", "on bad", 12.45], ["o3", "on bad", 15.0], ["l0", "on", 18.26], ["ans", "on", 25.84], ["rule", "on", 26.64]], "caps": [["第 22 題，According to the passage, which of the following is tr…", 0.1], ["四個選項：A，(A) Kisimba’s hometown Tu…；B，(B) Kisimba and her husba…", 5.43], ["解題要點：文中提到 Kisimba 的家鄉 Tundwa 飽受暴力與飢餓所苦，此敘述為真。", 17.89], ["答案：(A)", 26.14]]}, {"no": 23, "has": 1, "dur": 24.56, "audio": "audio/q23.mp3", "steps": [["fig", "on", 0.6], ["q", "on", 1.49], ["o0", "on bad", 7.53], ["o1", "on bad", 9.67], ["o2", "on bad", 12.3], ["o3", "on ok", 14.95], ["l0", "on", 17.78], ["ans", "on", 23.12], ["rule", "on", 23.92]], "caps": [["第 23 題，What was the main reason why Kisimba’s family left Kal…", 0.1], ["四個選項：A，(A) They missed their hom…；B，(B) The children did not …", 5.81], ["解題要點：離開 Kalemie 的主因是父母找不到足以維生的工作。", 17.41], ["答案：(D)", 23.42]]}, {"no": 24, "has": 1, "dur": 25.47, "audio": "audio/q24.mp3", "steps": [["fig", "on", 0.6], ["q", "on", 1.42], ["o0", "on bad", 7.07], ["o1", "on bad", 9.51], ["o2", "on ok", 11.93], ["o3", "on bad", 14.57], ["l0", "on", 17.06], ["ans", "on", 24.0], ["rule", "on", 24.8]], "caps": [["第 24 題，What do “their worst fears” in Paragraph 3 refer to?", 0.1], ["四個選項：A，(A) Violence and attacks.；B，(B) Drought and hunger.；C，…", 5.39], ["解題要點：their worst fears 指的是失去房屋與財產，須依第三段上下文判斷。", 16.69], ["答案：(C)", 24.3]]}, {"no": 25, "has": 1, "dur": 27.35, "audio": "audio/q25.mp3", "steps": [["fig", "on", 0.6], ["q", "on", 1.45], ["o0", "on bad", 6.54], ["o1", "on ok", 8.99], ["o2", "on bad", 12.3], ["o3", "on bad", 14.97], ["l0", "on", 17.94], ["ans", "on", 25.92], ["rule", "on", 26.72]], "caps": [["第 25 題，Where would this article most likely appear?", 0.1], ["四個選項：A，(A) In Kisimba’s novel.；B，(B) On the WFP’s website.；C，…", 4.81], ["解題要點：文章內容為糧食援助組織協助家庭重建，最可能刊於 WFP 網站。", 17.57], ["答案：(B)", 26.22]]}], VOICE = "Xiaoxiao";
+const $ = id => document.getElementById(id);
+const dbg = m => { try { $("DBG").textContent = m; } catch (e) { } };
+window.onerror = (m, s, l) => { dbg("ERR@" + l + ":" + m); return false; };
+
+let curNo = 0, curPage = null, ci = 0, capIdx = -1;
+const RESET_CLS = ["on", "s2", "s3", "pw", "balanced", "m0", "m1", "m2", "m3"];
+const audio = new Audio();
+audio.preload = "auto";
+const pg = n => $("pg" + n);
+const el = (page, k) => page.querySelector('[data-k="' + k + '"]');
+const dur = n => (PAGES[n - 1] && PAGES[n - 1].dur) || 0;
+
+function reset(page) {
+  page.querySelectorAll("*").forEach(e => RESET_CLS.forEach(c => e.classList.remove(c)));
+  $("CAPG").innerHTML = "";   /* 字幕為全卷共用元素 */
+  capIdx = -1;
+}
+function addStep(s) {
+  const e = el(curPage, s[0]);
+  if (!e) return;
+  s[1].split(" ").forEach(c => e.classList.add(c));
+}
+function paint(page) {  /* 靜態：一次畫到 t 秒 */
+  const cs = $("CAPG");
+  page.querySelectorAll("*").forEach(e => RESET_CLS.forEach(c => e.classList.remove(c)));
+  capIdx = -1;
+  const st = PAGES[curNo - 1].steps;
+  for (let i = 0; i < st.length; i++) if (st[i][2] <= paint.t) { const e = el(page, st[i][0]); if (e) st[i][1].split(" ").forEach(c => e.classList.add(c)); }
+  const cp = PAGES[curNo - 1].caps;
+  let k = -1; for (let i = 0; i < cp.length; i++) if (cp[i][1] <= paint.t) k = i;
+  if (k >= 0 && cs) { cs.innerHTML = "<span>" + cp[k][0] + "</span>"; capIdx = k; }
+  $("FL").style.width = (dur(curNo) ? (100 * paint.t / dur(curNo)) : 0) + "%";
+  $("TM").textContent = fmt(paint.t) + " / " + fmt(dur(curNo));
+}
+function updateCap(t) {
+  const cp = PAGES[curNo - 1].caps;
+  let k = -1; for (let i = 0; i < cp.length; i++) if (cp[i][1] <= t) k = i;
+  if (k === capIdx) return;
+  capIdx = k;
+  const box = $("CAPG");
+  if (k < 0) { box.innerHTML = ""; return; }
+  box.innerHTML = "<span>" + cp[k][0] + "</span>";
+  requestAnimationFrame(() => box.firstChild && box.firstChild.classList.add("on"));
+}
+function fmt(s) { s = Math.max(0, s | 0); return (s / 60 | 0) + ":" + String(s % 60).padStart(2, "0"); }
+
+function tick() {
+  if (!audio.paused && curPage) {
+    const t = audio.currentTime, st = PAGES[curNo - 1].steps;
+    while (ci < st.length && st[ci][2] <= t) { addStep(st[ci]); ci++; }
+    updateCap(t);
+    const D = audio.duration || dur(curNo);
+    $("FL").style.width = (D ? (100 * t / D) : 0) + "%";
+    $("TM").textContent = fmt(t) + " / " + fmt(D);
+  }
+  requestAnimationFrame(tick);
+}
+requestAnimationFrame(tick);
+
+function goto(n, t) {
+  if (!PAGES[n - 1]) return;
+  audio.pause(); audio.removeAttribute("src"); audio.load();
+  $("BT").textContent = "▶";
+  document.querySelectorAll(".qpage").forEach(p => p.classList.remove("cur"));
+  const page = pg(n); page.classList.add("cur");
+  document.querySelectorAll(".qno").forEach(b => b.classList.toggle("act", +b.dataset.n === n));
+  curNo = n; curPage = page; ci = 0;
+  reset(page);
+  $("CN").textContent = n;
+  const P = PAGES[n - 1];
+  if (!P.has) { $("TM").textContent = "— / —"; $("FL").style.width = "0%"; $("CAPG").innerHTML = ""; return; }
+  audio.src = P.audio;
+  if (t != null) { paint.t = t; paint(page); }
+  else {
+    $("FL").style.width = "0%"; $("TM").textContent = "0:00 / " + fmt(P.dur);
+    ci = 0;
+    audio.play().then(() => $("BT").textContent = "❚❚").catch(() => { });
+  }
+}
+
+document.querySelectorAll(".qno").forEach(b => b.onclick = () => goto(+b.dataset.n));
+$("BT").onclick = () => {
+  if (!PAGES[curNo - 1].has) return;
+  if (audio.paused) audio.play().then(() => $("BT").textContent = "❚❚").catch(() => { });
+  else { audio.pause(); $("BT").textContent = "▶"; }
+};
+$("RP").onclick = () => { if (PAGES[curNo - 1].has) { reset(curPage); ci = 0; audio.currentTime = 0; audio.play().catch(() => { }); $("BT").textContent = "❚❚"; } };
+audio.onpause = () => $("BT").textContent = "▶";
+audio.onended = () => $("BT").textContent = "▶";
+audio.onplay = () => $("BT").textContent = "❚❚";
+$("TK").onclick = e => {
+  if (!PAGES[curNo - 1].has) return;
+  const r = $("TK").getBoundingClientRect();
+  const p = Math.min(1, Math.max(0, (e.clientX - r.left) / r.width));
+  const D = audio.duration || dur(curNo);
+  audio.currentTime = p * D;
+  if (audio.paused) { paint.t = audio.currentTime; paint(curPage); } else { ci = 0; }
+};
+function audit() {  /* 版面自檢：越界 / 文字溢出 / 元素重疊 */
+  const WR = $("wrap").getBoundingClientRect(), L = [], items = [];
+  const nm = e => e.dataset.k || (e.className.split(" ")[0] || "el");
+  const all = curPage.querySelectorAll(".q,.ln,.fig,.anscard,.rule"), capEl2 = $("CAPG");
+  const list = Array.prototype.slice.call(all);
+  if (capEl2) list.push(capEl2);
+  list.forEach(e => {
+    const r = e.getBoundingClientRect(), k = nm(e);
+    items.push({ k: k, r: r });
+    if (r.bottom > WR.bottom + 1 || r.top < WR.top - 1 || r.left < WR.left - 1 || r.right > WR.right + 1)
+      L.push("OUT:" + k + "[t" + Math.round(r.top - WR.top) + ",b" + Math.round(r.bottom - WR.top) + ",l" + Math.round(r.left - WR.left) + ",r" + Math.round(r.right - WR.left) + "]");
+    if (e.classList.contains("ln")) {
+      const v = e.firstElementChild;
+      if (v && v.scrollHeight > e.clientHeight + 1) L.push("CLIP:" + k + "[" + v.scrollHeight + ">" + e.clientHeight + "]");
+    }
+    if (e.classList.contains("fig") && e.scrollHeight > e.clientHeight + 1) L.push("CLIPF[" + e.scrollHeight + ">" + e.clientHeight + "]");
+  });
+  for (let i = 0; i < items.length; i++) for (let j = i + 1; j < items.length; j++) {
+    const a = items[i].r, b = items[j].r;
+    const ov = Math.min(a.bottom, b.bottom) - Math.max(a.top, b.top);
+    const oh = Math.min(a.right, b.right) - Math.max(a.left, b.left);
+    if (ov > 1.5 && oh > 1.5) L.push("OVL:" + items[i].k + "~" + items[j].k + "[" + Math.round(ov) + "x" + Math.round(oh) + "]");
+  }
+  return "AUDIT|" + (L.length ? L.join(" ; ") : "clean");
+}
+function fit() {
+  const k = Math.min(window.innerWidth / 1320, window.innerHeight / 830);
+  document.documentElement.style.setProperty("--k", Math.max(.45, Math.min(1.25, k)));
+}
+window.addEventListener("resize", fit); fit();
+
+const qs = new URLSearchParams(location.search);
+const qn = parseInt(qs.get("q") || "1", 10);
+if (qs.has("at")) {
+  document.body.classList.add("st");
+  goto(qn, parseFloat(qs.get("at")) || 0);
+  dbg("st|q=" + qn + "|at=" + qs.get("at") + "|cap=" + ($("CAPG").textContent || "").slice(0, 12)
+    + "|" + (qs.has("audit") ? audit() : ""));
+} else {
+  goto(qn, null);
+  dbg("ok|ready|q=" + qn + "|dur=" + dur(qn));
+}
+</script>
+</body></html>

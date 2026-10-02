@@ -1,0 +1,909 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>115 數學A 3B1B 動態講解（整卷）</title>
+<style>
+:root{--fg:#e9eefc;--dim:#93a1c8;--gold:#ffd166;--cy:#66d9ef;--pk:#ff8fa3;}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;overflow:hidden;background:#070a14;color:var(--fg);
+  font-family:"PingFang TC","Helvetica Neue",system-ui,sans-serif;
+  background-image:radial-gradient(1100px 620px at 50% -10%,#16203c,#070a14 72%)}
+#wrap{position:fixed;left:50%;top:50%;width:1280px;height:790px;
+  transform:translate(-50%,-50%) scale(var(--k,1));transform-origin:center center}
+.nav{position:absolute;left:36px;right:36px;top:10px;height:46px;display:flex;align-items:center;gap:6px}
+.nav .ttl{font-size:15px;color:var(--dim);margin-right:10px;white-space:nowrap}
+.nav .ttl b{color:var(--cy);font-weight:600}
+.qno{width:34px;height:34px;border-radius:9px;border:1px solid #25315a;background:#111a33;color:#8fa0cc;
+  font-size:14px;cursor:pointer;font-variant-numeric:tabular-nums;transition:.2s;flex:0 0 auto}
+.qno:hover{border-color:#41558c;color:var(--fg)}
+.qno.act{background:linear-gradient(180deg,#2a3a68,#1b2748);border-color:var(--cy);color:#fff;
+  box-shadow:0 0 14px rgba(102,217,239,.35)}
+.qno.todo{opacity:.38}
+.qno.todo:hover{border-color:#31406e;color:#8fa0cc}
+.qpage{position:absolute;inset:0;display:none}
+.qpage.cur{display:block}
+.q{position:absolute;left:60px;right:60px;top:62px;text-align:center;
+  font-family:"Times New Roman",Georgia,serif;font-size:30px;letter-spacing:.5px;
+  opacity:0;transform:translateY(-14px);transition:opacity .9s ease,transform .9s ease}
+.q.on{opacity:1;transform:none}
+.q .ask{display:block;margin-top:8px;font-size:22px;color:var(--gold);font-family:inherit}
+.main{position:absolute;left:48px;right:48px;top:178px;height:462px;display:flex;gap:24px}
+.chain{flex:0 0 726px;display:flex;flex-direction:column;justify-content:center;gap:4px}
+.ln{position:relative;min-height:46px;font-family:"Times New Roman",Georgia,serif;font-size:22px}
+.ln .v{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;text-align:center;
+  padding:0 6px;line-height:1.25;
+  opacity:0;transform:translateY(14px);transition:opacity .55s ease,transform .55s ease,color .5s ease}
+.ln.on .v{transform:none}
+.ln.on .v1{opacity:1}
+.ln.on.s2 .v1{opacity:0}
+.ln.on.s2 .v2{opacity:1}
+.ln.on.s3 .v2{opacity:0}
+.ln.on.s3 .v3{opacity:1}
+.tint1{color:var(--pk)}.tint2{color:var(--cy)}
+.side{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px}
+.fig{width:100%;height:300px;display:flex;align-items:center;justify-content:center;
+  opacity:0;transform:translateY(18px) scale(.96);transition:opacity .9s ease,transform .9s ease}
+.fig.on{opacity:1;transform:none}
+.anscard{width:100%;max-width:430px;padding:16px 22px;border:2px solid var(--gold);border-radius:16px;
+  background:linear-gradient(180deg,rgba(255,209,102,.14),rgba(255,209,102,.05));
+  box-shadow:0 0 34px rgba(255,209,102,.22);text-align:center;opacity:0;transform:translateY(20px) scale(.95);
+  transition:opacity .8s ease,transform .8s ease}
+.anscard.on{opacity:1;transform:none}
+.anscard .tag{font-size:14px;letter-spacing:3px;color:var(--dim)}
+.anscard .val{margin-top:4px;font-family:"Times New Roman",Georgia,serif;font-size:30px;color:var(--gold)}
+.anscard .note{margin-top:4px;font-size:13px;color:#8b9ac6;font-family:"Menlo",monospace}
+.rule{position:absolute;left:48px;right:48px;top:656px;text-align:center;font-size:16px;color:var(--dim);
+  opacity:0;transform:translateY(10px);transition:opacity .8s ease,transform .8s ease}
+.rule.on{opacity:1;transform:none}
+.rule b{color:var(--cy);font-weight:600}
+.cap{position:absolute;left:60px;right:60px;bottom:56px;min-height:30px;text-align:center;font-size:17px;
+  color:var(--fg);font-family:"Times New Roman","PingFang TC",serif}
+.cap span{opacity:0;transition:opacity .3s ease}
+.cap span.on{opacity:.92}
+.bar{position:absolute;left:48px;right:48px;bottom:12px;height:42px;display:flex;align-items:center;gap:14px}
+.btn{width:42px;height:42px;border-radius:50%;border:1px solid #2b3a63;background:#131c33;color:var(--fg);
+  font-size:15px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:.2s;flex:0 0 auto}
+.btn:hover{background:#1c2745;border-color:#41558c}
+.track{flex:1;height:6px;border-radius:3px;background:#1a2340;position:relative;cursor:pointer}
+.track .fill{position:absolute;left:0;top:0;bottom:0;width:0;border-radius:3px;
+  background:linear-gradient(90deg,#66d9ef,#ffd166)}
+.tm{font-size:13px;color:var(--dim);font-variant-numeric:tabular-nums;flex:0 0 auto}
+.vo{font-size:13px;color:var(--dim);white-space:nowrap;flex:0 0 auto}
+.vo b{color:var(--cy);font-weight:600}
+.empty{position:absolute;left:0;right:0;top:320px;text-align:center;color:var(--dim);font-size:20px}
+.empty b{color:var(--gold)}
+/* ---- 天平（Q1） ---- */
+.beam{transform-box:fill-box;transform-origin:50% 12%;transform:rotate(-8deg);
+  transition:transform 1.1s cubic-bezier(.34,1.4,.5,1)}
+.fig.balanced .beam{transform:rotate(0deg)}
+.scale{width:100%;height:300px}
+.scale text{font-family:"Times New Roman",Georgia,serif;font-size:23px;fill:var(--fg);opacity:0;
+  transition:opacity .6s ease}
+.fig.pw .scale text{opacity:1}
+/* ---- 圖元通用（Q2–Q4） ---- */
+.fig svg.svgp{width:100%;height:auto;max-height:300px}
+.tx{fill:#8b9ac6;font-size:14px;font-family:"Menlo",monospace}
+.mk{opacity:0;transition:.6s}
+.fig.m0 .k0,.fig.m1 .k1,.fig.m2 .k2,.fig.m3 .k3{opacity:1}
+.q3fig{display:flex;flex-direction:column;gap:10px;font-family:"Menlo",monospace}
+.q3fig .ct{color:#7f8db8;font-size:13px}
+.q3fig .row{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.bx{background:#16223f;border:1px solid #2c3d6b;border-radius:8px;padding:7px 13px;font-size:17px;transition:.5s}
+.bx.hi{border-color:var(--gold);color:var(--gold)}
+.plus{color:#7f8db8}
+.ar{color:var(--cy);font-size:13px}
+.tip{margin-top:8px;color:var(--gold);font-size:14px}
+.mtx{display:flex;flex-direction:column;gap:8px;margin-left:6px}
+.mrow{display:flex;align-items:center;gap:7px;padding:6px 8px;border-radius:9px;transition:.5s}
+.mrow .vl{color:#7f8db8;font-size:13px;width:34px}
+.mrow .m,.mrow .cst{width:56px;text-align:center;background:#16223f;border:1px solid #2c3d6b;border-radius:7px;
+  padding:7px 0;font-family:"Menlo",monospace;font-size:16px}
+.mrow .cst{border-color:#3a5a9a}
+.vbar{color:#3d4a76}
+.fig.m0 .mrow:nth-child(1),.fig.m1 .mrow:nth-child(2),.fig.m2 .mrow:nth-child(3){background:#1b2b52}
+.fig.m3 .mrow:nth-child(3){border:1px dashed var(--gold)}
+body.st *{transition:none!important;animation:none!important}
+</style></head>
+<body><div id="DBG" hidden></div>
+<div id="wrap">
+  <div class="nav" id="NAV"><span class="ttl">115 學年度　<b>數學A</b>　3B1B 動態講解</span><button class="qno" data-n="1" type="button">1</button><button class="qno" data-n="2" type="button">2</button><button class="qno" data-n="3" type="button">3</button><button class="qno" data-n="4" type="button">4</button><button class="qno" data-n="5" type="button">5</button><button class="qno" data-n="6" type="button">6</button><button class="qno" data-n="7" type="button">7</button><button class="qno" data-n="8" type="button">8</button><button class="qno" data-n="9" type="button">9</button><button class="qno" data-n="10" type="button">10</button><button class="qno" data-n="11" type="button">11</button><button class="qno" data-n="12" type="button">12</button><button class="qno" data-n="13" type="button">13</button><button class="qno" data-n="14" type="button">14</button><button class="qno" data-n="15" type="button">15</button><button class="qno" data-n="16" type="button">16</button><button class="qno" data-n="17" type="button">17</button><button class="qno" data-n="18" type="button">18</button><button class="qno" data-n="19" type="button">19</button><button class="qno" data-n="20" type="button">20</button></div>
+<section class="qpage" id="pg1" data-no="1">
+  <div class="q" data-k="q">2<sup>a+b</sup> = 2 × 4<sup>a−b</sup>
+    <span class="ask">求 a − 3b = ?</span></div>
+  <div class="main">
+    <div class="chain">
+      <div class="ln" data-k="l1">
+        <span class="v v1">2<sup>a+b</sup> = 2 × <span class="tint1">4<sup>a−b</sup></span></span>
+        <span class="v v2">2<sup>a+b</sup> = 2 × <span class="tint1">(2<sup>2</sup>)<sup>a−b</sup></span></span>
+        <span class="v v3">2<sup>a+b</sup> = 2<sup>1+2(a−b)</sup></span>
+      </div>
+      <div class="ln" data-k="l4"><span class="v v1">a + b = 1 + 2(a − b)</span></div>
+      <div class="ln" data-k="l5"><span class="v v1">a + b = 1 + 2a − <span class="tint1">2b</span></span></div>
+      <div class="ln" data-k="l6"><span class="v v1">a + b + <span class="tint1">2b</span> = 1 + <span class="tint2">2a</span></span></div>
+      <div class="ln" data-k="l7"><span class="v v1">a + b + 2b <span class="tint2">− 2a</span> = 1</span></div>
+      <div class="ln" data-k="l8"><span class="v v1">−a + 3b = 1</span></div>
+      <div class="ln" data-k="l9"><span class="v v1">a − 3b = −1</span></div>
+    </div>
+    <div class="side">
+      <div class="fig" data-k="fig">
+        <svg class="scale" viewBox="0 0 420 320">
+          <path d="M210 296 L140 296 L188 244 L232 244 L280 296 Z" fill="#1d2745"/>
+          <rect x="204" y="118" width="12" height="132" rx="5" fill="#2c3a66"/>
+          <circle cx="210" cy="114" r="11" fill="#41558c"/>
+          <g class="beam">
+            <rect x="50" y="106" width="320" height="9" rx="4.5" fill="#5b6da8"/>
+            <line x1="72" y1="115" x2="72" y2="176" stroke="#3b4b7d" stroke-width="3"/>
+            <line x1="348" y1="115" x2="348" y2="176" stroke="#3b4b7d" stroke-width="3"/>
+            <path d="M26 176 h92 l-12 16 h-68 z" fill="#243055"/>
+            <path d="M302 176 h92 l-12 16 h-68 z" fill="#243055"/>
+          </g>
+          <text x="72" y="222" text-anchor="middle">a + b</text>
+          <text x="348" y="222" text-anchor="middle">1 + 2(a − b)</text>
+          <text x="210" y="316" text-anchor="middle" style="font-size:15px;fill:#93a1c8">同底 → 指數等重</text>
+        </svg>
+      </div>
+      <div class="anscard" data-k="ans">
+        <div class="tag">答　案</div>
+        <div class="val">(B)　a − 3b = −1</div>
+      </div>
+    </div>
+  </div>
+  <div class="rule" data-k="rule">通則：<b>底數能統一就統一</b>，不能統一才取對數。</div>
+</section>
+<section class="qpage" id="pg2" data-no="2">
+  <div class="q" data-k="q">設二次實係數多項式　y = −x<sup>2</sup> + a(x−1)<sup>2</sup>
+    <span class="ask">其函數圖形頂點的 x 坐標為 −1，試問 a 的值為何？</span></div>
+  <div class="main">
+    <div class="chain"><div class="ln" data-k="l0"><span class="v v1">展開括號：a(x<sup>2</sup> − 2x + 1)</span></div><div class="ln" data-k="l1"><span class="v v1">y = (a−1)x<sup>2</sup> − 2ax + a</span></div><div class="ln" data-k="l2"><span class="v v1">頂點 x 坐標 = −(一次項係數) ÷ 2 ×(二次項係數)</span></div><div class="ln" data-k="l3"><span class="v v1">x = −(−2a) ÷ 2(a−1) = a ÷ (a−1)</span></div><div class="ln" data-k="l4"><span class="v v1">a ÷ (a−1) = −1</span></div><div class="ln" data-k="l5"><span class="v v1">a = −a + 1</span></div><div class="ln" data-k="l6"><span class="v v1">2a = 1</span></div><div class="ln" data-k="l7"><span class="v v1">a = 1/2</span></div></div>
+    <div class="side">
+      <div class="fig" data-k="fig"><svg viewBox="0 0 420 320" class="svgp">
+  <line x1="30" y1="250" x2="395" y2="250" stroke="#3d4a76" stroke-width="2"/>
+  <line x1="210" y1="30" x2="210" y2="300" stroke="#3d4a76" stroke-width="2"/>
+  <path d="M35,290 L50,271 L64,255 L79,241 L93,230 L108,221 L122,215 L137,211 L152,210 L166,211 L181,215 L195,221 L210,230 L225,241 L239,255 L254,271 L268,290"
+        fill="none" stroke="#66d9ef" stroke-width="3.5" stroke-linejoin="round"/>
+  <circle class="mk k0" cx="152" cy="210" r="7" fill="#ffd166"/>
+  <line class="mk k0" x1="152" y1="210" x2="152" y2="250" stroke="#ffd166" stroke-width="1.6" stroke-dasharray="5 4"/>
+  <text class="mk k0 tx" x="160" y="203">頂點 (−1, 1)</text>
+  <text class="tx" x="360" y="272">x</text><text class="tx" x="220" y="46">y</text>
+  <text class="tx" x="150" y="272">−1</text><text class="tx" x="204" y="272">O</text>
+  <text class="tx" x="30" y="303">y = −x² + a(x−1)²</text>
+</svg></div>
+      <div class="anscard" data-k="ans">
+        <div class="tag">答　案</div>
+        <div class="val">(D)　a = 1/2</div>
+        <div class="note">頂點 x 坐標 −(−2a) / 2(a−1) = a/(a−1) = −1　⇒　2a = 1</div>
+      </div>
+    </div>
+  </div>
+  <div class="rule" data-k="rule">通則：<b>頂點的 x 坐標 = −(一次項係數) ÷ 2×(二次項係數)</b></div>
+</section>
+<section class="qpage" id="pg3" data-no="3">
+  <div class="q" data-k="q">已知實數 a、b、c 為等比數列，且 a−b、a+c、a−2b+c 三數為等差數列
+    <span class="ask">試求 b/a 的值為何？</span></div>
+  <div class="main">
+    <div class="chain"><div class="ln" data-k="l0"><span class="v v1">設公比 r：b = ar，c = ar<sup>2</sup></span></div><div class="ln" data-k="l1"><span class="v v1">所求 b ÷ a = r</span></div><div class="ln" data-k="l2"><span class="v v1">等差中項：2(a+c) = (a−b) + (a−2b+c)</span></div><div class="ln" data-k="l3"><span class="v v1">展開：2a + 2c = 2a − 3b + c</span></div><div class="ln" data-k="l4"><span class="v v1">c = −3b</span></div><div class="ln" data-k="l5"><span class="v v1">代回等比：ar<sup>2</sup> = −3ar</span></div><div class="ln" data-k="l6"><span class="v v1">r = −3</span></div><div class="ln" data-k="l7"><span class="v v1">b ÷ a = −3</span></div></div>
+    <div class="side">
+      <div class="fig" data-k="fig"><div class="q3fig">
+  <div class="ct">等比數列</div>
+  <div class="row"><span class="bx">a</span><span class="ar">×r</span><span class="bx">b</span><span class="ar">×r</span><span class="bx">c</span></div>
+  <div class="ct">等差數列</div>
+  <div class="row"><span class="bx sm">a−b</span><span class="plus">+</span><span class="bx sm hi">a+c</span><span class="plus">+</span><span class="bx sm">a−2b+c</span></div>
+  <div class="mk k0 tip">中間項 ×2 = 首項 + 末項</div>
+</div></div>
+      <div class="anscard" data-k="ans">
+        <div class="tag">答　案</div>
+        <div class="val">(C)　b/a = −3</div>
+        <div class="note">c = −3b　⇒　ar<sup>2</sup> = −3ar　⇒　r = −3</div>
+      </div>
+    </div>
+  </div>
+  <div class="rule" data-k="rule">通則：<b>等比設公比；等差用「中間項 ×2 = 前後兩項和」</b></div>
+</section>
+<section class="qpage" id="pg4" data-no="4">
+  <div class="q" data-k="q">三元聯立方程組　ax + y + 2z = 1　／　bx − y + z = 2　／　(a−b)x + 2y + z = c
+    <span class="ask">若此聯立方程組有解，試問 c 的值為何？</span></div>
+  <div class="main">
+    <div class="chain"><div class="ln" data-k="l0"><span class="v v1">列1：(a, 1, 2 ｜ 1)</span></div><div class="ln" data-k="l1"><span class="v v1">列2：(b, −1, 1 ｜ 2)</span></div><div class="ln" data-k="l2"><span class="v v1">列3：(a−b, 2, 1 ｜ c)</span></div><div class="ln" data-k="l3"><span class="v v1">列3 係數 = 列1 − 列2</span></div><div class="ln" data-k="l4"><span class="v v1">c = 1 − 2 = −1</span></div><div class="ln" data-k="l5"><span class="v v1">c = −1</span></div></div>
+    <div class="side">
+      <div class="fig" data-k="fig"><div class="mtx">
+  <div class="mrow"><span class="vl">列1</span><span class="m">a</span><span class="m">1</span><span class="m">2</span><span class="vbar">｜</span><span class="cst">1</span></div>
+  <div class="mrow"><span class="vl">列2</span><span class="m">b</span><span class="m">−1</span><span class="m">1</span><span class="vbar">｜</span><span class="cst">2</span></div>
+  <div class="mrow"><span class="vl">列3</span><span class="m">a−b</span><span class="m">2</span><span class="m">1</span><span class="vbar">｜</span><span class="cst">c</span></div>
+</div></div>
+      <div class="anscard" data-k="ans">
+        <div class="tag">答　案</div>
+        <div class="val">(B)　c = −1</div>
+        <div class="note">列3 = 列1 − 列2　⇒　c = 1 − 2 = −1</div>
+      </div>
+    </div>
+  </div>
+  <div class="rule" data-k="rule">通則：<b>係數滿足線性關係時，常數項必須滿足同一關係</b></div>
+</section>
+<section class="qpage" id="pg5" data-no="5">
+  <div class="q" data-k="q">梯形 ABCD 中，AD ∥ BC，AB = 4，BC = 6，cos∠ABC = 1/4，且 ∠ACD = ∠ACB
+    <span class="ask">試問 AD 的長度為何？</span></div>
+  <div class="main">
+    <div class="chain"><div class="ln" data-k="l0"><span class="v v1">△ABC 用餘弦定理：AC<sup>2</sup> = 4<sup>2</sup> + 6<sup>2</sup> − 2·4·6·cos∠ABC</span></div><div class="ln" data-k="l1"><span class="v v1">= 16 + 36 − 12 = 40　⇒　AC = 2√10</span></div><div class="ln" data-k="l2"><span class="v v1">AD ∥ BC　⇒　內錯角 ∠CAD = ∠ACB</span></div><div class="ln" data-k="l3"><span class="v v1">又 ∠ACD = ∠ACB　⇒　∠CAD = ∠ACD</span></div><div class="ln" data-k="l4"><span class="v v1">△ACD 等腰，AD = CD</span></div><div class="ln" data-k="l5"><span class="v v1">正弦定理：AD ÷ sin∠ACB = AC ÷ sin 2∠ACB</span></div><div class="ln" data-k="l6"><span class="v v1">⇒　AD = AC ÷ (2 cos∠ACB)</span></div><div class="ln" data-k="l7"><span class="v v1">cos∠ACB = (40+36−16) ÷ (24√10) = √10/4　⇒　AD = 4</span></div></div>
+    <div class="side">
+      <div class="fig" data-k="fig"><svg viewBox="0 0 420 320" class="svgp">
+  <polygon points="105,96 60,270 330,270 285,96" fill="none" stroke="#41558c" stroke-width="3"/>
+  <line x1="105" y1="96" x2="60" y2="270" stroke="#5b6da8" stroke-width="2"/>
+  <line x1="285" y1="96" x2="330" y2="270" stroke="#5b6da8" stroke-width="2"/>
+  <line class="mk k0" x1="105" y1="96" x2="330" y2="270" stroke="#66d9ef" stroke-width="3" stroke-dasharray="8 5"/>
+  <path class="mk k1" d="M175,96 A70,70 0 0 1 160,139" fill="none" stroke="#ffd166" stroke-width="3"/>
+  <path class="mk k1" d="M270,270 A60,60 0 0 1 282,233" fill="none" stroke="#ffd166" stroke-width="3"/>
+  <text class="mk k1 tx" x="150" y="130" style="fill:#ffd166">內錯角</text>
+  <line class="mk k2" x1="195" y1="84" x2="195" y2="108" stroke="#4ade80" stroke-width="3"/>
+  <line class="mk k2" x1="316" y1="180" x2="299" y2="186" stroke="#4ade80" stroke-width="3"/>
+  <text class="mk k2 tx" x="196" y="78" style="fill:#4ade80">AD = CD</text>
+  <text class="mk k3 tx" x="112" y="88" style="fill:#ffd166;font-size:19px">AD = 4</text>
+  <text class="tx" x="92" y="90">A</text><text class="tx" x="44" y="288">B</text>
+  <text class="tx" x="336" y="288">C</text><text class="tx" x="292" y="88">D</text>
+  <text class="tx" x="66" y="180">4</text><text class="tx" x="322" y="180">4</text>
+  <text class="tx" x="192" y="292">6</text>
+  <text class="tx" x="120" y="312" style="fill:#93a1c8">AD ∥ BC，連對角線 AC</text>
+</svg></div>
+      <div class="anscard" data-k="ans">
+        <div class="tag">答　案</div>
+        <div class="val">(A)　AD = 4</div>
+        <div class="note">AC = 2√10，△ACD 等腰 ⇒ AD = AC ÷ 2cos∠ACB = 2√10 ÷ (√10/2) = 4</div>
+      </div>
+    </div>
+  </div>
+  <div class="rule" data-k="rule">通則：<b>梯形連對角線；平行給內錯角；等腰再用正弦定理</b></div>
+</section>
+<section class="qpage" id="pg6" data-no="6">
+  <div class="q" data-k="q">圓上兩點 P、Q 對稱於直線 L：x − 2y + 6 = 0，圓心到弦 PQ 的距離為 4，P(0, −2)
+    <span class="ask">試問此圓的半徑為何？</span></div>
+  <div class="main">
+    <div class="chain"><div class="ln" data-k="l0"><span class="v v1">P、Q 對稱於 L　⇒　L 是 PQ 的垂直平分線</span></div><div class="ln" data-k="l1"><span class="v v1">M = PQ 中點，且在 L 上</span></div><div class="ln" data-k="l2"><span class="v v1">d(P, L) = |0 + 4 + 6| ÷ √5 = 2√5</span></div><div class="ln" data-k="l3"><span class="v v1">PQ ⊥ L　⇒　PQ = 2 × d(P, L) = 4√5</span></div><div class="ln" data-k="l4"><span class="v v1">半弦長 MQ = 2√5</span></div><div class="ln" data-k="l5"><span class="v v1">OM ⊥ PQ，OM = 4（弦心距）</span></div><div class="ln" data-k="l6"><span class="v v1">r<sup>2</sup> = OM<sup>2</sup> + MQ<sup>2</sup> = 16 + 20 = 36</span></div><div class="ln" data-k="l7"><span class="v v1">r = 6</span></div></div>
+    <div class="side">
+      <div class="fig" data-k="fig"><svg viewBox="0 0 420 320" class="svgp">
+  <circle cx="245" cy="117" r="132" fill="none" stroke="#41558c" stroke-width="3"/>
+  <line class="mk k0" x1="34" y1="222" x2="342" y2="68" stroke="#5b6da8" stroke-width="2.5" stroke-dasharray="9 5"/>
+  <line class="mk k0" x1="210" y1="244" x2="122" y2="68" stroke="#66d9ef" stroke-width="3"/>
+  <circle class="mk k0" cx="166" cy="156" r="5" fill="#ffd166"/>
+  <text class="mk k0 tx" x="106" y="150" style="fill:#ffd166">M</text>
+  <line class="mk k1" x1="210" y1="244" x2="166" y2="156" stroke="#ffd166" stroke-width="4"/>
+  <text class="mk k1 tx" x="176" y="212" style="fill:#ffd166">2√5</text>
+  <line class="mk k2" x1="166" y1="156" x2="122" y2="68" stroke="#4ade80" stroke-width="4"/>
+  <text class="mk k2 tx" x="106" y="112" style="fill:#4ade80">2√5</text>
+  <line class="mk k3" x1="245" y1="117" x2="166" y2="156" stroke="#ff8fa3" stroke-width="3.5"/>
+  <line class="mk k3" x1="245" y1="117" x2="122" y2="68" stroke="#ff8fa3" stroke-width="3.5"/>
+  <text class="mk k3 tx" x="196" y="126" style="fill:#ff8fa3">4</text>
+  <text class="mk k3 tx" x="168" y="76" style="fill:#ff8fa3">r = 6</text>
+  <rect class="mk k3" x="166" y="147" width="11" height="11" fill="none" stroke="#ff8fa3" stroke-width="2"/>
+  <circle cx="210" cy="244" r="6" fill="#66d9ef"/><text class="tx" x="218" y="252">P(0, −2)</text>
+  <circle cx="122" cy="68" r="6" fill="#66d9ef"/><text class="tx" x="86" y="62">Q</text>
+  <circle cx="245" cy="117" r="5" fill="#e9eefc"/><text class="tx" x="252" y="112">O</text>
+  <text class="tx" x="300" y="56" style="fill:#93a1c8">L：x − 2y + 6 = 0</text>
+</svg></div>
+      <div class="anscard" data-k="ans">
+        <div class="tag">答　案</div>
+        <div class="val">(D)　r = 6</div>
+        <div class="note">PQ = 4√5 ⇒ MQ = 2√5；r<sup>2</sup> = OM<sup>2</sup> + MQ<sup>2</sup> = 16 + 20 = 36</div>
+      </div>
+    </div>
+  </div>
+  <div class="rule" data-k="rule">通則：<b>弦心距、半弦長、半徑永遠構成直角三角形</b></div>
+</section>
+<section class="qpage" id="pg7" data-no="7">
+  <div class="q" data-k="q">袋中 8 球：1 號 4 顆、2 號 3 顆、4 號 1 顆，取三顆不放回
+    <span class="ask">在乘積為 8 的條件下，第一顆是一號的機率為何？</span></div>
+  <div class="main">
+    <div class="chain"><div class="ln" data-k="l0"><span class="v v1">條件：三顆號碼乘積 = 8</span></div><div class="ln" data-k="l1"><span class="v v1">兩類取法：{1, 2, 4}　與　{2, 2, 2}</span></div><div class="ln" data-k="l2"><span class="v v1">{1,2,4}：4 × 3 × 1 × 3! = 72</span></div><div class="ln" data-k="l3"><span class="v v1">{2,2,2}：3! = 6</span></div><div class="ln" data-k="l4"><span class="v v1">分母 = 72 + 6 = 78</span></div><div class="ln" data-k="l5"><span class="v v1">分子：首顆為 1　4 × (3 × 1) × 2! = 24</span></div><div class="ln" data-k="l6"><span class="v v1">P = 24 ÷ 78 = 4/13</span></div></div>
+    <div class="side">
+      <div class="fig" data-k="fig"><div class="q3fig">
+  <div class="ct">袋中 8 球　取 3 顆不放回</div>
+  <div class="row"><span class="bx">1 號 × 4</span><span class="bx">2 號 × 3</span><span class="bx">4 號 × 1</span></div>
+  <div class="row"><span class="mk k0 tip">乘積 = 8 只有兩類取法</span></div>
+  <div class="row"><span class="mk k1 bx hi">1 · 2 · 4</span><span class="ar">4×3×1×3! = 72</span></div>
+  <div class="row"><span class="mk k2 bx hi">2 · 2 · 2</span><span class="ar">3! = 6</span></div>
+  <div class="row"><span class="mk k3 tip">首顆為 1：4 × 3 × 2! = 24　⇒　24/78 = 4/13</span></div>
+</div></div>
+      <div class="anscard" data-k="ans">
+        <div class="tag">答　案</div>
+        <div class="val">(C)　P = 4/13</div>
+        <div class="note">分母 72 + 6 = 78；分子 4 × 3 × 2 = 24　⇒　24/78 = 4/13</div>
+      </div>
+    </div>
+  </div>
+  <div class="rule" data-k="rule">通則：<b>條件機率先鎖定條件（分母），再數符合的取法（分子）</b></div>
+</section>
+<section class="qpage" id="pg8" data-no="8">
+  <div class="q" data-k="q">相異四點 A、B、C、D，∠ABC = 45°，∠ACB = 60°，D 在線段 BC 上
+    <span class="ask">△ABD 外接圓半徑 6，求 △ACD 外接圓半徑？</span></div>
+  <div class="main">
+    <div class="chain"><div class="ln" data-k="l0"><span class="v v1">∠ABC = 45°，∠ACB = 60°，D 在 BC 上</span></div><div class="ln" data-k="l1"><span class="v v1">公共邊 AD 是兩個三角形的橋樑</span></div><div class="ln" data-k="l2"><span class="v v1">正弦定理：R = 邊長 ÷ 2 sin(對角)</span></div><div class="ln" data-k="l3"><span class="v v1">△ABD：∠ABD = 45°，R = AD ÷ 2sin45° = 6</span></div><div class="ln" data-k="l4"><span class="v v1">⇒　AD = 2 × 6 × sin45° = 6√2</span></div><div class="ln" data-k="l5"><span class="v v1">△ACD：∠ACD = 60°，R′ = AD ÷ 2sin60°</span></div><div class="ln" data-k="l6"><span class="v v1">R′ = 6√2 ÷ √3 = 2√6</span></div></div>
+    <div class="side">
+      <div class="fig" data-k="fig"><svg viewBox="0 0 420 320" class="svgp">
+  <circle class="mk k0" cx="124" cy="164" r="105" fill="none" stroke="#66d9ef" stroke-width="2.5" stroke-dasharray="8 5"/>
+  <polygon class="mk k0" points="219,120 80,260 168,260" fill="rgba(102,217,239,.13)" stroke="none"/>
+  <circle class="mk k2" cx="234" cy="205" r="86" fill="none" stroke="#ffd166" stroke-width="2.5" stroke-dasharray="8 5"/>
+  <polygon class="mk k2" points="219,120 300,260 168,260" fill="rgba(255,209,102,.13)" stroke="none"/>
+  <line x1="80" y1="260" x2="300" y2="260" stroke="#41558c" stroke-width="3"/>
+  <line x1="80" y1="260" x2="219" y2="120" stroke="#5b6da8" stroke-width="2.5"/>
+  <line x1="300" y1="260" x2="219" y2="120" stroke="#5b6da8" stroke-width="2.5"/>
+  <line class="mk k1" x1="219" y1="120" x2="168" y2="260" stroke="#ff8fa3" stroke-width="4"/>
+  <text class="mk k1 tx" x="176" y="196" style="fill:#ff8fa3">AD = 6√2</text>
+  <path class="mk k1" d="M104,260 A24,24 0 0 0 97,243" fill="none" stroke="#ff8fa3" stroke-width="2.5"/>
+  <text class="mk k1 tx" x="104" y="240" style="fill:#ff8fa3">45°</text>
+  <path class="mk k2" d="M272,260 A28,28 0 0 0 286,236" fill="none" stroke="#ffd166" stroke-width="2.5"/>
+  <text class="mk k2 tx" x="288" y="240" style="fill:#ffd166">60°</text>
+  <text class="mk k0 tx" x="30" y="112" style="fill:#66d9ef">R = 6</text>
+  <text class="mk k2 tx" x="300" y="186" style="fill:#ffd166">R′ = ?</text>
+  <text class="mk k3 tx" x="150" y="86" style="fill:#ffd166;font-size:19px">R′ = 6√2 ÷ √3 = 2√6</text>
+  <circle cx="219" cy="120" r="5" fill="#e9eefc"/><text class="tx" x="226" y="114">A</text>
+  <circle cx="80" cy="260" r="5" fill="#e9eefc"/><text class="tx" x="64" y="278">B</text>
+  <circle cx="300" cy="260" r="5" fill="#e9eefc"/><text class="tx" x="306" y="278">C</text>
+  <circle cx="168" cy="260" r="5" fill="#e9eefc"/><text class="tx" x="162" y="278">D</text>
+  <text class="tx" x="116" y="306" style="fill:#93a1c8">D 在 BC 上，AD 為公共邊</text>
+</svg></div>
+      <div class="anscard" data-k="ans">
+        <div class="tag">答　案</div>
+        <div class="val">(C)　R′ = 2√6</div>
+        <div class="note">AD = 2·6·sin45° = 6√2；R′ = AD ÷ 2sin60° = 6√2 ÷ √3 = 2√6</div>
+      </div>
+    </div>
+  </div>
+  <div class="rule" data-k="rule">通則：<b>公共邊配上兩側的對角，正弦定理一路貫通</b></div>
+</section>
+<section class="qpage" id="pg9" data-no="9">
+  <div class="q" data-k="q">向量 u + v = (2√2, 2√2)，內積 u·v ≥ 1，且 u = (0, b)
+    <span class="ask">試問 b 的最大值為何？</span></div>
+  <div class="main">
+    <div class="chain"><div class="ln" data-k="l0"><span class="v v1">u + v = (2√2, 2√2)，u = (0, b)</span></div><div class="ln" data-k="l1"><span class="v v1">⇒　v = (2√2, 2√2 − b)</span></div><div class="ln" data-k="l2"><span class="v v1">u · v = 0·2√2 + b(2√2 − b) = 2√2 b − b<sup>2</sup></span></div><div class="ln" data-k="l3"><span class="v v1">條件 u · v ≥ 1　⇒　2√2 b − b<sup>2</sup> ≥ 1</span></div><div class="ln" data-k="l4"><span class="v v1">配方：2√2 b − b<sup>2</sup> = 2 − (b − √2)<sup>2</sup></span></div><div class="ln" data-k="l5"><span class="v v1">⇒　2 − (b − √2)<sup>2</sup> ≥ 1</span></div><div class="ln" data-k="l6"><span class="v v1">⇒　(b − √2)<sup>2</sup> ≤ 1</span></div><div class="ln" data-k="l7"><span class="v v1">⇒　|b − √2| ≤ 1</span></div><div class="ln" data-k="l8"><span class="v v1">⇒　√2 − 1 ≤ b ≤ √2 + 1</span></div><div class="ln" data-k="l9"><span class="v v1">b<sub>max</sub> = √2 + 1 = 1 + √2</span></div></div>
+    <div class="side">
+      <div class="fig" data-k="fig"><svg viewBox="0 0 420 320" class="svgp">
+  <line x1="52" y1="252" x2="386" y2="252" stroke="#41558c" stroke-width="2"/>
+  <line x1="90" y1="292" x2="90" y2="54" stroke="#41558c" stroke-width="2"/>
+  <text class="tx" x="370" y="270" style="fill:#93a1c8">x</text>
+  <text class="tx" x="72" y="68" style="fill:#93a1c8">y</text>
+  <circle cx="90" cy="252" r="4" fill="#e9eefc"/><text class="tx" x="70" y="272">O</text>
+  <line class="mk k0" x1="90" y1="252" x2="219" y2="123" stroke="#ffd166" stroke-width="3" stroke-dasharray="8 5"/>
+  <circle class="mk k0" cx="219" cy="123" r="5" fill="#ffd166"/>
+  <text class="mk k0 tx" x="228" y="116" style="fill:#ffd166">u+v</text>
+  <line class="mk k1" x1="90" y1="252" x2="90" y2="180" stroke="#66d9ef" stroke-width="4"/>
+  <circle class="mk k1" cx="90" cy="180" r="5" fill="#66d9ef"/>
+  <text class="mk k1 tx" x="30" y="222" style="fill:#66d9ef">u = (0, b)</text>
+  <line class="mk k1" x1="90" y1="180" x2="219" y2="123" stroke="#ff8fa3" stroke-width="3.5"/>
+  <text class="mk k1 tx" x="120" y="146" style="fill:#ff8fa3">v</text>
+  <text class="mk k2 tx" x="196" y="292" style="fill:#4ade80">u·v ≥ 1　⇒　(b − √2)<sup>2</sup> ≤ 1</text>
+  <text class="mk k3 tx" x="212" y="76" style="fill:#ffd166;font-size:19px">b<sub>max</sub> = 1 + √2</text>
+  <text class="tx" x="244" y="140" style="fill:#93a1c8">(2√2, 2√2)</text>
+</svg></div>
+      <div class="anscard" data-k="ans">
+        <div class="tag">答　案</div>
+        <div class="val">(A)　b<sub>max</sub> = 1 + √2</div>
+        <div class="note">u·v = 2√2 b − b<sup>2</sup> = 2 − (b − √2)<sup>2</sup> ≥ 1　⇒　(b − √2)<sup>2</sup> ≤ 1　⇒　b ≤ √2 + 1</div>
+      </div>
+    </div>
+  </div>
+  <div class="rule" data-k="rule">通則：<b>和向量反推另一向量；內積配方，範圍自然浮現</b></div>
+</section>
+<section class="qpage" id="pg10" data-no="10">
+  <div class="q" data-k="q">f(x) = 3cos πx + 4sin πx（π 為圓周率）
+    <span class="ask">試問 g(x) = f(x) + f(−x) 的振幅為何？</span></div>
+  <div class="main">
+    <div class="chain"><div class="ln" data-k="l0"><span class="v v1">f(x) = 3cos πx + 4sin πx</span></div><div class="ln" data-k="l1"><span class="v v1">g(x) = f(x) + f(−x)</span></div><div class="ln" data-k="l2"><span class="v v1">f(−x) = 3cos πx − 4sin πx　（cos 偶、sin 奇）</span></div><div class="ln" data-k="l3"><span class="v v1">g(x) = (3cos πx + 4sin πx) + (3cos πx − 4sin πx) = 6cos πx</span></div><div class="ln" data-k="l4"><span class="v v1">振幅 = |6| = 6</span></div></div>
+    <div class="side">
+      <div class="fig" data-k="fig"><svg viewBox="0 0 420 300" class="svgp"><line x1="40" y1="170" x2="404" y2="170" stroke="#41558c" stroke-width="2"/><line x1="60" y1="30" x2="60" y2="292" stroke="#41558c" stroke-width="2"/><text class="tx" x="386" y="188" style="fill:#93a1c8">x</text><text class="tx" x="44" y="46" style="fill:#93a1c8">y</text><path class="mk k0" d="M60.0,125.0 L65.0,114.2 L70.0,105.5 L75.0,99.2 L80.0,95.8 L85.0,95.1 L90.0,97.3 L95.0,102.4 L100.0,110.0 L105.0,119.9 L110.0,131.8 L115.0,145.1 L120.0,159.4 L125.0,174.1 L130.0,188.6 L135.0,202.4 L140.0,215.0 L145.0,225.8 L150.0,234.5 L155.0,240.8 L160.0,244.2 L165.0,244.9 L170.0,242.7 L175.0,237.6 L180.0,230.0 L185.0,220.1 L190.0,208.2 L195.0,194.9 L200.0,180.6 L205.0,165.9 L210.0,151.4 L215.0,137.6 L220.0,125.0 L225.0,114.2 L230.0,105.5 L235.0,99.2 L240.0,95.8 L245.0,95.1 L250.0,97.3 L255.0,102.4 L260.0,110.0 L265.0,119.9 L270.0,131.8 L275.0,145.1 L280.0,159.4 L285.0,174.1 L290.0,188.6 L295.0,202.4 L300.0,215.0 L305.0,225.8 L310.0,234.5 L315.0,240.8 L320.0,244.2 L325.0,244.9 L330.0,242.7 L335.0,237.6 L340.0,230.0 L345.0,220.1 L350.0,208.2 L355.0,194.9 L360.0,180.6 L365.0,165.9 L370.0,151.4 L375.0,137.6 L380.0,125.0" fill="none" stroke="#ffd166" stroke-width="2.5"/><path class="mk k1" d="M60.0,125.0 L65.0,137.6 L70.0,151.4 L75.0,165.9 L80.0,180.6 L85.0,194.9 L90.0,208.2 L95.0,220.1 L100.0,230.0 L105.0,237.6 L110.0,242.7 L115.0,244.9 L120.0,244.2 L125.0,240.8 L130.0,234.5 L135.0,225.8 L140.0,215.0 L145.0,202.4 L150.0,188.6 L155.0,174.1 L160.0,159.4 L165.0,145.1 L170.0,131.8 L175.0,119.9 L180.0,110.0 L185.0,102.4 L190.0,97.3 L195.0,95.1 L200.0,95.8 L205.0,99.2 L210.0,105.5 L215.0,114.2 L220.0,125.0 L225.0,137.6 L230.0,151.4 L235.0,165.9 L240.0,180.6 L245.0,194.9 L250.0,208.2 L255.0,220.1 L260.0,230.0 L265.0,237.6 L270.0,242.7 L275.0,244.9 L280.0,244.2 L285.0,240.8 L290.0,234.5 L295.0,225.8 L300.0,215.0 L305.0,202.4 L310.0,188.6 L315.0,174.1 L320.0,159.4 L325.0,145.1 L330.0,131.8 L335.0,119.9 L340.0,110.0 L345.0,102.4 L350.0,97.3 L355.0,95.1 L360.0,95.8 L365.0,99.2 L370.0,105.5 L375.0,114.2 L380.0,125.0" fill="none" stroke="#ff8fa3" stroke-width="2.5" stroke-dasharray="6 4"/><path class="mk k2" d="M60.0,80.0 L65.0,81.7 L70.0,86.9 L75.0,95.2 L80.0,106.4 L85.0,120.0 L90.0,135.6 L95.0,152.4 L100.0,170.0 L105.0,187.6 L110.0,204.4 L115.0,220.0 L120.0,233.6 L125.0,244.8 L130.0,253.1 L135.0,258.3 L140.0,260.0 L145.0,258.3 L150.0,253.1 L155.0,244.8 L160.0,233.6 L165.0,220.0 L170.0,204.4 L175.0,187.6 L180.0,170.0 L185.0,152.4 L190.0,135.6 L195.0,120.0 L200.0,106.4 L205.0,95.2 L210.0,86.9 L215.0,81.7 L220.0,80.0 L225.0,81.7 L230.0,86.9 L235.0,95.2 L240.0,106.4 L245.0,120.0 L250.0,135.6 L255.0,152.4 L260.0,170.0 L265.0,187.6 L270.0,204.4 L275.0,220.0 L280.0,233.6 L285.0,244.8 L290.0,253.1 L295.0,258.3 L300.0,260.0 L305.0,258.3 L310.0,253.1 L315.0,244.8 L320.0,233.6 L325.0,220.0 L330.0,204.4 L335.0,187.6 L340.0,170.0 L345.0,152.4 L350.0,135.6 L355.0,120.0 L360.0,106.4 L365.0,95.2 L370.0,86.9 L375.0,81.7 L380.0,80.0" fill="none" stroke="#66d9ef" stroke-width="3.5"/><line class="mk k3" x1="60" y1="80" x2="60" y2="260" stroke="#4ade80" stroke-width="2" stroke-dasharray="5 4"/><line class="mk k3" x1="52" y1="80" x2="100" y2="80" stroke="#4ade80" stroke-width="2" stroke-dasharray="5 4"/><line class="mk k3" x1="52" y1="260" x2="100" y2="260" stroke="#4ade80" stroke-width="2" stroke-dasharray="5 4"/><text class="tx" x="296" y="52" style="fill:#ffd166">f(x) = 3cos πx + 4sin πx</text><text class="tx" x="296" y="76" style="fill:#ff8fa3">f(−x) = 3cos πx − 4sin πx</text><text class="tx" x="180" y="292" style="fill:#66d9ef">g(x) = 6cos πx</text><text class="tx" x="300" y="108" style="fill:#4ade80">振幅 = 6</text></svg></div>
+      <div class="anscard" data-k="ans">
+        <div class="tag">答　案</div>
+        <div class="val">(C)　振幅 = 6</div>
+        <div class="note">g(x) = f(x) + f(−x) = 6cos πx　⇒　振幅 = |6| = 6</div>
+      </div>
+    </div>
+  </div>
+  <div class="rule" data-k="rule">通則：<b>f(x) + f(−x) 取偶部；奇函數部分自動抵消</b></div>
+</section>
+<section class="qpage" id="pg11" data-no="11">
+  <div class="q" data-k="q">設 a、b 為兩實數且 log b = −2<sup>a</sup>，已知 a < 0
+    <span class="ask">下列哪一個選項的值最大？</span></div>
+  <div class="main">
+    <div class="chain"><div class="ln" data-k="l0"><span class="v v1">(A) log b　(B) log(1/b)　(C) (log b)<sup>2</sup>　(D) log√b</span></div><div class="ln" data-k="l1"><span class="v v1">a < 0　⇒　0 < 2<sup>a</sup> < 1　⇒　−1 < log b < 0</span></div><div class="ln" data-k="l2"><span class="v v1">即 b 落在 0.1 與 1 之間：log b 為負，且 |log b| < 1</span></div><div class="ln" data-k="l3"><span class="v v1">記 L = log b，則 −1 < L < 0</span></div><div class="ln" data-k="l4"><span class="v v1">(A) log b = L　（負數）</span></div><div class="ln" data-k="l5"><span class="v v1">(B) log(1/b) = −log b = −L　（0 < −L < 1）</span></div><div class="ln" data-k="l6"><span class="v v1">(C) (log b)<sup>2</sup> = L<sup>2</sup>，因 |L| < 1 ⇒ L<sup>2</sup> < −L</span></div><div class="ln" data-k="l7"><span class="v v1">(D) log√b = ½ log b = ½L　（負數）</span></div><div class="ln" data-k="l8"><span class="v v1">最大者為 −L　⇒　選 (B)</span></div></div>
+    <div class="side">
+      <div class="fig" data-k="fig"><svg viewBox="0 0 420 330" class="svgp">
+  <text class="mk k0 tx" x="210" y="20" text-anchor="middle" style="fill:#ffd166;font-size:15px">a &lt; 0：0 &lt; 2^a &lt; 1　⇒　−1 &lt; log b &lt; 0</text>
+  <line class="mk k0" x1="46" y1="60" x2="374" y2="60" stroke="#5b6da8" stroke-width="2"/>
+  <line class="mk k0" x1="46" y1="54" x2="46" y2="66" stroke="#93a1c8" stroke-width="2"/>
+  <text class="mk k0 tx" x="46" y="84" text-anchor="middle">−1</text>
+  <line class="mk k0" x1="210" y1="54" x2="210" y2="66" stroke="#93a1c8" stroke-width="2"/>
+  <text class="mk k0 tx" x="210" y="84" text-anchor="middle">0</text>
+  <line class="mk k0" x1="50" y1="60" x2="206" y2="60" stroke="#66d9ef" stroke-width="6" opacity=".5"/>
+  <text class="mk k0 tx" x="228" y="65" style="fill:#66d9ef">log b 落在這裡</text>
+  <line class="mk k1" x1="36" y1="200" x2="404" y2="200" stroke="#5b6da8" stroke-width="2"/>
+  <rect class="mk k1" x="66" y="200" width="46" height="60" fill="#41558c"/>
+  <rect class="mk k1" x="306" y="200" width="46" height="30" fill="#41558c"/>
+  <rect class="mk k2" x="146" y="140" width="46" height="60" fill="#66d9ef"/>
+  <rect class="mk k2" x="226" y="164" width="46" height="36" fill="#ff8fa3"/>
+  <text class="mk k1 tx" x="89" y="194" text-anchor="middle">L</text>
+  <text class="mk k1 tx" x="329" y="194" text-anchor="middle">½L</text>
+  <text class="mk k2 tx" x="169" y="132" text-anchor="middle">−L</text>
+  <text class="mk k2 tx" x="249" y="156" text-anchor="middle">L²</text>
+  <text class="mk k3 tx" x="169" y="110" text-anchor="middle" style="fill:#ffd166;font-size:17px">最大</text>
+  <text class="mk k3 tx" x="89" y="300" text-anchor="middle" style="fill:#93a1c8">(A)</text>
+  <text class="mk k3 tx" x="169" y="300" text-anchor="middle" style="fill:#ffd166">(B)</text>
+  <text class="mk k3 tx" x="249" y="300" text-anchor="middle" style="fill:#93a1c8">(C)</text>
+  <text class="mk k3 tx" x="329" y="300" text-anchor="middle" style="fill:#93a1c8">(D)</text>
+  <text class="mk k3 tx" x="210" y="324" text-anchor="middle" style="fill:#4ade80;font-size:14px">−1 &lt; L &lt; 0　⇒　−L &gt; L² &gt; 0</text>
+</svg></div>
+      <div class="anscard" data-k="ans">
+        <div class="tag">答　案</div>
+        <div class="val">(B)　log(1/b) = −log b 最大</div>
+        <div class="note">a < 0 ⇒ −1 < log b < 0 ⇒ −log b ∈ (0,1)；|log b| < 1 ⇒ (log b)² < −log b，故 (B) 最大</div>
+      </div>
+    </div>
+  </div>
+  <div class="rule" data-k="rule">通則：<b>對數比大小：先由指數範圍定出對數範圍，再比較絕對值</b></div>
+</section>
+<section class="qpage" id="pg12" data-no="12">
+  <div class="q" data-k="q">O 為原點，P 在平面 E：x + y + z = 1 的投影點為 Q，且 PQ · OQ = 3
+    <span class="ask">試問 |PQ| 為何？</span></div>
+  <div class="main">
+    <div class="chain"><div class="ln" data-k="l0"><span class="v v1">Q 為投影點　⇒　PQ ⊥ E</span></div><div class="ln" data-k="l1"><span class="v v1">⇒　PQ ∥ 法向量 n = (1, 1, 1)</span></div><div class="ln" data-k="l2"><span class="v v1">設 PQ = t (1, 1, 1)　⇒　|PQ| = t|n| = t√3</span></div><div class="ln" data-k="l3"><span class="v v1">Q 在 E 上　⇒　OQ · n = x<sub>Q</sub> + y<sub>Q</sub> + z<sub>Q</sub> = 1</span></div><div class="ln" data-k="l4"><span class="v v1">PQ · OQ = t ( n · OQ ) = t × 1 = t</span></div><div class="ln" data-k="l5"><span class="v v1">已知 PQ · OQ = 3　⇒　t = 3</span></div><div class="ln" data-k="l6"><span class="v v1">⇒　|PQ| = 3√3</span></div></div>
+    <div class="side">
+      <div class="fig" data-k="fig"><svg viewBox="0 0 420 330" class="svgp">
+  <polygon class="mk k0" points="60,240 300,274 392,212 152,178" fill="#16223f" stroke="#41558c" stroke-width="3"/>
+  <text class="mk k0 tx" x="292" y="162" style="fill:#93a1c8">E：x + y + z = 1</text>
+  <line class="mk k0" x1="225" y1="223" x2="258" y2="158" stroke="#5b6da8" stroke-width="2.5" stroke-dasharray="6 4"/>
+  <text class="mk k0 tx" x="262" y="154" style="fill:#5b6da8">n = (1,1,1)</text>
+  <circle class="mk k1" cx="225" cy="223" r="5" fill="#ffd166"/>
+  <text class="mk k1 tx" x="198" y="248" style="fill:#ffd166">Q</text>
+  <line class="mk k1" x1="225" y1="223" x2="300" y2="104" stroke="#66d9ef" stroke-width="4"/>
+  <circle class="mk k1" cx="300" cy="104" r="6" fill="#66d9ef"/>
+  <text class="mk k1 tx" x="308" y="100" style="fill:#66d9ef">P</text>
+  <text class="mk k1 tx" x="238" y="184" style="fill:#66d9ef">PQ = t(1,1,1)</text>
+  <line class="mk k2" x1="96" y1="120" x2="225" y2="223" stroke="#ff8fa3" stroke-width="3" stroke-dasharray="8 5"/>
+  <circle class="mk k2" cx="96" cy="120" r="5" fill="#ff8fa3"/>
+  <text class="mk k2 tx" x="52" y="112" style="fill:#ff8fa3">O（原點）</text>
+  <text class="mk k2 tx" x="118" y="196" style="fill:#ff8fa3">OQ</text>
+  <text class="mk k2 tx" x="150" y="60" style="fill:#ffd166;font-size:15px">PQ · OQ = t × (OQ · n) = t × 1 = 3</text>
+  <text class="mk k3 tx" x="120" y="310" style="fill:#4ade80;font-size:18px">|PQ| = t√3 = 3√3</text>
+</svg></div>
+      <div class="anscard" data-k="ans">
+        <div class="tag">答　案</div>
+        <div class="val">(D)　|PQ| = 3√3</div>
+        <div class="note">PQ ∥ n = (1,1,1)，設 PQ = t(1,1,1)；PQ · OQ = t (n · OQ) = t = 3 ⇒ |PQ| = 3√3</div>
+      </div>
+    </div>
+  </div>
+  <div class="rule" data-k="rule">通則：<b>投影連線垂直平面；投影向量平行法向量，內積一次解出參數</b></div>
+</section>
+<section class="qpage" id="pg13" data-no="13">
+  <div class="q" data-k="q">三次多項式 f 首項係數為 1，f(x) = (x<sup>2</sup>+1)g(x) + x，且 f(1) = −1
+    <span class="ask">試求 f 圖形對稱中心的 x 坐標為何？</span></div>
+  <div class="main">
+    <div class="chain"><div class="ln" data-k="l0"><span class="v v1">f 為三次、x<sup>2</sup>+1 為二次　⇒　g 為一次式，設 g(x) = ax + b</span></div><div class="ln" data-k="l1"><span class="v v1">f(x) = (x<sup>2</sup>+1)(ax+b) + x = a x<sup>3</sup> + b x<sup>2</sup> + (a+1)x + b</span></div><div class="ln" data-k="l2"><span class="v v1">首項係數 = 1　⇒　a = 1</span></div><div class="ln" data-k="l3"><span class="v v1">f(1) = 2g(1) + 1 = −1　⇒　g(1) = −1</span></div><div class="ln" data-k="l4"><span class="v v1">g(1) = a + b = 1 + b = −1　⇒　b = −2</span></div><div class="ln" data-k="l5"><span class="v v1">f(x) = x<sup>3</sup> − 2x<sup>2</sup> + 2x − 2</span></div><div class="ln" data-k="l6"><span class="v v1">對稱中心 = 反曲點　⇒　x = −B ÷ 3 = 2 ÷ 3</span></div><div class="ln" data-k="l7"><span class="v v1">答案 (A)　x = 2/3</span></div></div>
+    <div class="side">
+      <div class="fig" data-k="fig"><svg viewBox="0 0 420 330" class="svgp">
+  <line class="mk k0" x1="40" y1="203" x2="404" y2="203" stroke="#3b4b7d" stroke-width="2"/>
+  <line class="mk k0" x1="79" y1="16" x2="79" y2="318" stroke="#3b4b7d" stroke-width="2"/>
+  <text class="mk k0 tx" x="396" y="222" style="fill:#93a1c8">x</text>
+  <text class="mk k0 tx" x="88" y="26" style="fill:#93a1c8">y</text>
+  <text class="mk k0 tx" x="210" y="322" text-anchor="middle" style="fill:#93a1c8;font-size:14px">f(x) = x³ − 2x² + 2x − 2　（三次、首項係數 1）</text>
+  <polyline class="mk k1" points="40,303 53,292 66,282 79,275 92,268 105,263 118,259 131,255 144,252 157,250 170,247 183,245 196,242 209,239 221,235 234,230 247,224 260,217 273,208 286,197 299,184 312,169 325,152 338,132 351,109 364,83 377,54 390,21" fill="none" stroke="#41558c" stroke-width="3"/>
+  <circle class="mk k2" cx="165" cy="248" r="6" fill="#ffd166"/>
+  <text class="mk k2 tx" x="172" y="266" style="fill:#ffd166">對稱中心</text>
+  <line class="mk k3" x1="120" y1="272" x2="210" y2="224" stroke="#4ade80" stroke-width="2.5" stroke-dasharray="7 4"/>
+  <line class="mk k3" x1="120" y1="224" x2="210" y2="272" stroke="#4ade80" stroke-width="2.5" stroke-dasharray="7 4"/>
+  <circle class="mk k3" cx="120" cy="248" r="4" fill="#4ade80"/>
+  <circle class="mk k3" cx="210" cy="248" r="4" fill="#4ade80"/>
+  <text class="mk k3 tx" x="228" y="292" style="fill:#4ade80;font-size:17px">x = 2/3</text>
+</svg></div>
+      <div class="anscard" data-k="ans">
+        <div class="tag">答　案</div>
+        <div class="val">(A)　x = 2/3</div>
+        <div class="note">g 為一次式，a = 1、b = −2 ⇒ f(x) = x³ − 2x² + 2x − 2，對稱中心 x = −(−2)/3 = 2/3</div>
+      </div>
+    </div>
+  </div>
+  <div class="rule" data-k="rule">通則：<b>三次多項式的對稱中心＝反曲點，x 坐標 = −（二次項係數）÷ 3</b></div>
+</section>
+<section class="qpage" id="pg14" data-no="14">
+  <div class="q" data-k="q">θ<sub>1</sub>、θ<sub>2</sub>、θ<sub>3</sub> 為實數，成等差數列且公差為 π/2，θ<sub>1</sub> ∈ [π/2, π)
+    <span class="ask">已知 sin<sup>2</sup>θ<sub>2</sub> = 9/25，試問 sin(θ<sub>1</sub> + θ<sub>3</sub>) 之值為何？</span></div>
+  <div class="main">
+    <div class="chain"><div class="ln" data-k="l0"><span class="v v1">θ<sub>2</sub> = θ<sub>1</sub> + π/2　，　θ<sub>3</sub> = θ<sub>1</sub> + π</span></div><div class="ln" data-k="l1"><span class="v v1">sin<sup>2</sup>θ<sub>2</sub> = sin<sup>2</sup>(θ<sub>1</sub> + π/2) = cos<sup>2</sup>θ<sub>1</sub> = 9/25</span></div><div class="ln" data-k="l2"><span class="v v1">θ<sub>1</sub> 在第二象限　⇒　cos θ<sub>1</sub> = −3/5　，　sin θ<sub>1</sub> = 4/5</span></div><div class="ln" data-k="l3"><span class="v v1">sin(θ<sub>1</sub> + θ<sub>3</sub>) = sin(2θ<sub>1</sub> + π) = −sin 2θ<sub>1</sub></span></div><div class="ln" data-k="l4"><span class="v v1">= −2 sin θ<sub>1</sub> cos θ<sub>1</sub> = −2 × (4/5) × (−3/5)</span></div><div class="ln" data-k="l5"><span class="v v1">= 24/25</span></div><div class="ln" data-k="l6"><span class="v v1">答案 (D)　24/25</span></div></div>
+    <div class="side">
+      <div class="fig" data-k="fig"><svg viewBox="0 0 420 330" class="svgp">
+  <text class="mk k0 tx" x="210" y="20" text-anchor="middle" style="fill:#ffd166;font-size:14px">公差 π/2 ⇒ θ<sub>2</sub> = θ<sub>1</sub>+π/2　θ<sub>3</sub> = θ<sub>1</sub>+π</text>
+  <circle class="mk k0" cx="140" cy="150" r="86" fill="none" stroke="#3b4b7d" stroke-width="2"/>
+  <line class="mk k0" x1="54" y1="150" x2="226" y2="150" stroke="#3b4b7d" stroke-width="1.5"/>
+  <line class="mk k0" x1="140" y1="64" x2="140" y2="236" stroke="#3b4b7d" stroke-width="1.5"/>
+  <line class="mk k0" x1="140" y1="150" x2="69" y2="79" stroke="#66d9ef" stroke-width="3.5"/>
+  <circle class="mk k0" cx="69" cy="79" r="4.5" fill="#66d9ef"/>
+  <text class="mk k0 tx" x="36" y="70" style="fill:#66d9ef">θ<sub>1</sub></text>
+  <text class="mk k1 tx" x="86" y="104" style="fill:#93a1c8;font-size:12px">( −3/5 , 4/5 )</text>
+  <line class="mk k1" x1="140" y1="150" x2="211" y2="79" stroke="#ffd166" stroke-width="3.5"/>
+  <circle class="mk k1" cx="211" cy="79" r="4.5" fill="#ffd166"/>
+  <text class="mk k1 tx" x="216" y="70" style="fill:#ffd166">θ<sub>2</sub> = θ<sub>1</sub>+π/2</text>
+  <line class="mk k2" x1="140" y1="150" x2="211" y2="221" stroke="#ff8fa3" stroke-width="3.5"/>
+  <circle class="mk k2" cx="211" cy="221" r="4.5" fill="#ff8fa3"/>
+  <text class="mk k2 tx" x="216" y="240" style="fill:#ff8fa3">θ<sub>3</sub> = θ<sub>1</sub>+π</text>
+  <text class="mk k2 tx" x="286" y="120" style="fill:#93a1c8;font-size:13px">cos²θ<sub>1</sub> = 9/25</text>
+  <text class="mk k2 tx" x="286" y="142" style="fill:#93a1c8;font-size:13px">第二象限 ⇒ cos 負</text>
+  <text class="mk k3 tx" x="286" y="176" style="fill:#4ade80;font-size:15px">sin(θ<sub>1</sub>+θ<sub>3</sub>)</text>
+  <text class="mk k3 tx" x="286" y="198" style="fill:#4ade80;font-size:15px">= −2 sinθ<sub>1</sub>cosθ<sub>1</sub></text>
+  <text class="mk k3 tx" x="286" y="222" style="fill:#4ade80;font-size:17px">= 24/25</text>
+  <text class="mk k3 tx" x="140" y="292" text-anchor="middle" style="fill:#ffd166;font-size:15px">答案 (D) 24/25</text>
+</svg></div>
+      <div class="anscard" data-k="ans">
+        <div class="tag">答　案</div>
+        <div class="val">(D)　sin(θ<sub>1</sub>+θ<sub>3</sub>) = 24/25</div>
+        <div class="note">θ<sub>2</sub> = θ<sub>1</sub>+π/2 ⇒ sin<sup>2</sup>θ<sub>2</sub> = cos<sup>2</sup>θ<sub>1</sub> = 9/25；θ<sub>1</sub> 第二象限 ⇒ cos θ<sub>1</sub> = −3/5、sin θ<sub>1</sub> = 4/5；sin(θ<sub>1</sub>+θ<sub>3</sub>) = −2 sinθ<sub>1</sub>cosθ<sub>1</sub> = 24/25</div>
+      </div>
+    </div>
+  </div>
+  <div class="rule" data-k="rule">通則：<b>等差角先串成同一個角，再用平方關係與象限決定正負</b></div>
+</section>
+<section class="qpage" id="pg15" data-no="15">
+  <div class="q" data-k="q">某活動：起始 1 分；擲公正硬幣，正面則分數翻倍並可續擲，反面則扣 1 分並停止；每人最多擲 3 次
+    <span class="ask">試問某甲得分的期望值為何？</span></div>
+  <div class="main">
+    <div class="chain"><div class="ln" data-k="l0"><span class="v v1">反：1/2，得 1−1 = 0</span></div><div class="ln" data-k="l1"><span class="v v1">正反：1/4，得 2−1 = 1</span></div><div class="ln" data-k="l2"><span class="v v1">正正反：1/8，得 4−1 = 3</span></div><div class="ln" data-k="l3"><span class="v v1">正正正：1/8，得 8（達上限停止）</span></div><div class="ln" data-k="l4"><span class="v v1">E = (1/2)×0 + (1/4)×1 + (1/8)×3 + (1/8)×8</span></div><div class="ln" data-k="l5"><span class="v v1">= 0.25 + 0.375 + 1 = 1.625</span></div><div class="ln" data-k="l6"><span class="v v1">= 13/8　⇒　答案 (C)</span></div></div>
+    <div class="side">
+      <div class="fig" data-k="fig"><svg viewBox="0 0 420 330" class="svgp">
+  <text class="mk k0 tx" x="210" y="20" text-anchor="middle" style="fill:#ffd166;font-size:14px">最多擲 3 次：正面翻倍、反面扣 1 分停止</text>
+  <circle class="mk k0" cx="46" cy="150" r="15" fill="#41558c"/>
+  <text class="mk k0 tx" x="46" y="155" text-anchor="middle" style="font-size:11px">1</text>
+  <line class="mk k0" x1="61" y1="142" x2="150" y2="76" stroke="#ff8fa3" stroke-width="2.5"/>
+  <line class="mk k0" x1="61" y1="158" x2="150" y2="224" stroke="#66d9ef" stroke-width="2.5"/>
+  <text class="mk k0 tx" x="104" y="98" style="fill:#ff8fa3;font-size:11px">反 1/2</text>
+  <text class="mk k0 tx" x="104" y="212" style="fill:#66d9ef;font-size:11px">正 1/2</text>
+  <circle class="mk k1" cx="165" cy="72" r="14" fill="#5a3b52"/>
+  <text class="mk k1 tx" x="165" y="77" text-anchor="middle" style="font-size:11px">0</text>
+  <text class="mk k1 tx" x="186" y="66" style="fill:#ff8fa3;font-size:11px">得 0</text>
+  <circle class="mk k1" cx="165" cy="228" r="14" fill="#264a58"/>
+  <text class="mk k1 tx" x="165" y="233" text-anchor="middle" style="font-size:11px">2</text>
+  <line class="mk k1" x1="179" y1="222" x2="252" y2="176" stroke="#ff8fa3" stroke-width="2.5"/>
+  <line class="mk k1" x1="179" y1="236" x2="252" y2="282" stroke="#66d9ef" stroke-width="2.5"/>
+  <text class="mk k1 tx" x="214" y="186" style="fill:#ff8fa3;font-size:11px">反 1/4</text>
+  <text class="mk k1 tx" x="214" y="272" style="fill:#66d9ef;font-size:11px">正 1/4</text>
+  <circle class="mk k2" cx="266" cy="172" r="14" fill="#5a3b52"/>
+  <text class="mk k2 tx" x="266" y="177" text-anchor="middle" style="font-size:11px">1</text>
+  <text class="mk k2 tx" x="286" y="166" style="fill:#ff8fa3;font-size:11px">得 1</text>
+  <circle class="mk k2" cx="266" cy="286" r="14" fill="#264a58"/>
+  <text class="mk k2 tx" x="266" y="291" text-anchor="middle" style="font-size:11px">4</text>
+  <line class="mk k2" x1="280" y1="280" x2="348" y2="240" stroke="#ff8fa3" stroke-width="2.5"/>
+  <line class="mk k2" x1="280" y1="292" x2="348" y2="300" stroke="#66d9ef" stroke-width="2.5"/>
+  <text class="mk k2 tx" x="310" y="250" style="fill:#ff8fa3;font-size:11px">反 1/8</text>
+  <text class="mk k2 tx" x="306" y="322" style="fill:#66d9ef;font-size:11px">正 1/8</text>
+  <circle class="mk k3" cx="362" cy="236" r="14" fill="#5a3b52"/>
+  <text class="mk k3 tx" x="362" y="241" text-anchor="middle" style="font-size:11px">3</text>
+  <text class="mk k3 tx" x="380" y="230" style="fill:#ff8fa3;font-size:11px">得 3</text>
+  <circle class="mk k3" cx="362" cy="300" r="14" fill="#2f5a3a"/>
+  <text class="mk k3 tx" x="362" y="305" text-anchor="middle" style="font-size:11px">8</text>
+  <text class="mk k3 tx" x="330" y="80" style="fill:#4ade80;font-size:14px">E = 0.25 + 0.375 + 1</text>
+  <text class="mk k3 tx" x="330" y="102" style="fill:#4ade80;font-size:17px">= 13/8　(C)</text>
+</svg></div>
+      <div class="anscard" data-k="ans">
+        <div class="tag">答　案</div>
+        <div class="val">(C)　E = 13/8</div>
+        <div class="note">四條路徑：(1/2,0)、(1/4,1)、(1/8,3)、(1/8,8) ⇒ E = 0 + 0.25 + 0.375 + 1 = 1.625 = 13/8</div>
+      </div>
+    </div>
+  </div>
+  <div class="rule" data-k="rule">通則：<b>期望值先畫樹狀圖列路徑，機率乘得分再加總</b></div>
+</section>
+<section class="qpage" id="pg16" data-no="16">
+  <div class="q" data-k="q">A 為逆時針旋轉 30° 的旋轉矩陣，點 (a, a) 滿足 A·(a, a)<sup>T</sup> = (b, c)<sup>T</sup>，其中 b &gt; c 且 bc = 2
+    <span class="ask">試求 a 之值為何？</span></div>
+  <div class="main">
+    <div class="chain"><div class="ln" data-k="l0"><span class="v v1">A = [ [cos30°, −sin30°], [sin30°, cos30°] ] = [ [√3/2, −1/2], [1/2, √3/2] ]</span></div><div class="ln" data-k="l1"><span class="v v1">b = a(√3/2 − 1/2)　，　c = a(1/2 + √3/2)</span></div><div class="ln" data-k="l2"><span class="v v1">bc = a<sup>2</sup>[ (3/4) − (1/4) ] = a<sup>2</sup>/2 = 2</span></div><div class="ln" data-k="l3"><span class="v v1">⇒　a<sup>2</sup> = 4　⇒　a = ±2</span></div><div class="ln" data-k="l4"><span class="v v1">b − c = −a &gt; 0　⇒　a &lt; 0</span></div><div class="ln" data-k="l5"><span class="v v1">答案 (A)　a = −2</span></div></div>
+    <div class="side">
+      <div class="fig" data-k="fig"><svg viewBox="0 0 420 330" class="svgp">
+  <text class="mk k0 tx" x="210" y="20" text-anchor="middle" style="fill:#ffd166;font-size:14px">A = 旋轉 30°：(b, c) 是 (a, a) 逆時針轉 30° 的像</text>
+  <line class="mk k0" x1="46" y1="196" x2="374" y2="196" stroke="#3b4b7d" stroke-width="2"/>
+  <line class="mk k0" x1="120" y1="60" x2="120" y2="290" stroke="#3b4b7d" stroke-width="2"/>
+  <line class="mk k0" x1="120" y1="196" x2="286" y2="132" stroke="#66d9ef" stroke-width="3.5"/>
+  <circle class="mk k0" cx="286" cy="132" r="5" fill="#66d9ef"/>
+  <text class="mk k0 tx" x="294" y="126" style="fill:#66d9ef">(a, a)</text>
+  <path class="mk k1" d="M168 178 A52 52 0 0 1 160 160" fill="none" stroke="#ffd166" stroke-width="3"/>
+  <text class="mk k1 tx" x="176" y="160" style="fill:#ffd166;font-size:12px">30°</text>
+  <line class="mk k1" x1="120" y1="196" x2="250" y2="252" stroke="#ff8fa3" stroke-width="3.5"/>
+  <circle class="mk k1" cx="250" cy="252" r="5" fill="#ff8fa3"/>
+  <text class="mk k1 tx" x="258" y="272" style="fill:#ff8fa3">(b, c)</text>
+  <text class="mk k2 tx" x="60" y="96" style="fill:#93a1c8;font-size:13px">b = a(√3−1)/2</text>
+  <text class="mk k2 tx" x="60" y="116" style="fill:#93a1c8;font-size:13px">c = a(√3+1)/2</text>
+  <text class="mk k2 tx" x="60" y="140" style="fill:#ffd166;font-size:13px">bc = a²/2 = 2</text>
+  <text class="mk k3 tx" x="60" y="170" style="fill:#4ade80;font-size:15px">a = ±2</text>
+  <text class="mk k3 tx" x="60" y="192" style="fill:#4ade80;font-size:14px">b &gt; c ⇒ −a &gt; 0</text>
+  <text class="mk k3 tx" x="60" y="214" style="fill:#4ade80;font-size:17px">⇒ a = −2　(A)</text>
+</svg></div>
+      <div class="anscard" data-k="ans">
+        <div class="tag">答　案</div>
+        <div class="val">(A)　a = −2</div>
+        <div class="note">b = a(√3−1)/2、c = a(√3+1)/2 ⇒ bc = a²/2 = 2 ⇒ a = ±2；b − c = −a > 0 ⇒ a < 0 ⇒ a = −2</div>
+      </div>
+    </div>
+  </div>
+  <div class="rule" data-k="rule">通則：<b>旋轉矩陣先算分量、再乘積，最後用大小關係定符號</b></div>
+</section>
+<section class="qpage" id="pg17" data-no="17">
+  <div class="q" data-k="q">坐標平面上五點，x 坐標為 −2, −1, 0, 1, 2
+    <span class="ask">這五點都在哪一個選項的函數圖形上時，迴歸直線斜率為 0？</span></div>
+  <div class="main">
+    <div class="chain"><div class="ln" data-k="l0"><span class="v v1">斜率 = r · σ<sub>Y</sub>/σ<sub>X</sub>　⇒　斜率 0 ⇔ r = 0</span></div><div class="ln" data-k="l1"><span class="v v1">A：y = 0, 1, 2, 3, 4　五點共線 ⇒ r = 1（斜率 1）</span></div><div class="ln" data-k="l2"><span class="v v1">B：y = 6, 3, 2, 3, 6　平均 μ<sub>Y</sub> = 4，左右對稱</span></div><div class="ln" data-k="l3"><span class="v v1">Σ(x−μ<sub>X</sub>)(y−μ<sub>Y</sub>) = −4 + 1 + 0 − 1 + 4 = 0</span></div><div class="ln" data-k="l4"><span class="v v1">⇒ r = 0 ⇒ 斜率 0　（C：Σ = 34、D：不對稱）</span></div><div class="ln" data-k="l5"><span class="v v1">答案 (B)　f(x) = x<sup>2</sup> + 2</span></div></div>
+    <div class="side">
+      <div class="fig" data-k="fig"><svg viewBox="0 0 420 330" class="svgp">
+  <text class="mk k0 tx" x="210" y="20" text-anchor="middle" style="fill:#ffd166;font-size:14px">五點 x = −2, −1, 0, 1, 2　求斜率 0 的函數</text>
+  <line class="mk k0" x1="46" y1="230" x2="374" y2="230" stroke="#3b4b7d" stroke-width="2"/>
+  <line class="mk k0" x1="210" y1="46" x2="210" y2="252" stroke="#3b4b7d" stroke-width="2"/>
+  <circle class="mk k0" cx="110" cy="230" r="4.5" fill="#66d9ef"/><circle class="mk k0" cx="160" cy="230" r="4.5" fill="#66d9ef"/>
+  <circle class="mk k0" cx="210" cy="230" r="4.5" fill="#66d9ef"/><circle class="mk k0" cx="260" cy="230" r="4.5" fill="#66d9ef"/>
+  <circle class="mk k0" cx="310" cy="230" r="4.5" fill="#66d9ef"/>
+  <text class="mk k0 tx" x="104" y="252" style="font-size:11px">−2</text><text class="mk k0 tx" x="156" y="252" style="font-size:11px">−1</text>
+  <text class="mk k0 tx" x="208" y="252" style="font-size:11px">0</text><text class="mk k0 tx" x="258" y="252" style="font-size:11px">1</text>
+  <text class="mk k0 tx" x="306" y="252" style="font-size:11px">2</text>
+  <text class="mk k0 tx" x="230" y="292" style="fill:#93a1c8;font-size:12px">斜率 = r · σY/σX　⇒　找 r = 0 的圖形</text>
+  <text class="mk k1 tx" x="60" y="96" style="fill:#ff8fa3;font-size:15px">A：f(x) = x + 2</text>
+  <text class="mk k1 tx" x="60" y="122" style="fill:#93a1c8;font-size:13px">y = 0, 1, 2, 3, 4　五點完全共線</text>
+  <text class="mk k1 tx" x="60" y="146" style="fill:#93a1c8;font-size:13px">r = 1　斜率 = 1 ≠ 0</text>
+  <text class="mk k2 tx" x="60" y="96" style="fill:#ffd166;font-size:15px">B：f(x) = x² + 2</text>
+  <text class="mk k2 tx" x="60" y="122" style="fill:#93a1c8;font-size:13px">y = 6, 3, 2, 3, 6　μY = 4</text>
+  <text class="mk k2 tx" x="60" y="146" style="fill:#93a1c8;font-size:13px">左右對稱於 μY</text>
+  <text class="mk k3 tx" x="60" y="96" style="fill:#4ade80;font-size:14px">Σ(x−μX)(y−μY) = 0</text>
+  <text class="mk k3 tx" x="60" y="122" style="fill:#4ade80;font-size:14px">⇒ r = 0，斜率 = 0</text>
+  <text class="mk k3 tx" x="60" y="150" style="fill:#93a1c8;font-size:12px">C：Σ = 34　D：(x+2)⁴ 不對稱</text>
+  <text class="mk k3 tx" x="210" y="196" text-anchor="middle" style="fill:#ffd166;font-size:16px">答案 (B)　x² + 2</text>
+</svg></div>
+      <div class="anscard" data-k="ans">
+        <div class="tag">答　案</div>
+        <div class="val">(B)　f(x) = x<sup>2</sup> + 2</div>
+        <div class="note">B 的 y = 6,3,2,3,6，μ<sub>Y</sub> = 4 且左右對稱 ⇒ Σ(x−μ<sub>X</sub>)(y−μ<sub>Y</sub>) = 0 ⇒ r = 0 ⇒ 斜率 0</div>
+      </div>
+    </div>
+  </div>
+  <div class="rule" data-k="rule">通則：<b>斜率為 0 等價於相關係數為 0，找對稱於平均數的圖形</b></div>
+</section>
+<section class="qpage" id="pg18" data-no="18">
+  <div class="q" data-k="q">3 款餅乾（100g）、3 款飲料（200g）、3 款玩具（300g）
+    <span class="ask">1000g 福袋須含三類且款項不重複，共有幾種組合？</span></div>
+  <div class="main">
+    <div class="chain"><div class="ln" data-k="l0"><span class="v v1">a + 2b + 3c = 10　（1 ≤ a, b, c ≤ 3）</span></div><div class="ln" data-k="l1"><span class="v v1">c = 1：a + 2b = 7　⇒　(3,2,1)、(1,3,1)</span></div><div class="ln" data-k="l2"><span class="v v1">c = 2：a + 2b = 4　⇒　(2,1,2)　　c = 3：無解</span></div><div class="ln" data-k="l3"><span class="v v1">3,2,1 型：1 × 3 × 3 = 9　；　1,3,1 型：3 × 1 × 3 = 9</span></div><div class="ln" data-k="l4"><span class="v v1">2,1,2 型：3 × 3 × 3 = 27</span></div><div class="ln" data-k="l5"><span class="v v1">合計 9 + 9 + 27 = 45　⇒　答案 (D)</span></div></div>
+    <div class="side">
+      <div class="fig" data-k="fig"><svg viewBox="0 0 420 330" class="svgp">
+  <text class="mk k0 tx" x="210" y="20" text-anchor="middle" style="fill:#ffd166;font-size:14px">1000g 福袋：100a + 200b + 300c = 1000</text>
+  <rect class="mk k0" x="150" y="42" width="120" height="52" rx="10" fill="none" stroke="#ffd166" stroke-width="2"/>
+  <text class="mk k0 tx" x="210" y="66" text-anchor="middle" style="fill:#ffd166;font-size:13px">福袋 1000 g</text>
+  <text class="mk k0 tx" x="210" y="86" text-anchor="middle" style="fill:#93a1c8;font-size:11px">餅乾・飲料・玩具 各至少 1 款</text>
+  <text class="mk k0 tx" x="210" y="124" text-anchor="middle" style="fill:#e9eefc;font-size:15px">a + 2b + 3c = 10</text>
+  <text class="mk k0 tx" x="210" y="150" text-anchor="middle" style="fill:#93a1c8;font-size:12px">1 ≤ a, b, c ≤ 3</text>
+  <text class="mk k1 tx" x="60" y="200" style="fill:#66d9ef;font-size:14px">c = 1：(3, 2, 1)、(1, 3, 1)</text>
+  <text class="mk k1 tx" x="60" y="226" style="fill:#66d9ef;font-size:14px">c = 2：(2, 1, 2)</text>
+  <text class="mk k1 tx" x="60" y="252" style="fill:#93a1c8;font-size:13px">c = 3：無解</text>
+  <text class="mk k2 tx" x="60" y="200" style="fill:#ff8fa3;font-size:13px">(3,2,1)：1 × 3 × 3 = 9</text>
+  <text class="mk k2 tx" x="60" y="226" style="fill:#ff8fa3;font-size:13px">(1,3,1)：3 × 1 × 3 = 9</text>
+  <text class="mk k2 tx" x="60" y="252" style="fill:#ff8fa3;font-size:13px">(2,1,2)：3 × 3 × 3 = 27</text>
+  <text class="mk k3 tx" x="210" y="200" text-anchor="middle" style="fill:#4ade80;font-size:16px">9 + 9 + 27 = 45</text>
+  <text class="mk k3 tx" x="210" y="238" text-anchor="middle" style="fill:#ffd166;font-size:17px">答案 (D)　45 種</text>
+</svg></div>
+      <div class="anscard" data-k="ans">
+        <div class="tag">答　案</div>
+        <div class="val">(D)　45 種</div>
+        <div class="note">a+2b+3c = 10（1 ≤ a,b,c ≤ 3）⇒ (3,2,1)、(1,3,1)、(2,1,2) ⇒ 9 + 9 + 27 = 45</div>
+      </div>
+    </div>
+  </div>
+  <div class="rule" data-k="rule">通則：<b>先列重量方程的整數解，再用組合數相乘相加</b></div>
+</section>
+<section class="qpage" id="pg19" data-no="19">
+  <div class="q" data-k="q">甲 x 隻（x 正整數）、乙 60 隻；每回合開始甲 ×4、乙 ×2，隨後乙消滅甲
+    <span class="ask">甲要到第三回合才被完全消滅，x 可能為下列何者？</span></div>
+  <div class="main">
+    <div class="chain"><div class="ln" data-k="l0"><span class="v v1">第 1 回合：甲 4x，乙 120　⇒　剩 4x − 120 &gt; 0　⇒　x &gt; 30</span></div><div class="ln" data-k="l1"><span class="v v1">第 2 回合：甲 16x − 480，乙 240　⇒　剩 16x − 720 &gt; 0　⇒　x &gt; 45</span></div><div class="ln" data-k="l2"><span class="v v1">第 3 回合：甲 64x − 2880，乙 480　⇒　64x − 2880 − 480 ≤ 0</span></div><div class="ln" data-k="l3"><span class="v v1">⇒　x ≤ 52.5</span></div><div class="ln" data-k="l4"><span class="v v1">45 &lt; x ≤ 52.5　⇒　選項中 x = 50</span></div></div>
+    <div class="side">
+      <div class="fig" data-k="fig"><svg viewBox="0 0 420 330" class="svgp">
+  <text class="mk k0 tx" x="210" y="20" text-anchor="middle" style="fill:#ffd166;font-size:14px">每回合：甲 ×4、乙 ×2；乙每隻消滅 1 隻甲</text>
+  <rect class="mk k0" x="52" y="46" width="150" height="56" rx="10" fill="#16223f" stroke="#66d9ef"/>
+  <text class="mk k0 tx" x="127" y="70" text-anchor="middle" style="fill:#66d9ef;font-size:13px">甲　x 隻</text>
+  <text class="mk k0 tx" x="127" y="90" text-anchor="middle" style="fill:#93a1c8;font-size:11px">每回合 ×4</text>
+  <rect class="mk k0" x="218" y="46" width="150" height="56" rx="10" fill="#16223f" stroke="#ff8fa3"/>
+  <text class="mk k0 tx" x="293" y="70" text-anchor="middle" style="fill:#ff8fa3;font-size:13px">乙　60 隻</text>
+  <text class="mk k0 tx" x="293" y="90" text-anchor="middle" style="fill:#93a1c8;font-size:11px">每回合 ×2</text>
+  <text class="mk k1 tx" x="52" y="150" style="fill:#66d9ef;font-size:14px">R1：甲 4x　乙 120</text>
+  <text class="mk k1 tx" x="52" y="174" style="fill:#93a1c8;font-size:13px">剩 4x − 120 &gt; 0　⇒　x &gt; 30</text>
+  <text class="mk k2 tx" x="52" y="150" style="fill:#ffd166;font-size:14px">R2：甲 16x − 480　乙 240</text>
+  <text class="mk k2 tx" x="52" y="174" style="fill:#93a1c8;font-size:13px">剩 16x − 720 &gt; 0　⇒　x &gt; 45</text>
+  <text class="mk k2 tx" x="52" y="200" style="fill:#93a1c8;font-size:13px">R3：64x − 2880 − 480 ≤ 0</text>
+  <text class="mk k3 tx" x="52" y="238" style="fill:#4ade80;font-size:15px">45 &lt; x ≤ 52.5</text>
+  <text class="mk k3 tx" x="52" y="266" style="fill:#ffd166;font-size:17px">⇒ x = 50　(B)</text>
+</svg></div>
+      <div class="anscard" data-k="ans">
+        <div class="tag">答　案</div>
+        <div class="val">(B)　x = 50</div>
+        <div class="note">R1 剩 4x−120 &gt; 0 ⇒ x &gt; 30；R2 剩 16x−720 &gt; 0 ⇒ x &gt; 45；R3 被消滅 ⇒ 64x−3360 ≤ 0 ⇒ x ≤ 52.5</div>
+      </div>
+    </div>
+  </div>
+  <div class="rule" data-k="rule">通則：<b>逐回合算出甲的剩餘量，用正負條件夾出 x 的範圍</b></div>
+</section>
+<section class="qpage" id="pg20" data-no="20">
+  <div class="q" data-k="q">歪斜線 L<sub>1</sub>：x = y = (−z)/2　　L<sub>2</sub>：(x−2)/2 = (6−y)/4 = 1−z
+    <span class="ask">L 與 L<sub>1</sub>、L<sub>2</sub> 都相交且垂直，(a,b,c) ∈ L 且到兩線等距，求 a + b + c？</span></div>
+  <div class="main">
+    <div class="chain"><div class="ln" data-k="l0"><span class="v v1">d<sub>1</sub> = (1, 1, −2)　d<sub>2</sub> = (2, −4, −1)　d = d<sub>1</sub> × d<sub>2</sub> ∝ (3, 1, 2)</span></div><div class="ln" data-k="l1"><span class="v v1">L<sub>1</sub> 交點 (s, s, −2s)，L<sub>2</sub> 交點 (2+2t, 6−4t, 1−t)，連線 ∥ (3,1,2)</span></div><div class="ln" data-k="l2"><span class="v v1">解得 s = t = 1　⇒　P(1, 1, −2)、Q(4, 2, 0)，|PQ| = √14</span></div><div class="ln" data-k="l3"><span class="v v1">點 (a,b,c) 參數 u：|u|√14 = |u − 1|√14　⇒　u = 1/2</span></div><div class="ln" data-k="l4"><span class="v v1">⇒　(a, b, c) = (5/2, 3/2, −1)　⇒　a + b + c = 3</span></div></div>
+    <div class="side">
+      <div class="fig" data-k="fig"><svg viewBox="0 0 420 330" class="svgp">
+  <text class="mk k0 tx" x="210" y="20" text-anchor="middle" style="fill:#ffd166;font-size:14px">兩歪斜線的公垂線 L（方向 3,1,2）</text>
+  <line class="mk k0" x1="40" y1="250" x2="380" y2="120" stroke="#66d9ef" stroke-width="3"/>
+  <text class="mk k0 tx" x="360" y="108" style="fill:#66d9ef;font-size:12px">L₁</text>
+  <line class="mk k0" x1="70" y1="90" x2="390" y2="212" stroke="#ff8fa3" stroke-width="3"/>
+  <text class="mk k0 tx" x="392" y="230" style="fill:#ff8fa3;font-size:12px">L₂</text>
+  <line class="mk k0" x1="196" y1="176" x2="300" y2="148" stroke="#ffd166" stroke-width="2" stroke-dasharray="5 4"/>
+  <circle class="mk k0" cx="196" cy="176" r="4.5" fill="#66d9ef"/><circle class="mk k0" cx="300" cy="148" r="4.5" fill="#ff8fa3"/>
+  <text class="mk k0 tx" x="150" y="292" style="fill:#93a1c8;font-size:12px">求公垂線上一點到 L₁、L₂ 等距</text>
+  <text class="mk k1 tx" x="60" y="72" style="fill:#ffd166;font-size:14px">d₁ × d₂ = (−9, −3, −6)</text>
+  <text class="mk k1 tx" x="60" y="96" style="fill:#ffd166;font-size:14px">⇒ 方向 (3, 1, 2)</text>
+  <text class="mk k2 tx" x="60" y="72" style="fill:#66d9ef;font-size:13px">s = t = 1</text>
+  <text class="mk k2 tx" x="60" y="96" style="fill:#66d9ef;font-size:13px">P(1, 1, −2)、Q(4, 2, 0)</text>
+  <text class="mk k2 tx" x="60" y="120" style="fill:#93a1c8;font-size:12px">|PQ| = √14</text>
+  <text class="mk k3 tx" x="60" y="72" style="fill:#4ade80;font-size:14px">|u| = |u − 1| ⇒ u = 1/2</text>
+  <text class="mk k3 tx" x="60" y="96" style="fill:#4ade80;font-size:13px">(5/2, 3/2, −1)</text>
+  <text class="mk k3 tx" x="60" y="124" style="fill:#ffd166;font-size:17px">a + b + c = 3　(A)</text>
+</svg></div>
+      <div class="anscard" data-k="ans">
+        <div class="tag">答　案</div>
+        <div class="val">(A)　a + b + c = 3</div>
+        <div class="note">d = d<sub>1</sub>×d<sub>2</sub> ∝ (3,1,2)；交點 P(1,1,−2)、Q(4,2,0)；|u| = |u−1| ⇒ u = 1/2 ⇒ (5/2, 3/2, −1) ⇒ 和 = 3</div>
+      </div>
+    </div>
+  </div>
+  <div class="rule" data-k="rule">通則：<b>歪斜線先求公垂線方向，再用等距條件定出中點</b></div>
+</section>
+  <div class="cap" id="CAPG" data-k="cap"><span></span></div>
+  <div class="bar">
+    <button class="btn" id="BT">▶</button>
+    <button class="btn" id="RP" title="重播">↺</button>
+    <div class="track" id="TK"><div class="fill" id="FL"></div></div>
+    <div class="tm" id="TM">0:00 / 0:00</div>
+    <div class="vo">旁白・<b>曉曉</b>　第 <span id="CN">1</span> 題</div>
+  </div>
+</div>
+<script>
+const PAGES = [{"no": 1, "has": 1, "dur": 58.8, "audio": "audio/q1.mp3", "steps": [["q", "on", 1.0], ["l1", "on", 9.41], ["fig", "on", 18.34], ["l1", "s2", 23.3], ["l1", "s3", 26.37], ["fig", "pw", 32.64], ["fig", "balanced", 33.06], ["l4", "on", 34.24], ["l5", "on", 39.25], ["l6", "on", 43.83], ["l7", "on", 45.8], ["l8", "on", 47.52], ["l9", "on", 49.89], ["ans", "on", 51.91], ["rule", "on", 53.66]], "caps": [["第 1 題：指數律。", 0.2], ["若實數 a、b 滿足 2<sup>a+b</sup> = 2 × 4<sup>a−b</sup>，則 a − 3b = ?", 1.49], ["指數律的核心，是把乘法翻譯成加法。", 10.98], ["只要兩邊化成同一個底數的次方，指數就會像天平一樣等重。", 15.08], ["先把右邊的 4 寫成 2 的平方，", 21.45], ["整個右邊就變成 2<sup>1+2(a−b)</sup>。", 25.39], ["底數相同，指數就必須相等。", 30.97], ["所以 a + b = 1 + 2(a − b)。", 34.44], ["展開右邊，得到 1 + 2a − 2b。", 38.96], ["把 −2b 移到左邊變成 +2b，", 42.71], ["再把 2a 移到左邊，", 45.7], ["整理之後，−a + 3b = 1。", 47.62], ["也就是 a − 3b = −1。", 49.89], ["所以答案是 (B)。", 51.91], ["記住這個通則。", 53.66]]}, {"no": 2, "has": 1, "dur": 90.09, "audio": "audio/q2.mp3", "steps": [["q", "on", 0.6], ["fig", "on", 42.94], ["fig", "m0", 43.34], ["l0", "on", 43.74], ["l1", "on", 44.14], ["l2", "on", 46.12], ["l3", "on", 57.1], ["l4", "on", 67.65], ["l5", "on", 71.28], ["l6", "on", 75.81], ["l7", "on", 78.36], ["ans", "on", 80.93], ["rule", "on", 82.5]], "caps": [["第 2 題：二次函數的頂點", 0.2], ["設二次實係數多項式　y = −x<sup>2</sup> + a(x−1)<sup>2</sup>", 1.48], ["圖形頂點 x 坐標為 −1，求 a", 9.21], ["先展開，整理成標準二次形式", 14.92], ["展開括號：a(x<sup>2</sup> − 2x + 1)", 20.36], ["整理同類項：x<sup>2</sup> 係數 a−1，x 項 −2a，常數 a", 20.56], ["y = (a−1)x<sup>2</sup> − 2ax + a", 34.34], ["二次函數的圖形是一條拋物線", 34.54], ["頂點 x 坐標 = −(一次項係數) ÷ 2×(二次項係數)", 34.74], ["此處二次項係數 a−1，一次項係數 −2a", 51.2], ["代入：2a ÷ 2(a−1) = a ÷ (a−1)", 57.1], ["題目說頂點 x 坐標為 −1", 64.24], ["所以 a ÷ (a−1) = −1", 67.65], ["同乘 (a−1)：a = −a + 1", 71.28], ["移項：2a = 1，a = 1/2", 75.81], ["答案是 <b>(D)</b> a = 1/2", 80.93], ["通則：頂點 x 坐標 = −b ÷ 2a", 82.5]]}, {"no": 3, "has": 1, "dur": 82.3, "audio": "audio/q3.mp3", "steps": [["q", "on", 0.6], ["fig", "on", 10.81], ["fig", "m0", 15.48], ["l0", "on", 18.66], ["l1", "on", 24.71], ["l2", "on", 37.31], ["l3", "on", 44.44], ["l4", "on", 44.84], ["l5", "on", 60.44], ["l6", "on", 60.84], ["l7", "on", 73.32], ["ans", "on", 75.9], ["rule", "on", 77.35]], "caps": [["第 3 題：等比數列 × 等差條件", 0.2], ["a、b、c 為等比數列", 1.6], ["a−b、a+c、a−2b+c 為等差數列，求 b/a", 5.6], ["看到等比，先把公比設出來", 15.11], ["設公比 r：b = ar，c = ar<sup>2</sup>", 18.66], ["所求 b ÷ a 就是公比 r", 24.71], ["等差特性：中間項 ×2 = 前後兩項和", 24.91], ["2(a+c) = (a−b) + (a−2b+c)", 37.31], ["展開：2a + 2c = 2a − 3b + c", 44.44], ["消去 2a：2c = −3b + c", 51.78], ["移項：c = −3b", 51.98], ["代回等比：ar<sup>2</sup> = −3ar", 60.44], ["消去 ar：r = −3", 60.64], ["所以 b ÷ a = −3，答案 <b>(C)</b>", 73.32], ["通則：等比先設公比，等差用中間項的兩倍", 77.35]]}, {"no": 4, "has": 1, "dur": 73.18, "audio": "audio/q4.mp3", "steps": [["q", "on", 0.6], ["fig", "on", 7.45], ["fig", "m0", 19.39], ["fig", "m1", 26.06], ["fig", "m2", 29.55], ["fig", "m3", 35.29], ["l0", "on", 35.69], ["l1", "on", 36.09], ["l2", "on", 36.49], ["l3", "on", 36.89], ["l4", "on", 37.29], ["l5", "on", 46.6], ["ans", "on", 65.58], ["rule", "on", 67.14]], "caps": [["第 4 題：聯立方程組有解的條件", 0.2], ["三元聯立方程組，增廣矩陣如右", 1.6], ["若方程組有解，試問 c = ?", 9.61], ["關鍵不在硬解，而在觀察三條式的關係", 13.95], ["列1：(a, 1, 2 ｜ 1)", 19.39], ["列2：(b, −1, 1 ｜ 2)", 26.06], ["列3：(a−b, 2, 1 ｜ c)", 29.55], ["發現：列3 的係數 = 列1 − 列2", 32.05], ["驗證：a−b；1−(−1)=2；2−1=1", 34.55], ["所以列3 左邊 = 列1 左邊 − 列2 左邊", 63.19], ["有解 ⇒ 等號右邊也要滿足同關係", 63.39], ["1 − 2 = −1", 63.59], ["所以 c = −1，答案 <b>(B)</b>", 63.79], ["通則：係數的線性關係成立，常數項也要成立", 67.14]]}, {"no": 5, "has": 1, "dur": 120.75, "audio": "audio/q5.mp3", "steps": [["q", "on", 0.6], ["fig", "on", 18.59], ["fig", "m0", 20.13], ["l0", "on", 25.37], ["l1", "on", 43.78], ["fig", "m1", 51.17], ["l2", "on", 51.72], ["l3", "on", 65.39], ["l4", "on", 68.74], ["fig", "m2", 69.14], ["l5", "on", 72.34], ["l6", "on", 79.75], ["l7", "on", 88.23], ["fig", "m3", 111.86], ["ans", "on", 112.83], ["rule", "on", 114.42]], "caps": [["第 5 題：梯形的對角線與等腰", 0.2], ["梯形 ABCD：AD ∥ BC，AB = 4，BC = 6，cos∠ABC = 1/4", 2.51], ["且 ∠ACD = ∠ACB，求 AD", 16.01], ["梯形先連對角線 AC，得到三角形 ABC", 20.13], ["△ABC 用餘弦定理求 AC", 24.93], ["AC<sup>2</sup> = AB<sup>2</sup> + BC<sup>2</sup> − 2·AB·BC·cos∠ABC", 27.43], ["= 16 + 36 − 12 = 40　⇒　AC = 2√10", 42.53], ["AD ∥ BC ⇒ 內錯角相等：∠CAD = ∠ACB", 51.17], ["又 ∠ACD = ∠ACB ⇒ ∠CAD = ∠ACD", 58.74], ["△ACD 是等腰三角形，AD = CD", 65.39], ["正弦定理：AD ÷ sin∠ACB = AC ÷ sin 2∠ACB", 72.34], ["⇒　AD = AC ÷ (2 cos∠ACB)", 79.75], ["回 △ABC 再求 cos∠ACB", 88.23], ["cos∠ACB = (40+36−16) ÷ 24√10 = √10/4", 100.98], ["AD = 2√10 ÷ (√10/2) = 4　答案 <b>(A)</b>", 112.83], ["通則：梯形連對角線，平行給內錯角，等腰用正弦定理", 114.42]]}, {"no": 6, "has": 1, "dur": 85.73, "audio": "audio/q6.mp3", "steps": [["q", "on", 0.6], ["l0", "on", 6.38], ["fig", "on", 8.09], ["fig", "m0", 24.43], ["l1", "on", 25.07], ["fig", "m1", 34.72], ["l2", "on", 39.79], ["l3", "on", 45.13], ["fig", "m2", 50.29], ["l4", "on", 55.85], ["fig", "m3", 66.61], ["l5", "on", 72.5], ["l6", "on", 75.44], ["l7", "on", 75.84], ["ans", "on", 77.79], ["rule", "on", 79.36]], "caps": [["第 6 題：圓的弦與半徑", 0.2], ["P、Q 對稱於 L：x − 2y + 6 = 0", 7.58], ["圓心到 PQ 距離 4，P(0, −2)，求半徑", 15.6], ["對稱軸 = 線段 PQ 的垂直平分線", 22.26], ["所以對稱軸上的 M 就是 PQ 的中點", 27.78], ["先求 P 點到直線的距離", 30.79], ["距離 = |0+4+6| ÷ √5 = 2√5", 35.52], ["PQ ⊥ L　⇒　PQ = 2 × 距離 = 4√5", 47.31], ["半弦長 MQ = 2√5", 50.29], ["O、M、Q 圍成直角三角形", 58.2], ["OM = 4（弦心距），MQ = 2√5", 64.02], ["r<sup>2</sup> = 4<sup>2</sup> + (2√5)<sup>2</sup> = 16 + 20 = 36", 72.5], ["r = 6　答案 <b>(D)</b>", 77.79], ["通則：弦心距、半弦長、半徑永遠構成直角三角形", 79.36]]}, {"no": 7, "has": 1, "dur": 90.68, "audio": "audio/q7.mp3", "steps": [["q", "on", 0.6], ["fig", "on", 2.47], ["fig", "m0", 4.47], ["l0", "on", 16.28], ["l1", "on", 33.14], ["fig", "m1", 38.59], ["l2", "on", 46.09], ["fig", "m2", 51.02], ["l3", "on", 51.42], ["l4", "on", 56.4], ["l5", "on", 60.33], ["fig", "m3", 76.92], ["l6", "on", 81.45], ["ans", "on", 84.4], ["rule", "on", 85.92]], "caps": [["第 7 題：條件機率", 0.2], ["袋中 1 號 4 顆、2 號 3 顆、4 號 1 顆", 2.47], ["取 3 顆不放回，乘積 = 8，求首顆為 1 號的機率", 15.16], ["條件機率 = 條件內的取法數之比", 21.48], ["乘積 = 8 只有兩類：{1,2,4} 或 {2,2,2}", 33.14], ["第一類：4 × 3 × 1 × 3! = 72", 46.09], ["第二類：{2,2,2} → 3! = 6", 51.02], ["分母 = 72 + 6 = 78", 56.4], ["分子：首顆為 1（4 種），餘 {2,4}：3 × 1 × 2!", 60.33], ["分子 = 4 × 6 = 24", 75.23], ["P = 24 ÷ 78 = 4/13　答案 <b>(C)</b>", 81.45], ["通則：條件機率先鎖定條件，再數分子", 85.92]]}, {"no": 8, "has": 1, "dur": 84.95, "audio": "audio/q8.mp3", "steps": [["q", "on", 0.6], ["l0", "on", 6.08], ["fig", "on", 14.04], ["fig", "m0", 15.46], ["l1", "on", 23.39], ["l2", "on", 26.57], ["l3", "on", 34.16], ["fig", "m1", 40.32], ["fig", "m2", 56.89], ["l4", "on", 61.33], ["l5", "on", 68.05], ["fig", "m3", 73.7], ["l6", "on", 74.1], ["ans", "on", 77.82], ["rule", "on", 79.33]], "caps": [["第 8 題：外接圓半徑與正弦定理", 0.2], ["∠ABC = 45°，∠ACB = 60°，D 在 BC 上", 6.08], ["△ABD 外接圓半徑 6，求 △ACD 外接圓半徑", 13.75], ["關鍵：兩個三角形共用同一條邊 AD", 23.39], ["正弦定理：R = 邊長 ÷ 2 sin(對角)", 26.57], ["D 在 BC 上 ⇒ ∠ABD = ∠ABC = 45°", 34.16], ["6 = AD ÷ 2sin45°　⇒　AD = 6√2", 49.68], ["△ACD：AD 所對的角 ∠ACD = 60°", 61.33], ["R′ = 6√2 ÷ 2sin60° = 6√2 ÷ √3", 68.05], ["R′ = 2√6　答案 <b>(C)</b>", 77.82], ["通則：公共邊配上兩側對角，正弦定理一路打通", 79.33]]}, {"no": 9, "has": 1, "dur": 92.93, "audio": "audio/q9.mp3", "steps": [["q", "on", 0.6], ["l0", "on", 5.05], ["fig", "on", 16.78], ["fig", "m0", 17.3], ["fig", "m1", 19.72], ["l1", "on", 25.45], ["l2", "on", 30.46], ["l3", "on", 41.09], ["fig", "m2", 48.79], ["l4", "on", 52.37], ["l5", "on", 60.21], ["l6", "on", 64.48], ["l7", "on", 69.14], ["l8", "on", 74.65], ["l9", "on", 78.54], ["fig", "m3", 79.55], ["ans", "on", 84.36], ["rule", "on", 85.94]], "caps": [["第 9 題：向量的內積與範圍", 0.2], ["已知 u + v = (2√2, 2√2)，且 u·v ≥ 1", 5.05], ["u = (0, b)，求 b 的最大值", 12.53], ["看到和向量，先反推 v", 16.78], ["因為 u + v = (2√2, 2√2)，而 u = (0, b)", 19.72], ["所以 v = (2√2, 2√2 − b)", 25.45], ["接著算內積：u·v = 0·2√2 + b(2√2 − b)", 29.85], ["= 2√2 b − b<sup>2</sup>", 39.93], ["條件：2√2 b − b<sup>2</sup> ≥ 1", 41.09], ["觀察左邊是關於 b 的二次式，先配方", 48.79], ["2√2 b − b<sup>2</sup> = 2 − (b − √2)<sup>2</sup>", 52.37], ["條件變成 2 − (b − √2)<sup>2</sup> ≥ 1", 60.21], ["移項：(b − √2)<sup>2</sup> ≤ 1", 64.48], ["開平方：|b − √2| ≤ 1", 69.14], ["√2 − 1 ≤ b ≤ √2 + 1", 74.65], ["b<sub>max</sub> = √2 + 1 = 1 + √2　答案 <b>(A)</b>", 78.54], ["通則：和向量反推另一向量，內積配方即得範圍", 85.94]]}, {"no": 10, "has": 1, "dur": 61.98, "audio": "audio/q10.mp3", "steps": [["q", "on", 0.6], ["l0", "on", 1.62], ["l1", "on", 10.56], ["fig", "on", 16.02], ["fig", "m0", 17.37], ["fig", "m1", 20.12], ["l2", "on", 25.73], ["l3", "on", 32.1], ["fig", "m2", 42.06], ["l4", "on", 47.67], ["fig", "m3", 48.5], ["ans", "on", 53.27], ["rule", "on", 54.72]], "caps": [["第 10 題：三角函數的合成與振幅", 0.2], ["f(x) = 3cos πx + 4sin πx", 1.62], ["求 g(x) = f(x) + f(−x) 的振幅", 10.56], ["先看 f(−x)：cos 為偶函數、sin 為奇函數", 17.37], ["把 x 換成 −x，sin 的部分要變號", 20.12], ["⇒ f(−x) = 3cos πx − 4sin πx", 25.73], ["兩式相加：3cos 加 3cos 得 6cos，4sin 與 −4sin 抵消", 32.1], ["⇒ g(x) = 6cos πx", 42.06], ["振幅 = 係數的絕對值 = |6| = 6", 50.24], ["答案 <b>(C)</b>　振幅 = 6", 53.27], ["通則：f(x) + f(−x) 取偶部，奇函數部分自動抵消", 54.72]]}, {"no": 11, "has": 1, "dur": 67.79, "audio": "audio/q11.mp3", "steps": [["q", "on", 0.6], ["l0", "on", 9.84], ["l1", "on", 11.62], ["fig", "on", 16.18], ["fig", "m0", 18.56], ["l2", "on", 23.86], ["fig", "m1", 30.17], ["l3", "on", 32.03], ["l4", "on", 34.04], ["l5", "on", 36.61], ["l6", "on", 44.06], ["fig", "m2", 50.85], ["l7", "on", 52.01], ["l8", "on", 58.12], ["fig", "m3", 58.82], ["ans", "on", 60.17], ["rule", "on", 61.84]], "caps": [["第 11 題：對數值的大小比較", 0.2], ["已知 log b = −2<sup>a</sup>，且 a &lt; 0", 4.27], ["問哪一個選項的值最大", 8.84], ["a &lt; 0 ⇒ 2<sup>a</sup> ∈ (0, 1)", 14.65], ["加上負號 ⇒ −1 &lt; log b &lt; 0", 18.2], ["也就是 b 落在 0.1 與 1 之間", 23.86], ["log b 是負數，且絕對值小於 1", 28.34], ["(A) log b &lt; 0　(D) log√b = ½log b &lt; 0", 28.54], ["(B) log(1/b) = −log b，介於 0 與 1 之間", 36.61], ["(C) (log b)<sup>2</sup> 比 −log b 更小", 44.06], ["最大者為 (B)　答案 <b>(B)</b>", 60.17], ["通則：對數比大小，先定範圍再比絕對值", 61.84]]}, {"no": 12, "has": 1, "dur": 75.07, "audio": "audio/q12.mp3", "steps": [["q", "on", 0.6], ["l0", "on", 18.83], ["fig", "on", 19.41], ["fig", "m0", 19.81], ["fig", "m1", 27.59], ["l1", "on", 31.14], ["l2", "on", 31.54], ["l3", "on", 37.99], ["l4", "on", 47.17], ["fig", "m2", 47.57], ["l5", "on", 57.77], ["l6", "on", 61.54], ["fig", "m3", 62.73], ["ans", "on", 65.2], ["rule", "on", 66.77]], "caps": [["第 12 題：空間中的投影與內積", 0.2], ["O 為原點，P 在平面 E 的投影點為 Q", 0.4], ["已知 PQ · OQ = 3，求 |PQ|", 2.9], ["關鍵：投影連線垂直於平面", 18.83], ["⇒ PQ 平行法向量 n = (1,1,1)", 26.5], ["設 PQ = t(1,1,1) ⇒ |PQ| = t√3", 32.41], ["Q 在 E 上 ⇒ OQ · n = 1", 37.99], ["把內積拆開：PQ · OQ = t (OQ · n)", 47.17], ["= t × 1 = t，題目給 3 ⇒ t = 3", 47.37], ["|PQ| = 3√3　答案 <b>(D)</b>", 62.73], ["通則：投影向量平行法向量，一個內積就解出參數", 66.77]]}, {"no": 13, "has": 1, "dur": 89.39, "audio": "audio/q13.mp3", "steps": [["q", "on", 0.6], ["l0", "on", 23.05], ["fig", "on", 23.45], ["l1", "on", 34.0], ["fig", "m0", 41.46], ["l2", "on", 41.86], ["l3", "on", 48.01], ["l4", "on", 55.81], ["l5", "on", 61.36], ["fig", "m1", 61.76], ["fig", "m2", 68.46], ["l6", "on", 68.86], ["fig", "m3", 77.79], ["l7", "on", 79.27], ["ans", "on", 79.97], ["rule", "on", 80.85]], "caps": [["第 13 題：三次多項式的對稱中心", 0.2], ["首項係數 1，f(x) = (x²+1)g(x) + x，f(1) = −1", 0.4], ["求 f 圖形對稱中心的 x 坐標", 17.37], ["先定次數：二次 × 一次 ⇒ g 為一次式", 23.05], ["設 g(x) = ax + b", 30.93], ["展開：a x³ + b x² + (a+1)x + b", 34.0], ["首項係數 1 ⇒ a = 1", 41.46], ["f(1) = 2g(1) + 1 = −1 ⇒ g(1) = −1", 48.01], ["g(1) = a + b = 1 + b ⇒ b = −2", 55.81], ["f(x) = x³ − 2x² + 2x − 2", 61.36], ["三次函數圖形對稱於反曲點", 68.46], ["對稱中心 x = −B/3，B 為二次項係數", 69.15], ["= −(−2)/3 = 2/3　答案 <b>(A)</b>", 77.79], ["通則：三次多項式的對稱中心就是反曲點", 80.85]]}, {"no": 14, "has": 1, "dur": 92.51, "audio": "audio/q14.mp3", "steps": [["q", "on", 0.6], ["fig", "on", 6.7], ["l0", "on", 31.08], ["l1", "on", 40.37], ["fig", "m0", 53.7], ["l2", "on", 54.1], ["fig", "m1", 54.5], ["l3", "on", 63.26], ["fig", "m2", 64.22], ["l4", "on", 76.85], ["l5", "on", 77.25], ["fig", "m3", 83.68], ["l6", "on", 84.38], ["ans", "on", 84.78], ["rule", "on", 85.25]], "caps": [["第 14 題：等差角與平方關係", 0.34], ["θ<sub>1</sub>、θ<sub>2</sub>、θ<sub>3</sub> 公差 π/2，θ<sub>1</sub> ∈ [π/2, π)", 6.7], ["已知 sin<sup>2</sup>θ<sub>2</sub> = 9/25，求 sin(θ<sub>1</sub>+θ<sub>3</sub>)", 17.22], ["第一步：θ<sub>2</sub> = θ<sub>1</sub>+π/2，θ<sub>3</sub> = θ<sub>1</sub>+π", 31.08], ["第二步：sin<sup>2</sup>θ<sub>2</sub> = cos<sup>2</sup>θ<sub>1</sub> = 9/25", 40.37], ["第三步：θ<sub>1</sub> 在第二象限 ⇒ cos θ<sub>1</sub> = −3/5", 49.89], ["sin θ<sub>1</sub> = 4/5", 60.28], ["第四步：sin(θ<sub>1</sub>+θ<sub>3</sub>) = sin(2θ<sub>1</sub>+π) = −sin 2θ<sub>1</sub>", 63.26], ["= −2 sin θ<sub>1</sub> cos θ<sub>1</sub>", 68.58], ["代入：−2 × (4/5) × (−3/5) = 24/25", 76.85], ["答案 <b>(D)</b>　24/25", 83.68], ["通則：等差角先串成同一角，再用平方關係與象限定正負", 85.25]]}, {"no": 15, "has": 1, "dur": 84.89, "audio": "audio/q15.mp3", "steps": [["q", "on", 0.6], ["fig", "on", 3.4], ["l0", "on", 29.65], ["l1", "on", 39.49], ["fig", "m0", 40.85], ["l2", "on", 46.05], ["fig", "m1", 47.21], ["l3", "on", 52.06], ["l4", "on", 61.25], ["fig", "m2", 63.74], ["l5", "on", 64.14], ["fig", "m3", 73.82], ["l6", "on", 77.23], ["ans", "on", 77.93], ["rule", "on", 78.75]], "caps": [["第 15 題：期望值（樹狀圖）", 0.32], ["起始 1 分，正面翻倍、反面扣 1 分停止，最多 3 次", 3.4], ["求某甲得分的期望值", 18.86], ["第一步：反，機率 1/2，得 0", 29.65], ["第二步：正反，機率 1/4，得 1", 39.49], ["第三步：正正反，機率 1/8，得 3", 46.05], ["第四步：正正正，機率 1/8，得 8", 52.06], ["E = (1/2)×0 + (1/4)×1 + (1/8)×3 + (1/8)×8", 61.25], ["= 0.25 + 0.375 + 1 = 1.625", 61.45], ["答案 <b>(C)</b>　13/8", 77.23], ["通則：期望值先畫樹狀圖列路徑，機率乘得分再加總", 78.75]]}, {"no": 16, "has": 1, "dur": 80.65, "audio": "audio/q16.mp3", "steps": [["q", "on", 0.6], ["fig", "on", 3.11], ["l0", "on", 25.16], ["l1", "on", 31.93], ["fig", "m0", 38.11], ["l2", "on", 46.61], ["fig", "m1", 47.63], ["l3", "on", 58.42], ["l4", "on", 60.59], ["fig", "m2", 61.81], ["l5", "on", 70.84], ["fig", "m3", 71.24], ["ans", "on", 71.64], ["rule", "on", 72.42]], "caps": [["第 16 題：旋轉矩陣與大小關係", 0.34], ["A 為逆時針旋轉 30° 的旋轉矩陣", 4.27], ["(a, a) 經 A 得 (b, c)，b &gt; c 且 bc = 2，求 a", 9.56], ["第一步：A = [ [√3/2, −1/2], [1/2, √3/2] ]", 25.16], ["第二步：b = a(√3−1)/2，c = a(√3+1)/2", 31.93], ["第三步：bc = a<sup>2</sup>/2 = 2 ⇒ a<sup>2</sup> = 4", 46.61], ["⇒ a = ±2", 58.42], ["第四步：b − c = −a &gt; 0 ⇒ a &lt; 0", 60.59], ["答案 <b>(A)</b>　a = −2", 70.84], ["通則：旋轉矩陣先算分量、再乘積，最後用大小關係定符號", 72.42]]}, {"no": 17, "has": 1, "dur": 94.59, "audio": "audio/q17.mp3", "steps": [["q", "on", 0.6], ["fig", "on", 1.79], ["l0", "on", 29.83], ["l1", "on", 48.01], ["fig", "m0", 48.41], ["l2", "on", 51.58], ["fig", "m1", 56.5], ["l3", "on", 59.81], ["fig", "m2", 61.4], ["l4", "on", 68.5], ["fig", "m3", 85.85], ["l5", "on", 86.25], ["ans", "on", 86.65], ["rule", "on", 87.51]], "caps": [["第 17 題：迴歸直線斜率為 0", 0.34], ["五點 x = −2, −1, 0, 1, 2，都在哪個函數圖形上？", 8.9], ["選項 A x+2　B x²+2　C x³+2　D (x+2)⁴", 11.28], ["第一步：斜率 = r·σ<sub>Y</sub>/σ<sub>X</sub>，斜率 0 ⇔ r = 0", 29.83], ["第二步：A 的 y = 0,1,2,3,4，五點共線 ⇒ r = 1", 39.79], ["第三步：B 的 y = 6,3,2,3,6，平均數 4、左右對稱", 51.58], ["第四步：離差乘積和 = −4+1+0−1+4 = 0", 59.81], ["⇒ r = 0，斜率就是 0", 69.79], ["C 乘積和 34、D 不對稱，皆不合", 69.99], ["答案 <b>(B)</b>　f(x) = x<sup>2</sup> + 2", 85.85], ["通則：斜率 0 ⇔ 相關係數 0，找對稱於平均數的圖形", 87.51]]}, {"no": 18, "has": 1, "dur": 102.51, "audio": "audio/q18.mp3", "steps": [["q", "on", 0.6], ["fig", "on", 16.69], ["l0", "on", 32.74], ["l1", "on", 50.36], ["l2", "on", 58.87], ["fig", "m0", 59.27], ["fig", "m1", 69.68], ["l3", "on", 79.03], ["l4", "on", 90.57], ["fig", "m2", 95.0], ["l5", "on", 95.4], ["ans", "on", 95.8], ["rule", "on", 96.57]], "caps": [["第 18 題：福袋組合數", 0.33], ["餅乾 100g、飲料 200g、玩具 300g，各 3 款", 6.73], ["每袋含三類且款項不重複，求組合數", 23.8], ["第一步：100a+200b+300c = 1000 ⇒ a+2b+3c = 10", 32.74], ["第二步：c = 1 ⇒ a+2b = 7 ⇒ (3,2,1)、(1,3,1)", 50.36], ["第三步：c = 2 ⇒ (2,1,2)；c = 3 ⇒ 無解", 58.87], ["第四步：3,2,1 型 = 1×3×3 = 9", 67.53], ["(1,3,1) 型 = 3×1×3 = 9", 79.03], ["(2,1,2) 型 = 3×3×3 = 27", 79.23], ["合計 9 + 9 + 27 = 45", 90.57], ["答案 <b>(D)</b>　45 種", 95.0], ["通則：先列重量方程的整數解，再用組合數相乘相加", 96.57]]}, {"no": 19, "has": 1, "dur": 109.32, "audio": "audio/q19.mp3", "steps": [["q", "on", 0.6], ["fig", "on", 1.97], ["l0", "on", 36.41], ["fig", "m0", 37.31], ["l1", "on", 49.18], ["fig", "m1", 50.12], ["l2", "on", 50.52], ["fig", "m2", 67.38], ["l3", "on", 88.48], ["fig", "m3", 93.51], ["l4", "on", 98.39], ["ans", "on", 101.72], ["rule", "on", 102.69]], "caps": [["第 19 題：逐回合夾出 x 的範圍", 0.32], ["甲 x 隻、乙 60 隻，每回合甲 ×4、乙 ×2", 2.82], ["乙每隻消滅 1 隻甲，甲要到第三回合才被消滅", 19.95], ["求 x 可能值", 27.67], ["第一步：甲剩 4x − 120 &gt; 0 ⇒ x &gt; 30", 36.41], ["第二步：甲剩 16x − 720 &gt; 0 ⇒ x &gt; 45", 49.18], ["第三步：64x − 2880 − 480 ≤ 0", 49.38], ["第四步：x ≤ 52.5", 88.48], ["綜合：45 &lt; x ≤ 52.5，只有 50 符合", 93.51], ["答案 <b>(B)</b>　x = 50", 101.02], ["通則：逐回合算甲的剩餘量，用正負條件夾出 x 範圍", 102.69]]}, {"no": 20, "has": 1, "dur": 101.94, "audio": "audio/q20.mp3", "steps": [["q", "on", 0.6], ["fig", "on", 3.43], ["l0", "on", 33.72], ["fig", "m0", 42.62], ["l1", "on", 45.57], ["fig", "m1", 56.44], ["l2", "on", 58.15], ["fig", "m2", 58.55], ["l3", "on", 70.96], ["fig", "m3", 71.36], ["l4", "on", 87.59], ["ans", "on", 94.41], ["rule", "on", 95.29]], "caps": [["第 20 題：歪斜線的公垂線", 0.32], ["L₁：x = y = −z/2　L₂：(x−2)/2 = (6−y)/4 = 1−z", 4.48], ["L 與 L₁、L₂ 相交且垂直；(a,b,c) ∈ L 到兩線等距", 13.56], ["求 a + b + c", 24.91], ["第一步：d₁ × d₂ ∝ (3, 1, 2)", 33.72], ["第二步：交點 (s,s,−2s)、(2+2t,6−4t,1−t)，連線 ∥ (3,1,2)", 45.57], ["第三步：s = t = 1 ⇒ |PQ| = √14", 58.15], ["第四步：|u|√14 = |u−1|√14 ⇒ u = 1/2", 70.96], ["⇒ (a,b,c) = (5/2, 3/2, −1)", 87.59], ["答案 <b>(A)</b>　a + b + c = 3", 93.71], ["通則：歪斜線先求公垂線方向，再用等距條件定中點", 95.29]]}], VOICE = "Xiaoxiao";
+const $ = id => document.getElementById(id);
+const dbg = m => { try { $("DBG").textContent = m; } catch (e) { } };
+window.onerror = (m, s, l) => { dbg("ERR@" + l + ":" + m); return false; };
+
+let curNo = 0, curPage = null, ci = 0, capIdx = -1;
+const RESET_CLS = ["on", "s2", "s3", "pw", "balanced", "m0", "m1", "m2", "m3"];
+const audio = new Audio();
+audio.preload = "auto";
+const pg = n => $("pg" + n);
+const el = (page, k) => page.querySelector('[data-k="' + k + '"]');
+const dur = n => (PAGES[n - 1] && PAGES[n - 1].dur) || 0;
+
+function reset(page) {
+  page.querySelectorAll("*").forEach(e => RESET_CLS.forEach(c => e.classList.remove(c)));
+  $("CAPG").innerHTML = "";   /* 字幕為全卷共用元素 */
+  capIdx = -1;
+}
+function addStep(s) {
+  const e = el(curPage, s[0]);
+  if (!e) return;
+  s[1].split(" ").forEach(c => e.classList.add(c));
+}
+function paint(page) {  /* 靜態：一次畫到 t 秒 */
+  const cs = $("CAPG");
+  page.querySelectorAll("*").forEach(e => RESET_CLS.forEach(c => e.classList.remove(c)));
+  capIdx = -1;
+  const st = PAGES[curNo - 1].steps;
+  for (let i = 0; i < st.length; i++) if (st[i][2] <= paint.t) { const e = el(page, st[i][0]); if (e) st[i][1].split(" ").forEach(c => e.classList.add(c)); }
+  const cp = PAGES[curNo - 1].caps;
+  let k = -1; for (let i = 0; i < cp.length; i++) if (cp[i][1] <= paint.t) k = i;
+  if (k >= 0 && cs) { cs.innerHTML = "<span>" + cp[k][0] + "</span>"; capIdx = k; }
+  $("FL").style.width = (dur(curNo) ? (100 * paint.t / dur(curNo)) : 0) + "%";
+  $("TM").textContent = fmt(paint.t) + " / " + fmt(dur(curNo));
+}
+function updateCap(t) {
+  const cp = PAGES[curNo - 1].caps;
+  let k = -1; for (let i = 0; i < cp.length; i++) if (cp[i][1] <= t) k = i;
+  if (k === capIdx) return;
+  capIdx = k;
+  const box = $("CAPG");
+  if (k < 0) { box.innerHTML = ""; return; }
+  box.innerHTML = "<span>" + cp[k][0] + "</span>";
+  requestAnimationFrame(() => box.firstChild && box.firstChild.classList.add("on"));
+}
+function fmt(s) { s = Math.max(0, s | 0); return (s / 60 | 0) + ":" + String(s % 60).padStart(2, "0"); }
+
+function tick() {
+  if (!audio.paused && curPage) {
+    const t = audio.currentTime, st = PAGES[curNo - 1].steps;
+    while (ci < st.length && st[ci][2] <= t) { addStep(st[ci]); ci++; }
+    updateCap(t);
+    const D = audio.duration || dur(curNo);
+    $("FL").style.width = (D ? (100 * t / D) : 0) + "%";
+    $("TM").textContent = fmt(t) + " / " + fmt(D);
+  }
+  requestAnimationFrame(tick);
+}
+requestAnimationFrame(tick);
+
+function goto(n, t) {
+  if (!PAGES[n - 1]) return;
+  audio.pause(); audio.removeAttribute("src"); audio.load();
+  $("BT").textContent = "▶";
+  document.querySelectorAll(".qpage").forEach(p => p.classList.remove("cur"));
+  const page = pg(n); page.classList.add("cur");
+  document.querySelectorAll(".qno").forEach(b => b.classList.toggle("act", +b.dataset.n === n));
+  curNo = n; curPage = page; ci = 0;
+  reset(page);
+  $("CN").textContent = n;
+  const P = PAGES[n - 1];
+  if (!P.has) { $("TM").textContent = "— / —"; $("FL").style.width = "0%"; $("CAPG").innerHTML = ""; return; }
+  audio.src = P.audio;
+  if (t != null) { paint.t = t; paint(page); }
+  else {
+    $("FL").style.width = "0%"; $("TM").textContent = "0:00 / " + fmt(P.dur);
+    ci = 0;
+    audio.play().then(() => $("BT").textContent = "❚❚").catch(() => { });
+  }
+}
+
+document.querySelectorAll(".qno").forEach(b => b.onclick = () => goto(+b.dataset.n));
+$("BT").onclick = () => {
+  if (!PAGES[curNo - 1].has) return;
+  if (audio.paused) audio.play().then(() => $("BT").textContent = "❚❚").catch(() => { });
+  else { audio.pause(); $("BT").textContent = "▶"; }
+};
+$("RP").onclick = () => { if (PAGES[curNo - 1].has) { reset(curPage); ci = 0; audio.currentTime = 0; audio.play().catch(() => { }); $("BT").textContent = "❚❚"; } };
+audio.onpause = () => $("BT").textContent = "▶";
+audio.onended = () => $("BT").textContent = "▶";
+audio.onplay = () => $("BT").textContent = "❚❚";
+$("TK").onclick = e => {
+  if (!PAGES[curNo - 1].has) return;
+  const r = $("TK").getBoundingClientRect();
+  const p = Math.min(1, Math.max(0, (e.clientX - r.left) / r.width));
+  const D = audio.duration || dur(curNo);
+  audio.currentTime = p * D;
+  if (audio.paused) { paint.t = audio.currentTime; paint(curPage); } else { ci = 0; }
+};
+function audit() {  /* 版面自檢：越界 / 文字溢出 / 元素重疊 */
+  const WR = $("wrap").getBoundingClientRect(), L = [], items = [];
+  const nm = e => e.dataset.k || (e.className.split(" ")[0] || "el");
+  const all = curPage.querySelectorAll(".q,.ln,.fig,.anscard,.rule"), capEl2 = $("CAPG");
+  const list = Array.prototype.slice.call(all);
+  if (capEl2) list.push(capEl2);
+  list.forEach(e => {
+    const r = e.getBoundingClientRect(), k = nm(e);
+    items.push({ k: k, r: r });
+    if (r.bottom > WR.bottom + 1 || r.top < WR.top - 1 || r.left < WR.left - 1 || r.right > WR.right + 1)
+      L.push("OUT:" + k + "[t" + Math.round(r.top - WR.top) + ",b" + Math.round(r.bottom - WR.top) + ",l" + Math.round(r.left - WR.left) + ",r" + Math.round(r.right - WR.left) + "]");
+    if (e.classList.contains("ln")) {
+      const v = e.firstElementChild;
+      if (v && v.scrollHeight > e.clientHeight + 1) L.push("CLIP:" + k + "[" + v.scrollHeight + ">" + e.clientHeight + "]");
+    }
+    if (e.classList.contains("fig") && e.scrollHeight > e.clientHeight + 1) L.push("CLIPF[" + e.scrollHeight + ">" + e.clientHeight + "]");
+  });
+  for (let i = 0; i < items.length; i++) for (let j = i + 1; j < items.length; j++) {
+    const a = items[i].r, b = items[j].r;
+    const ov = Math.min(a.bottom, b.bottom) - Math.max(a.top, b.top);
+    const oh = Math.min(a.right, b.right) - Math.max(a.left, b.left);
+    if (ov > 1.5 && oh > 1.5) L.push("OVL:" + items[i].k + "~" + items[j].k + "[" + Math.round(ov) + "x" + Math.round(oh) + "]");
+  }
+  return "AUDIT|" + (L.length ? L.join(" ; ") : "clean");
+}
+function fit() {
+  const k = Math.min(window.innerWidth / 1320, window.innerHeight / 830);
+  document.documentElement.style.setProperty("--k", Math.max(.45, Math.min(1.25, k)));
+}
+window.addEventListener("resize", fit); fit();
+
+const qs = new URLSearchParams(location.search);
+const qn = parseInt(qs.get("q") || "1", 10);
+if (qs.has("at")) {
+  document.body.classList.add("st");
+  goto(qn, parseFloat(qs.get("at")) || 0);
+  dbg("st|q=" + qn + "|at=" + qs.get("at") + "|cap=" + ($("CAPG").textContent || "").slice(0, 12)
+    + "|" + (qs.has("audit") ? audit() : ""));
+} else {
+  goto(qn, null);
+  dbg("ok|ready|q=" + qn + "|dur=" + dur(qn));
+}
+</script>
+</body></html>

@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="zh-Hant" style="--k: 0.5650602409638554;"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>115 國文 3B1B 動態講解（整卷）</title>
+<style>
+:root{--fg:#e9eefc;--dim:#93a1c8;--gold:#ffd166;--cy:#66d9ef;--pk:#ff8fa3;}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;overflow:hidden;background:#070a14;color:var(--fg);
+  font-family:"PingFang TC","Helvetica Neue",system-ui,sans-serif;
+  background-image:radial-gradient(1100px 620px at 50% -10%,#16203c,#070a14 72%)}
+#wrap{position:fixed;left:50%;top:50%;width:1280px;height:790px;
+  transform:translate(-50%,-50%) scale(var(--k,1));transform-origin:center center}
+.nav{position:absolute;left:36px;right:36px;top:10px;height:46px;display:flex;align-items:center;gap:6px}
+.nav .ttl{font-size:15px;color:var(--dim);margin-right:10px;white-space:nowrap}
+.nav .ttl b{color:var(--cy);font-weight:600}
+.qno{width:34px;height:34px;border-radius:9px;border:1px solid #25315a;background:#111a33;color:#8fa0cc;
+  font-size:14px;cursor:pointer;font-variant-numeric:tabular-nums;transition:.2s;flex:0 0 auto}
+.qno:hover{border-color:#41558c;color:var(--fg)}
+.qno.act{background:linear-gradient(180deg,#2a3a68,#1b2748);border-color:var(--cy);color:#fff;
+  box-shadow:0 0 14px rgba(102,217,239,.35)}
+.qno.todo{opacity:.38}
+.qno.todo:hover{border-color:#31406e;color:#8fa0cc}
+.qpage{position:absolute;inset:0;display:none}
+.qpage.cur{display:block}
+.q{position:absolute;left:60px;right:60px;top:62px;text-align:center;
+  font-family:"Times New Roman",Georgia,serif;font-size:30px;letter-spacing:.5px;
+  opacity:0;transform:translateY(-14px);transition:opacity .9s ease,transform .9s ease}
+.q.on{opacity:1;transform:none}
+.q .ask{display:block;margin-top:8px;font-size:22px;color:var(--gold);font-family:inherit}
+.main{position:absolute;left:48px;right:48px;top:178px;height:462px;display:flex;gap:24px}
+.chain{flex:0 0 726px;display:flex;flex-direction:column;justify-content:center;gap:4px}
+.ln{position:relative;min-height:46px;font-family:"Times New Roman",Georgia,serif;font-size:22px}
+.ln .v{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;text-align:center;
+  padding:0 6px;line-height:1.25;
+  opacity:0;transform:translateY(14px);transition:opacity .55s ease,transform .55s ease,color .5s ease}
+.ln.on .v{transform:none}
+.ln.on .v1{opacity:1}
+.ln.on.s2 .v1{opacity:0}
+.ln.on.s2 .v2{opacity:1}
+.ln.on.s3 .v2{opacity:0}
+.ln.on.s3 .v3{opacity:1}
+.tint1{color:var(--pk)}.tint2{color:var(--cy)}
+.side{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px}
+.fig{width:100%;height:300px;display:flex;align-items:center;justify-content:center;
+  opacity:0;transform:translateY(18px) scale(.96);transition:opacity .9s ease,transform .9s ease}
+.fig.on{opacity:1;transform:none}
+.anscard{width:100%;max-width:430px;padding:16px 22px;border:2px solid var(--gold);border-radius:16px;
+  background:linear-gradient(180deg,rgba(255,209,102,.14),rgba(255,209,102,.05));
+  box-shadow:0 0 34px rgba(255,209,102,.22);text-align:center;opacity:0;transform:translateY(20px) scale(.95);
+  transition:opacity .8s ease,transform .8s ease}
+.anscard.on{opacity:1;transform:none}
+.anscard .tag{font-size:14px;letter-spacing:3px;color:var(--dim)}
+.anscard .val{margin-top:4px;font-family:"Times New Roman",Georgia,serif;font-size:30px;color:var(--gold)}
+.anscard .note{margin-top:4px;font-size:13px;color:#8b9ac6;font-family:"Menlo",monospace}
+.rule{position:absolute;left:48px;right:48px;top:656px;text-align:center;font-size:16px;color:var(--dim);
+  opacity:0;transform:translateY(10px);transition:opacity .8s ease,transform .8s ease}
+.rule.on{opacity:1;transform:none}
+.rule b{color:var(--cy);font-weight:600}
+.cap{position:absolute;left:60px;right:60px;bottom:56px;min-height:30px;text-align:center;font-size:17px;
+  color:var(--fg);font-family:"Times New Roman","PingFang TC",serif}
+.cap span{opacity:0;transition:opacity .3s ease}
+.cap span.on{opacity:.92}
+.bar{position:absolute;left:48px;right:48px;bottom:12px;height:42px;display:flex;align-items:center;gap:14px}
+.btn{width:42px;height:42px;border-radius:50%;border:1px solid #2b3a63;background:#131c33;color:var(--fg);
+  font-size:15px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:.2s;flex:0 0 auto}
+.btn:hover{background:#1c2745;border-color:#41558c}
+.track{flex:1;height:6px;border-radius:3px;background:#1a2340;position:relative;cursor:pointer}
+.track .fill{position:absolute;left:0;top:0;bottom:0;width:0;border-radius:3px;
+  background:linear-gradient(90deg,#66d9ef,#ffd166)}
+.tm{font-size:13px;color:var(--dim);font-variant-numeric:tabular-nums;flex:0 0 auto}
+.vo{font-size:13px;color:var(--dim);white-space:nowrap;flex:0 0 auto}
+.vo b{color:var(--cy);font-weight:600}
+.empty{position:absolute;left:0;right:0;top:320px;text-align:center;color:var(--dim);font-size:20px}
+.empty b{color:var(--gold)}
+/* ---- 天平（Q1） ---- */
+.beam{transform-box:fill-box;transform-origin:50% 12%;transform:rotate(-8deg);
+  transition:transform 1.1s cubic-bezier(.34,1.4,.5,1)}
+.fig.balanced .beam{transform:rotate(0deg)}
+.scale{width:100%;height:300px}
+.scale text{font-family:"Times New Roman",Georgia,serif;font-size:23px;fill:var(--fg);opacity:0;
+  transition:opacity .6s ease}
+.fig.pw .scale text{opacity:1}
+/* ---- 圖元通用（Q2–Q4） ---- */
+.fig svg.svgp{width:100%;height:auto;max-height:300px}
+.tx{fill:#8b9ac6;font-size:14px;font-family:"Menlo",monospace}
+.mk{opacity:0;transition:.6s}
+.fig.m0 .k0,.fig.m1 .k1,.fig.m2 .k2,.fig.m3 .k3{opacity:1}
+.q3fig{display:flex;flex-direction:column;gap:10px;font-family:"Menlo",monospace}
+.q3fig .ct{color:#7f8db8;font-size:13px}
+.q3fig .row{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.bx{background:#16223f;border:1px solid #2c3d6b;border-radius:8px;padding:7px 13px;font-size:17px;transition:.5s}
+.bx.hi{border-color:var(--gold);color:var(--gold)}
+.plus{color:#7f8db8}
+.ar{color:var(--cy);font-size:13px}
+.tip{margin-top:8px;color:var(--gold);font-size:14px}
+.mtx{display:flex;flex-direction:column;gap:8px;margin-left:6px}
+.mrow{display:flex;align-items:center;gap:7px;padding:6px 8px;border-radius:9px;transition:.5s}
+.mrow .vl{color:#7f8db8;font-size:13px;width:34px}
+.mrow .m,.mrow .cst{width:56px;text-align:center;background:#16223f;border:1px solid #2c3d6b;border-radius:7px;
+  padding:7px 0;font-family:"Menlo",monospace;font-size:16px}
+.mrow .cst{border-color:#3a5a9a}
+.vbar{color:#3d4a76}
+.fig.m0 .mrow:nth-child(1),.fig.m1 .mrow:nth-child(2),.fig.m2 .mrow:nth-child(3){background:#1b2b52}
+.fig.m3 .mrow:nth-child(3){border:1px dashed var(--gold)}
+body.st *{transition:none!important;animation:none!important}
+
+/* ================= 題庫型科目版面 ================= */
+.q{font-size:23px;line-height:1.3;font-family:"PingFang TC","Songti TC",serif}
+.q .ask{font-size:19px;margin-top:8px;color:var(--gold)}
+.main{top:190px;height:452px}
+.chain{flex:0 0 800px;gap:5px}
+.ln{min-height:46px;font-family:"PingFang TC","Songti TC",serif;font-size:17px}
+.ln .v{line-height:1.28}
+.opt{text-align:left}
+.opt b{margin-right:8px}
+.opt.ok{background:rgba(255,209,102,.12);border:1px solid rgba(255,209,102,.5);border-radius:10px}
+.opt.bad{opacity:.55}
+.ln.src{font-size:16px;color:#cfe0ff}
+.side{flex:1}
+.anscard{max-width:none}
+.anscard .val{font-size:22px;line-height:1.3}
+.cap{font-family:"PingFang TC","Songti TC",serif;font-size:17px}
+.rule{top:652px;font-size:15px;font-family:"PingFang TC","Songti TC",serif}
+</style></head>
+<body class="st"><div id="DBG" hidden="">Q1 AUDIT|clean
+Q1 AUDIT|clean
+Q1 AUDIT|clean
+Q2 AUDIT|clean
+Q2 AUDIT|clean
+Q2 AUDIT|clean
+Q3 AUDIT|clean
+Q3 AUDIT|clean
+Q3 AUDIT|clean
+Q4 AUDIT|clean
+Q4 AUDIT|clean
+Q4 AUDIT|clean
+Q5 AUDIT|clean
+Q5 AUDIT|clean
+Q5 AUDIT|clean
+Q6 AUDIT|clean
+Q6 AUDIT|clean
+Q6 AUDIT|clean
+Q7 AUDIT|clean
+Q7 AUDIT|clean
+Q7 AUDIT|clean
+Q8 AUDIT|clean
+Q8 AUDIT|clean
+Q8 AUDIT|clean
+Q9 AUDIT|clean
+Q9 AUDIT|clean
+Q9 AUDIT|clean
+Q10 AUDIT|clean
+Q10 AUDIT|clean
+Q10 AUDIT|clean
+Q11 AUDIT|clean
+Q11 AUDIT|clean
+Q11 AUDIT|clean
+Q12 AUDIT|clean
+Q12 AUDIT|clean
+Q12 AUDIT|clean
+Q13 AUDIT|clean
+Q13 AUDIT|clean
+Q13 AUDIT|clean
+Q14 AUDIT|clean
+Q14 AUDIT|clean
+Q14 AUDIT|clean
+Q15 AUDIT|clean
+Q15 AUDIT|clean
+Q15 AUDIT|clean
+Q16 AUDIT|clean
+Q16 AUDIT|clean
+Q16 AUDIT|clean
+Q17 AUDIT|clean
+Q17 AUDIT|clean
+Q17 AUDIT|clean
+Q18 AUDIT|clean
+Q18 AUDIT|clean
+Q18 AUDIT|clean
+Q19 AUDIT|clean
+Q19 AUDIT|clean
+Q19 AUDIT|clean
+Q20 AUDIT|clean
+Q20 AUDIT|clean
+Q20 AUDIT|clean</div>
+<div id="wrap">
+  <div class="nav" id="NAV"><span class="ttl">115 學年度　<b>國文</b>　3B1B 動態講解</span><button class="qno" data-n="1" type="button">1</button><button class="qno" data-n="2" type="button">2</button><button class="qno" data-n="3" type="button">3</button><button class="qno" data-n="4" type="button">4</button><button class="qno" data-n="5" type="button">5</button><button class="qno" data-n="6" type="button">6</button><button class="qno" data-n="7" type="button">7</button><button class="qno" data-n="8" type="button">8</button><button class="qno" data-n="9" type="button">9</button><button class="qno" data-n="10" type="button">10</button><button class="qno" data-n="11" type="button">11</button><button class="qno" data-n="12" type="button">12</button><button class="qno" data-n="13" type="button">13</button><button class="qno" data-n="14" type="button">14</button><button class="qno" data-n="15" type="button">15</button><button class="qno" data-n="16" type="button">16</button><button class="qno" data-n="17" type="button">17</button><button class="qno" data-n="18" type="button">18</button><button class="qno" data-n="19" type="button">19</button><button class="qno act" data-n="20" type="button">20</button></div>
+<section class="qpage" id="pg1" data-no="1"><div class="q on" data-k="q">第 1 題・字義辨識<span class="ask">下列文句中的「當」，與〈鴻門宴〉中「料大王士卒足以當項王乎」的「當」字，意義相同的是：</span></div><div class="main"><div class="chain"><div class="ln opt bad on" data-k="o0"><span class="v v1"><b>A</b><span class="oe">「當」仁不讓</span></span></div><div class="ln opt bad on" data-k="o1"><span class="v v1"><b>B</b><span class="oe">安步「當」車</span></span></div><div class="ln opt bad on" data-k="o2"><span class="v v1"><b>C</b><span class="oe">旗鼓相「當」</span></span></div><div class="ln opt ok on" data-k="o3"><span class="v v1"><b>D</b><span class="oe">螳臂「當」車</span></span></div><div class="ln src on" data-k="l0"><span class="v v1">1．「料大王士卒足以當項王乎」是說「估計大王的軍隊足以抵擋項王嗎」，故「當」＝抵擋、抗…</span></div><div class="ln src on" data-k="l1"><span class="v v1">2．(D) 螳臂「當」車：螳螂舉臂想抵擋車輪，正是「抵擋」義 ⇒ 相同。</span></div><div class="ln src on" data-k="l2"><span class="v v1">3．(A) 當仁不讓：面對仁德之事不推讓，「當」＝面對。</span></div><div class="ln src on" data-k="l3"><span class="v v1">4．(B) 安步當車：以從容步行當作乘車，「當」＝當作。</span></div></div><div class="side"><div class="anscard on" data-k="ans"><div class="tag">ANSWER</div><div class="val">(D) 螳臂「當」車</div><div class="note">字義辨識</div></div></div></div><div class="rule on" data-k="rule">通則：先確定題幹「當」的意思，再逐一比對。</div></section>
+<section class="qpage" id="pg2" data-no="2"><div class="q on" data-k="q">第 2 題・字義本義・〈出師表〉<span class="ask">下列文句皆出自諸葛亮的〈出師表〉，「」內的字所表達的意思，最接近該字本義的是：</span></div><div class="main"><div class="chain"><div class="ln opt bad on" data-k="o0"><span class="v v1"><b>A</b><span class="oe">「陟」罰臧否，不宜異同</span></span></div><div class="ln opt ok on" data-k="o1"><span class="v v1"><b>B</b><span class="oe">臣本布衣，「躬」耕於南陽</span></span></div><div class="ln opt bad on" data-k="o2"><span class="v v1"><b>C</b><span class="oe">由是感激，遂許先帝以驅「馳」</span></span></div><div class="ln opt bad on" data-k="o3"><span class="v v1"><b>D</b><span class="oe">後值傾「覆」，受任於敗軍之際，奉命於危難之間</span></span></div><div class="ln src on" data-k="l0"><span class="v v1">1．(B) 「躬」的本義是身體、自身；「躬耕於南陽」即「親自耕作」，由「自身」直接引申…</span></div><div class="ln src on" data-k="l1"><span class="v v1">2．(A) 「陟」本義為登高，文中作「獎賞、升遷」（陟罰＝獎懲），已是引申義。</span></div><div class="ln src on" data-k="l2"><span class="v v1">3．(C) 「馳」本義為車馬奔馳，文中「驅馳」作「奔走效力」，是引申用法。</span></div><div class="ln src on" data-k="l3"><span class="v v1">4．(D) 「覆」本義為翻覆、傾倒，文中「傾覆」指國勢危亡、局勢敗壞，也是引申義。</span></div></div><div class="side"><div class="anscard on" data-k="ans"><div class="tag">ANSWER</div><div class="val">(B) 臣本布衣，「躬」耕於南陽</div><div class="note">字義本義・〈出師表〉</div></div></div></div><div class="rule on" data-k="rule">通則：「本義」指該字最初的意義，文中用法若仍貼近字形本意，就是答案。</div></section>
+<section class="qpage" id="pg3" data-no="3"><div class="q on" data-k="q">第 3 題・詞義辨識・〈項脊軒志〉<span class="ask">下列文句中的「洞然」，與歸有光〈項脊軒志〉「日影反照，室始洞然」的「洞然」，意義相同的是：</span></div><div class="main"><div class="chain"><div class="ln opt ok on" data-k="o0"><span class="v v1"><b>A</b><span class="oe">忽然如同揭開殿頂，射下一道光明來，殿中「洞然」</span></span></div><div class="ln opt bad on" data-k="o1"><span class="v v1"><b>B</b><span class="oe">（陳阿六）遂率賊用洋槍轟擊兄柩三百餘創，前後「…</span></span></div><div class="ln opt bad on" data-k="o2"><span class="v v1"><b>C</b><span class="oe">窺之正黑，投以小石，「洞然」有水聲，其響之激越…</span></span></div><div class="ln opt bad on" data-k="o3"><span class="v v1"><b>D</b><span class="oe">自一方面言之，則必吾人之胸中「洞然」無物，而後…</span></span></div><div class="ln src on" data-k="l0"><span class="v v1">1．(A) 「殿中洞然」承接「射下一道光明來」，同樣是明亮透徹的意思 ⇒ 相同。</span></div><div class="ln src on" data-k="l1"><span class="v v1">2．(B) 前後「洞然」是棺木被槍彈穿透（洞穿）之意。</span></div><div class="ln src on" data-k="l2"><span class="v v1">3．(C) 「洞然有水聲」是形容水聲清亮深遠，用來寫聲音。</span></div><div class="ln src on" data-k="l3"><span class="v v1">4．(D) 胸中「洞然」無物是空無所有之意。</span></div></div><div class="side"><div class="anscard on" data-k="ans"><div class="tag">ANSWER</div><div class="val">(A) 忽然如同揭開殿頂，射下一道光明來，殿中「洞然」</div><div class="note">詞義辨識・〈項脊軒志〉</div></div></div></div><div class="rule on" data-k="rule">通則：〈項脊軒志〉的「洞然」是形容光線照進來後明亮、通亮的樣子。</div></section>
+<section class="qpage" id="pg4" data-no="4"><div class="q on" data-k="q">第 4 題・詞語運用<span class="ask">下列文句畫底線的詞語，運用最適當的是：</span></div><div class="main"><div class="chain"><div class="ln opt ok on" data-k="o0"><span class="v v1"><b>A</b><span class="oe">你即將飄洋過海遠赴異域求學，預祝布帆無恙，旅途…</span></span></div><div class="ln opt bad on" data-k="o1"><span class="v v1"><b>B</b><span class="oe">夜市裡的射氣球攤位，難免會遇上幾個率爾操觚的神…</span></span></div><div class="ln opt bad on" data-k="o2"><span class="v v1"><b>C</b><span class="oe">在藏書家眼中，哪怕只是卷帙不全的殘卷，也如金科…</span></span></div><div class="ln opt bad on" data-k="o3"><span class="v v1"><b>D</b><span class="oe">由於他了解產業趨勢，早在股市全面大漲之前，就已…</span></span></div><div class="ln src on" data-k="l0"><span class="v v1">1．(A) 布帆無恙：指旅途平安，常用於祝人遠行 ⇒ 用在「遠赴異域求學，預祝旅途平安…</span></div><div class="ln src on" data-k="l1"><span class="v v1">2．(B) 率爾操觚：指輕率地提筆寫作，用來形容「射氣球的準度」張冠李戴。</span></div><div class="ln src on" data-k="l2"><span class="v v1">3．(C) 金科玉律：指不可改變的信條、法則，不能用來形容承載歷史文化的殘卷。</span></div><div class="ln src on" data-k="l3"><span class="v v1">4．(D) 拔得頭籌：指在競賽中奪得第一，此處只是搶先買股，並非比賽奪冠。</span></div></div><div class="side"><div class="anscard on" data-k="ans"><div class="tag">ANSWER</div><div class="val">(A) 你即將飄洋過海遠赴異域求學，預祝布帆無恙，旅途平安</div><div class="note">詞語運用</div></div></div></div><div class="rule on" data-k="rule">通則：先弄清每個成語的意思，再看它能不能套進句子的情境。</div></section>
+<section class="qpage" id="pg5" data-no="5"><div class="q on" data-k="q">第 5 題・詞性與詞義・〈漁父〉<span class="ask">下列各組文句，前句皆出自屈原〈漁父〉。「」內的詞語，前後詞性與意義皆相同的是：</span></div><div class="main"><div class="chain"><div class="ln opt bad on" data-k="o0"><span class="v v1"><b>A</b><span class="oe">是以「見」放／汝家屠沽小輩，有何「見」識</span></span></div><div class="ln opt bad on" data-k="o1"><span class="v v1"><b>B</b><span class="oe">何故深思「高舉」／更聞商旅相呼，片帆「高舉」</span></span></div><div class="ln opt ok on" data-k="o2"><span class="v v1"><b>C</b><span class="oe">「顏色」憔悴，形容枯槁／風簷展書讀，古道照「顏…</span></span></div><div class="ln opt bad on" data-k="o3"><span class="v v1"><b>D</b><span class="oe">「鼓」枻而去／令二人蹲踞，而背倚之，漏「鼓」移…</span></span></div><div class="ln src on" data-k="l0"><span class="v v1">1．(C) 前「顏色」＝臉色、容貌（名詞）；後「顏色」＝容顏、神采（名詞）。詞性同為名…</span></div><div class="ln src on" data-k="l1"><span class="v v1">2．(A) 「見」放＝被（表被動，助詞）；「見」識＝見聞、知識（名詞）⇒ 詞性不同。</span></div><div class="ln src on" data-k="l2"><span class="v v1">3．(B) 深思「高舉」＝（志向）高潔的行為（動詞性）；片帆「高舉」＝帆高高掛起 ⇒ …</span></div><div class="ln src on" data-k="l3"><span class="v v1">4．(D) 「鼓」枻而去＝敲擊（動詞）；漏「鼓」移＝更鼓（名詞）⇒ 詞性不同。</span></div></div><div class="side"><div class="anscard on" data-k="ans"><div class="tag">ANSWER</div><div class="val">(C)「顏色」憔悴，形容枯槁／風簷展書讀，古道照「顏色」</div><div class="note">詞性與詞義・〈漁父〉</div></div></div></div><div class="rule on" data-k="rule">通則：必須「詞性」與「意義」兩者都相同，缺一不可。</div></section>
+<section class="qpage" id="pg6" data-no="6"><div class="q on" data-k="q">第 6 題・篇章填空・語意連貫<span class="ask">下文 □□ 中，最適合填入的字詞是： 「『文化』一詞，來自《易傳》『觀乎人文，以化成天下』一語，其意義在鼓勵人們發揮人文素養，提升道德精神，發揚藝術創造，並 □□ 以這些人文的成就來教導民眾…</span></div><div class="main"><div class="chain"><div class="ln opt bad on" data-k="o0"><span class="v v1"><b>A</b><span class="oe">幸而／轉而／時而</span></span></div><div class="ln opt bad on" data-k="o1"><span class="v v1"><b>B</b><span class="oe">幸而／偶而／而且</span></span></div><div class="ln opt ok on" data-k="o2"><span class="v v1"><b>C</b><span class="oe">進而／轉而／而且</span></span></div><div class="ln opt bad on" data-k="o3"><span class="v v1"><b>D</b><span class="oe">進而／偶而／時而</span></span></div><div class="ln src on" data-k="l0"><span class="v v1">1．第一格：發揚藝術創造，更進一步用人文成就教導民眾 ⇒ 「進而」（遞進）。「幸而」表…</span></div><div class="ln src on" data-k="l1"><span class="v v1">2．第二格：字義由「栽培動植物」轉換到「教育、訓練人」 ⇒ 「轉而」。「偶而」表偶爾，…</span></div><div class="ln src on" data-k="l2"><span class="v v1">3．第三格：「不僅要了解文化為何物，更要藉了解文化的行動……」是遞加關係 ⇒ 「而且」。</span></div></div><div class="side"><div class="anscard on" data-k="ans"><div class="tag">ANSWER</div><div class="val">(C) 進而／轉而／而且</div><div class="note">篇章填空・語意連貫</div></div></div></div><div class="rule on" data-k="rule">通則：依前後文的邏輯關係（遞進、轉換、並列／遞加）選連接詞。</div></section>
+<section class="qpage" id="pg7" data-no="7"><div class="q on" data-k="q">第 7 題・對聯格律<span class="ask">宋儒朱熹曾為漳洲開元寺撰寫一副對聯，上下聯各有兩句。依據對聯原則，甲、乙、丙、丁排列順序最適當的是： 甲、鳥識玄機 乙、魚穿地脈 丙、挹將月向水邊吞 丁、銜得春來花上弄</span></div><div class="main"><div class="chain"><div class="ln opt bad on" data-k="o0"><span class="v v1"><b>A</b><span class="oe">甲丙乙丁</span></span></div><div class="ln opt ok on" data-k="o1"><span class="v v1"><b>B</b><span class="oe">甲丁乙丙</span></span></div><div class="ln opt bad on" data-k="o2"><span class="v v1"><b>C</b><span class="oe">乙丙甲丁</span></span></div><div class="ln opt bad on" data-k="o3"><span class="v v1"><b>D</b><span class="oe">乙丁甲丙</span></span></div><div class="ln src on" data-k="l0"><span class="v v1">1．先看句末聲調：甲「機」＝平聲；乙「脈」＝仄聲；丙「吞」＝平聲；丁「弄」＝仄聲。</span></div><div class="ln src on" data-k="l1"><span class="v v1">2．凡句末為仄聲者宜置於上聯末句 ⇒ 甲、丁為上聯（丁在後，收仄）；乙、丙為下聯（丙在…</span></div><div class="ln src on" data-k="l2"><span class="v v1">3．再看語意相承：鳥識玄機，故能「銜得春來花上弄」（甲→丁）；魚穿地脈，故能「挹將月向…</span></div><div class="ln src on" data-k="l3"><span class="v v1">4．故順序為：甲、丁、乙、丙。</span></div></div><div class="side"><div class="anscard on" data-k="ans"><div class="tag">ANSWER</div><div class="val">(B) 甲丁乙丙</div><div class="note">對聯格律</div></div></div></div><div class="rule on" data-k="rule">通則：對聯「上聯末字仄聲、下聯末字平聲」，且同聯內兩句語意要相承。</div></section>
+<section class="qpage" id="pg8" data-no="8"><div class="q on" data-k="q">第 8 題・字義辨識・《論語》<span class="ask">下列文句中的「文」，與《論語》「弟子入則孝，出則弟，謹而信，汎愛眾，而親仁；行有餘力，則以學文」中的「文」，所指的內容最相近的是：</span></div><div class="main"><div class="chain"><div class="ln opt bad on" data-k="o0"><span class="v v1"><b>A</b><span class="oe">周監於二代，郁郁乎「文」哉！吾從周</span></span></div><div class="ln opt bad on" data-k="o1"><span class="v v1"><b>B</b><span class="oe">「文」武興，則民好善；幽厲興，則民好暴</span></span></div><div class="ln opt bad on" data-k="o2"><span class="v v1"><b>C</b><span class="oe">質勝「文」則野，文勝質則史。文質彬彬，然後君子</span></span></div><div class="ln opt ok on" data-k="o3"><span class="v v1"><b>D</b><span class="oe">夏禮，吾能言之，杞不足徵也；殷禮，吾能言之，宋…</span></span></div><div class="ln src on" data-k="l0"><span class="v v1">1．(D) 「文獻不足故也」的「文」正是典籍、文書，與「學文」的「文」最相近。</span></div><div class="ln src on" data-k="l1"><span class="v v1">2．(A) 「郁郁乎文哉」的「文」指周代的禮樂典章制度。</span></div><div class="ln src on" data-k="l2"><span class="v v1">3．(B) 「文武」指文王與武王，是諡號。</span></div><div class="ln src on" data-k="l3"><span class="v v1">4．(C) 「質勝文則野」的「文」指文飾、外在修飾。</span></div></div><div class="side"><div class="anscard on" data-k="ans"><div class="tag">ANSWER</div><div class="val">(D) 夏禮，吾能言之，杞不足徵也；殷禮，吾能言之，宋不足徵也。「文」獻不足故也</div><div class="note">字義辨識・《論語》</div></div></div></div><div class="rule on" data-k="rule">通則：「則以學文」的「文」指詩書等典籍文獻（古時六藝之書）。</div></section>
+<section class="qpage" id="pg9" data-no="9"><div class="q on" data-k="q">第 9 題・文學體裁<span class="ask">關於下列文學作品的體裁，敘述最適當的是：</span></div><div class="main"><div class="chain"><div class="ln opt bad on" data-k="o0"><span class="v v1"><b>A</b><span class="oe">所謂小說，是指透過人物形塑、情節營造、描寫或反…</span></span></div><div class="ln opt ok on" data-k="o1"><span class="v v1"><b>B</b><span class="oe">所謂新詩，是指以白話文書寫，不受格律、押韻約束…</span></span></div><div class="ln opt bad on" data-k="o2"><span class="v v1"><b>C</b><span class="oe">所謂劇本，是指以人物對白，以及動作、場景等舞臺…</span></span></div><div class="ln opt bad on" data-k="o3"><span class="v v1"><b>D</b><span class="oe">所謂散文，是指與韻文相對，且形式自由、題材廣泛…</span></span></div><div class="ln src on" data-k="l0"><span class="v v1">1．(B) 對：新詩以白話書寫、不拘格律押韻、以分行決定結構，〈再別康橋〉是典型例子。</span></div><div class="ln src on" data-k="l1"><span class="v v1">2．(A) 錯：小說容許虛構，並不「必須具備真實性」。</span></div><div class="ln src on" data-k="l2"><span class="v v1">3．(C) 錯：洪醒夫〈散戲〉是小說，不是劇本（劇本例如《牡丹亭》等）。</span></div><div class="ln src on" data-k="l3"><span class="v v1">4．(D) 錯：散文重在抒發情志，並非「內容虛構、目的單一」。</span></div></div><div class="side"><div class="anscard on" data-k="ans"><div class="tag">ANSWER</div><div class="val">(B) 所謂新詩……例如徐志摩的〈再別康橋〉</div><div class="note">文學體裁</div></div></div></div><div class="rule on" data-k="rule">通則：比對「文體定義」與「舉例作品」是否相符。</div></section>
+<section class="qpage" id="pg10" data-no="10"><div class="q on" data-k="q">第 10 題・文章內容理解<span class="ask">關於下列文章的說明，最適當的是：</span></div><div class="main"><div class="chain"><div class="ln opt bad on" data-k="o0"><span class="v v1"><b>A</b><span class="oe">〈桃花源記〉開頭點出時代及漁人籍貫，文末提及劉…</span></span></div><div class="ln opt ok on" data-k="o1"><span class="v v1"><b>B</b><span class="oe">〈師說〉之「說」指文體而言，全文緊扣師與道的關…</span></span></div><div class="ln opt bad on" data-k="o2"><span class="v v1"><b>C</b><span class="oe">〈晚遊六橋待月記〉全文從「待月」落筆，充分刻畫…</span></span></div><div class="ln opt bad on" data-k="o3"><span class="v v1"><b>D</b><span class="oe">〈畫菊自序〉中，作者自述其學畫始末，及對於畫藝…</span></span></div><div class="ln src on" data-k="l0"><span class="v v1">1．(B) 對：「說」是古代議論說理的一種文體；〈師說〉全文圍繞「師」與「道」，論述從…</span></div><div class="ln src on" data-k="l1"><span class="v v1">2．(A) 錯：〈桃花源記〉是寄託理想的寓言之作，開頭與文末的寫法是增添似真似幻的氛圍…</span></div><div class="ln src on" data-k="l2"><span class="v v1">3．(C) 錯：〈晚遊六橋待月記〉重點在西湖桃花與「待月」之趣，不是「月下梅花」。</span></div><div class="ln src on" data-k="l3"><span class="v v1">4．(D) 錯：〈畫菊自序〉是為畫菊題寫的序，作者藉菊花自期堅貞勁節、言「有志竟成」，…</span></div></div><div class="side"><div class="anscard on" data-k="ans"><div class="tag">ANSWER</div><div class="val">(B) 〈師說〉之「說」指文體而言，全文緊扣師與道的關係，論述從師問學的重要性</div><div class="note">文章內容理解</div></div></div></div><div class="rule on" data-k="rule">通則：逐一核對「文體判斷」與「內容主旨」是否與原文相符。</div></section>
+<section class="qpage" id="pg11" data-no="11"><div class="q on" data-k="q">第 11 題・詩詞文句賞析<span class="ask">關於下列詩詞文句的說明，不適當的是：</span></div><div class="main"><div class="chain"><div class="ln opt ok on" data-k="o0"><span class="v v1"><b>A</b><span class="oe">獨自莫憑欄，無限江山，別時容易見時難：寫與情人…</span></span></div><div class="ln opt bad on" data-k="o1"><span class="v v1"><b>B</b><span class="oe">行行重行行，與君生別離：重複使用「行行」一詞，…</span></span></div><div class="ln opt bad on" data-k="o2"><span class="v v1"><b>C</b><span class="oe">逆豎終當鱠縷分，揮刀今得快三軍：寫對亂臣賊子的…</span></span></div><div class="ln opt bad on" data-k="o3"><span class="v v1"><b>D</b><span class="oe">我勸天公重抖擻，不拘一格降人材：借「天公」以喻…</span></span></div><div class="ln src on" data-k="l0"><span class="v v1">1．(A) 不適當：「獨自莫憑欄，無限江山，別時容易見時難」出自李煜〈浪淘沙〉，寫的是…</span></div><div class="ln src on" data-k="l1"><span class="v v1">2．(B) 疊用「行行」確有綿延不盡、行者遠去之感。</span></div><div class="ln src on" data-k="l2"><span class="v v1">3．(C) 「鱠縷分」以魚片細切比喻亂臣被分割誅除，抒發痛恨之情。</span></div><div class="ln src on" data-k="l3"><span class="v v1">4．(D) 龔自珍借「天公」喻朝廷，呼籲振作、打破成規用人，屬借題發揮。</span></div></div><div class="side"><div class="anscard on" data-k="ans"><div class="tag">ANSWER</div><div class="val">(A) 獨自莫憑欄，無限江山，別時容易見時難：寫與情人分離，兩地相思之苦</div><div class="note">詩詞文句賞析</div></div></div></div><div class="rule on" data-k="rule">通則：本題問「不適當」，先查每句的出處與主旨。</div></section>
+<section class="qpage" id="pg12" data-no="12"><div class="q on" data-k="q">第 12 題・文言閱讀理解<span class="ask">依據下文，最符合文意的是： 古之教者，教以人倫。後世記誦詞章之習起，而先王之教亡。今教童子，惟當以孝弟忠信、禮義廉恥為專務。其栽培涵養之方，則宜誘之歌詩以發其志意，導之習禮以肅其威儀，諷之讀…</span></div><div class="main"><div class="chain"><div class="ln opt ok on" data-k="o0"><span class="v v1"><b>A</b><span class="oe">以歌詩為教，循循善誘之下，當可興發童子的志向</span></span></div><div class="ln opt bad on" data-k="o1"><span class="v v1"><b>B</b><span class="oe">童子需習禮的原因，在為日後為官之威儀預作準備</span></span></div><div class="ln opt bad on" data-k="o2"><span class="v v1"><b>C</b><span class="oe">童子誦讀書本的主要目的，在累積足夠的知識儲備</span></span></div><div class="ln opt bad on" data-k="o3"><span class="v v1"><b>D</b><span class="oe">古人立教，最重視者乃是知識之積累與德性之完成</span></span></div><div class="ln src on" data-k="l0"><span class="v v1">1．(A) 對：「誘之歌詩以發其志意」＝以歌詩循循善誘，興發童子的志向。</span></div><div class="ln src on" data-k="l1"><span class="v v1">2．(B) 錯：習禮的目的是「肅其威儀」（端正儀態），並非為將來當官的排場預作準備。</span></div><div class="ln src on" data-k="l2"><span class="v v1">3．(C) 錯：讀書的目的是「開其知覺」（啟發覺悟），重點不在累積知識。</span></div><div class="ln src on" data-k="l3"><span class="v v1">4．(D) 錯：文中強調「以孝弟忠信、禮義廉恥為專務」，立教首重人倫德行的涵養，不是知…</span></div></div><div class="side"><div class="anscard on" data-k="ans"><div class="tag">ANSWER</div><div class="val">(A) 以歌詩為教，循循善誘之下，當可興發童子的志向</div><div class="note">文言閱讀理解</div></div></div></div><div class="rule on" data-k="rule">通則：把文中「誘之歌詩以發其志意／導之習禮以肅其威儀／諷之讀書以開其知覺」三句對回選項。</div></section>
+<section class="qpage" id="pg13" data-no="13"><div class="q on" data-k="q">第 13 題・文言閱讀理解<span class="ask">依據下文，關於「爵」的說明，最適當的是： 爵是某種特定形式的酒器名稱，在古文獻裡，它也被用作一般行禮時酒器的通稱，並且用以表達其擁有高貴身分的爵位。爵的造型作為酒器，有一些部件與設計似乎缺乏…</span></div><div class="main"><div class="chain"><div class="ln opt bad on" data-k="o0"><span class="v v1"><b>A</b><span class="oe">爵乃酒器之通稱，所有酒器均可以爵稱之</span></span></div><div class="ln opt bad on" data-k="o1"><span class="v v1"><b>B</b><span class="oe">爵亦可指雀鳥的原因，僅只緣於同音假借</span></span></div><div class="ln opt bad on" data-k="o2"><span class="v v1"><b>C</b><span class="oe">爵的造型不實用，乃為顯示文化之優越性</span></span></div><div class="ln opt ok on" data-k="o3"><span class="v v1"><b>D</b><span class="oe">爵的造型可能與商朝對鳥圖騰的崇拜有關</span></span></div><div class="ln src on" data-k="l0"><span class="v v1">1．(D) 對：爵的形象「象爵（雀）鳥之形」，而鳥圖騰是東方氏族（含商）的共同信仰，故…</span></div><div class="ln src on" data-k="l1"><span class="v v1">2．(A) 錯：爵是「一般行禮時酒器的通稱」之一，並非所有酒器都能稱爵。</span></div><div class="ln src on" data-k="l2"><span class="v v1">3．(B) 錯：爵指雀鳥雖可用同音假借解釋，但文中強調形象相似、且與圖騰信仰有關，並非…</span></div><div class="ln src on" data-k="l3"><span class="v v1">4．(C) 錯：造型不實用是因為「基於某種信仰」，並未說是為了「顯示文化優越性」。</span></div></div><div class="side"><div class="anscard on" data-k="ans"><div class="tag">ANSWER</div><div class="val">(D) 爵的造型可能與商朝對鳥圖騰的崇拜有關</div><div class="note">文言閱讀理解</div></div></div></div><div class="rule on" data-k="rule">通則：文末推論「商發源於東方、鳥圖騰是東方氏族共同信仰」是解題關鍵。</div></section>
+<section class="qpage" id="pg14" data-no="14"><div class="q on" data-k="q">第 14 題・文言閱讀理解・文學評論<span class="ask">依據下文，關於〈赤壁賦〉的論述，最適當的是： 蘇軾〈赤壁賦〉其實是一篇議論縱橫的遊記，不過因為抒情性強，知性乃不顯眼，至於寫景與敘事，只是次要的因素。〈赤壁賦〉不贅述三國史實，也不詳考赤壁地…</span></div><div class="main"><div class="chain"><div class="ln opt bad on" data-k="o0"><span class="v v1"><b>A</b><span class="oe">〈赤壁賦〉主要優點在議論縱橫，並提供豐富知識性…</span></span></div><div class="ln opt bad on" data-k="o1"><span class="v v1"><b>B</b><span class="oe">〈赤壁賦〉之寫景敘事，著重於對三國歷史、地理的…</span></span></div><div class="ln opt bad on" data-k="o2"><span class="v v1"><b>C</b><span class="oe">〈赤壁賦〉中感性完全掩蓋知性，桐城派作者應不會…</span></span></div><div class="ln opt ok on" data-k="o3"><span class="v v1"><b>D</b><span class="oe">〈赤壁賦〉中知性已充分感性化，並非是知識的堆砌…</span></span></div><div class="ln src on" data-k="l0"><span class="v v1">1．(D) 對：文中說蘇軾把史地材料「化成生動的意象」放入「客」的口中，正是知性被感性…</span></div><div class="ln src on" data-k="l1"><span class="v v1">2．(A) 錯：作者明確說〈赤壁賦〉「抒情性強，知性乃不顯眼」，重點不在提供知識訊息。</span></div><div class="ln src on" data-k="l2"><span class="v v1">3．(B) 錯：恰恰相反，〈赤壁賦〉「不贅述三國史實，也不詳考赤壁地理」，寫景敘事只是…</span></div><div class="ln src on" data-k="l3"><span class="v v1">4．(C) 錯：作者認為蘇軾是「化知性為感性的天才」，並未說感性完全掩蓋知性，也未評論…</span></div></div><div class="side"><div class="anscard on" data-k="ans"><div class="tag">ANSWER</div><div class="val">(D) 〈赤壁賦〉中知性已充分感性化，並非是知識的堆砌而已</div><div class="note">文言閱讀理解・文學評論</div></div></div></div><div class="rule on" data-k="rule">通則：本文主旨是讚美蘇軾「化知性為感性」——把知識材料化成生動意象。</div></section>
+<section class="qpage" id="pg15" data-no="15"><div class="q on" data-k="q">第 15 題・現代小說閱讀・〈散戲〉<span class="ask">洪醒夫的〈散戲〉描述一個歌仔戲團由興盛而趨於沒落的故事，同時也寫出在面對社會變遷之際，小說人物在現實與理想間的種種掙扎。下列關於本文之敘述，最適當的是：</span></div><div class="main"><div class="chain"><div class="ln opt bad on" data-k="o0"><span class="v v1"><b>A</b><span class="oe">秦香蓮回到戲臺邊，一面叮嚀孩子們不要亂跑，一面…</span></span></div><div class="ln opt bad on" data-k="o1"><span class="v v1"><b>B</b><span class="oe">秀潔突然咬牙切齒地說：「不管有沒有觀眾，戲都應…</span></span></div><div class="ln opt bad on" data-k="o2"><span class="v v1"><b>C</b><span class="oe">卻聽金發伯說：「我看我們這樣下去也不是辦法，大…</span></span></div><div class="ln opt ok on" data-k="o3"><span class="v v1"><b>D</b><span class="oe">秀潔從人與人之間的縫隙裡望過去，看到紙菸上那一…</span></span></div><div class="ln src on" data-k="l0"><span class="v v1">1．(D) 對：今昔對比（蒼老憂鬱的現況 vs. 當年教戲時的威嚴自信），並以「一閃一…</span></div><div class="ln src on" data-k="l1"><span class="v v1">2．(A) 錯：〈散戲〉以今昔交錯的方式敘寫劇團沒落的過程，並非「單向線性式」的故事結…</span></div><div class="ln src on" data-k="l2"><span class="v v1">3．(B) 錯：該段引文是秀潔責備阿旺嫂對演戲的敷衍，重點在呈現秀潔對戲曲理想的堅持，…</span></div><div class="ln src on" data-k="l3"><span class="v v1">4．(C) 錯：金發伯宣布演完就解散，是面對現實、不得不放手的無奈，「不忘本分的理想堅…</span></div></div><div class="side"><div class="anscard on" data-k="ans"><div class="tag">ANSWER</div><div class="val">(D) 秀潔從人與人之間的縫隙裡望過去……象徵劇團現今的衰落與過往的榮景，同時也暗示著劇團的未來</div><div class="note">現代小說閱讀・〈散戲〉</div></div></div></div><div class="rule on" data-k="rule">通則：小說鑑賞題要同時檢核「引文情境」與「手法／人物詮釋」是否吻合。</div></section>
+<section class="qpage" id="pg16" data-no="16"><div class="q on" data-k="q">第 16 題・現代散文閱讀<span class="ask">依據下文，關於文意的闡釋，最適當的是： 食物是最深刻的記憶與認同，像基因一樣嵌織著一套複雜的暗碼，標幟著個人的性別、血統、地域、社會階級和成長歷史，組合排列出獨特的印記。近年來「年級說」甚囂…</span></div><div class="main"><div class="chain"><div class="ln opt bad on" data-k="o0"><span class="v v1"><b>A</b><span class="oe">作者以基因比喻食物的記憶與認同，是因為食物會改…</span></span></div><div class="ln opt bad on" data-k="o1"><span class="v v1"><b>B</b><span class="oe">作者以社會階級做為不同世代人們尋覓自我成長的辨…</span></span></div><div class="ln opt ok on" data-k="o2"><span class="v v1"><b>C</b><span class="oe">作者指出古早味零食的伺機而起，乃是由於懷舊情緒…</span></span></div><div class="ln opt bad on" data-k="o3"><span class="v v1"><b>D</b><span class="oe">作者指出各種零食對於特定年級的人們都有懷舊記憶…</span></span></div><div class="ln src on" data-k="l0"><span class="v v1">1．(C) 對：原文「有鑑於懷舊情緒『民氣可用』，『古早味』的復古零食遂伺機而起」——…</span></div><div class="ln src on" data-k="l1"><span class="v v1">2．(A) 錯：以基因比喻是形容食物記憶與認同的深刻、像暗碼般標幟身分，並非食物會改變…</span></div><div class="ln src on" data-k="l2"><span class="v v1">3．(B) 錯：文中說「零食」是重要的辨識線索，不是以「社會階級」作為辨識線索。</span></div><div class="ln src on" data-k="l3"><span class="v v1">4．(D) 錯：文中談的是「以五六年級生為主力的懷舊零食」，並非「各種零食」對「特定年…</span></div></div><div class="side"><div class="anscard on" data-k="ans"><div class="tag">ANSWER</div><div class="val">(C) 作者指出古早味零食的伺機而起，乃是由於懷舊情緒「民氣可用」</div><div class="note">現代散文閱讀</div></div></div></div><div class="rule on" data-k="rule">通則：選項與文句要能一一對應，特別注意「比喻」的解讀與範圍詞（各種／特定）。</div></section>
+<section class="qpage" id="pg17" data-no="17"><div class="q on" data-k="q">第 17 題・文化常識・名字稱謂<span class="ask">依據下文，下列說明最適當的是： 父親還真有好幾個名字。他行七，小名七子、啟子，學名啟京，字東侯。（張大春《我的老台北・一車倆驢和我哥》）</span></div><div class="main"><div class="chain"><div class="ln opt bad on" data-k="o0"><span class="v v1"><b>A</b><span class="oe">行七，指的是在全家人中排行第七</span></span></div><div class="ln opt bad on" data-k="o1"><span class="v v1"><b>B</b><span class="oe">學名，指的是現今兒童入學時所取的名字</span></span></div><div class="ln opt bad on" data-k="o2"><span class="v v1"><b>C</b><span class="oe">父親的名字有很多，行七、七子、啟子、啟京、東侯…</span></span></div><div class="ln opt ok on" data-k="o3"><span class="v v1"><b>D</b><span class="oe">字，又稱表字，指的是本名之外的正式代稱，基於禮…</span></span></div><div class="ln src on" data-k="l0"><span class="v v1">1．(D) 對：「字」又稱表字，是本名之外的正式代稱；古人基於禮貌，稱呼他人多稱字而不…</span></div><div class="ln src on" data-k="l1"><span class="v v1">2．(A) 錯：「行七」是指在家族同輩（兄弟）中排行第七，不是全家人中的第七。</span></div><div class="ln src on" data-k="l2"><span class="v v1">3．(B) 錯：「學名」是入學（或啟蒙）時所取、供讀書應試使用的正式名字，並非「現今兒…</span></div><div class="ln src on" data-k="l3"><span class="v v1">4．(C) 錯：「行七」是排行稱呼，不是名字；小名、學名、字才是名字系統。</span></div></div><div class="side"><div class="anscard on" data-k="ans"><div class="tag">ANSWER</div><div class="val">(D) 字，又稱表字，指的是本名之外的正式代稱，基於禮貌，稱呼他人通常稱字而不名</div><div class="note">文化常識・名字稱謂</div></div></div></div><div class="rule on" data-k="rule">通則：要注意「行七」「學名」「字」在傳統命名文化中的確切意義。</div></section>
+<section class="qpage" id="pg18" data-no="18"><div class="q on" data-k="q">第 18 題・現代詩修辭<span class="ask">下列關於「」內詩句寫作技巧的說明，最適當的是：</span></div><div class="main"><div class="chain"><div class="ln opt bad on" data-k="o0"><span class="v v1"><b>A</b><span class="oe">「髮，在激流中盤繞如一窩水蛇」，詩人以擬物手法…</span></span></div><div class="ln opt ok on" data-k="o1"><span class="v v1"><b>B</b><span class="oe">「在我高築的城垛之上／憂鬱便架起雲梯／翻身降落…</span></span></div><div class="ln opt bad on" data-k="o2"><span class="v v1"><b>C</b><span class="oe">「如何讓你遇見我／在我最美麗的時刻／為這我已在…</span></span></div><div class="ln opt bad on" data-k="o3"><span class="v v1"><b>D</b><span class="oe">「而此刻，我清清澈澈知道我底知道。／『他們也有…</span></span></div><div class="ln src on" data-k="l0"><span class="v v1">1．(B) 對：「憂鬱便架起雲梯／翻身降落」把抽象的憂鬱寫成能架梯、翻身的人 ⇒ 擬人…</span></div><div class="ln src on" data-k="l1"><span class="v v1">2．(A) 錯：這句是把頭髮比作「一窩水蛇」（以物喻物，屬擬物／比喻），並非「以頭髮比…</span></div><div class="ln src on" data-k="l2"><span class="v v1">3．(C) 錯：「五百年」與「一段塵緣」不是對比關係，而是以長時間的祈求凸顯緣分的珍貴…</span></div><div class="ln src on" data-k="l3"><span class="v v1">4．(D) 錯：該段以反覆、頂真般的語句寫人我之間的相知，並非「化身為魚、冷眼觀人」的…</span></div></div><div class="side"><div class="anscard on" data-k="ans"><div class="tag">ANSWER</div><div class="val">(B) 「在我高築的城垛之上／憂鬱便架起雲梯／翻身降落」，詩人善用擬人技巧，形容憂鬱輕易翻身進入作者的心靈世界</div><div class="note">現代詩修辭</div></div></div></div><div class="rule on" data-k="rule">通則：先確認「修辭名稱」與「文本證據」能不能對上。</div></section>
+<section class="qpage" id="pg19" data-no="19"><div class="q on" data-k="q">第 19 題・題組・變形神話（19-20 題組）<span class="ask">【19-20 為題組】 無可掩飾地是在試圖解釋生和死。簡單地說，神話用變形來代替生命死亡的這一事實。整個神話思想就是對死亡現象恆常和固執的否定。實際上這形體改化和心志移情的變形，就是更富有生…</span></div><div class="main"><div class="chain"><div class="ln opt bad on" data-k="o0"><span class="v v1"><b>A</b><span class="oe">甲乙</span></span></div><div class="ln opt bad on" data-k="o1"><span class="v v1"><b>B</b><span class="oe">甲丙</span></span></div><div class="ln opt ok on" data-k="o2"><span class="v v1"><b>C</b><span class="oe">乙丙</span></span></div><div class="ln opt bad on" data-k="o3"><span class="v v1"><b>D</b><span class="oe">乙丁</span></span></div><div class="ln src on" data-k="l0"><span class="v v1">1．乙：夸父渴死後「棄其杖，化為鄧林」——形體化為樹林，是死亡後的再生 ⇒ 符合。</span></div><div class="ln src on" data-k="l1"><span class="v v1">2．丙：女娃溺死後「故為精衛」——化為精衛鳥，銜木石以堙東海 ⇒ 符合。</span></div><div class="ln src on" data-k="l2"><span class="v v1">3．甲：羲和生十日，是神話中的創生敘述，並未涉及形體改化。</span></div><div class="ln src on" data-k="l3"><span class="v v1">4．丁：吳剛伐桂「樹創隨合」，寫的是樹木自癒與受罰，也不涉及形體改變而再生。</span></div></div><div class="side"><div class="anscard on" data-k="ans"><div class="tag">ANSWER</div><div class="val">(C) 乙丙</div><div class="note">題組・變形神話（19-20 題組）</div></div></div></div><div class="rule on" data-k="rule">通則：「變形再生」的判準是——形體改變之後以另一種形態繼續存在（死亡即再生）。</div></section>
+<section class="qpage cur" id="pg20" data-no="20"><div class="q on" data-k="q">第 20 題・題組・變形神話（19-20 題組）<span class="ask">【19-20 為題組】承第 19 題引文：神話用變形來代替生命死亡的這一事實……透過變形，死亡就是再生。下列文句最適合詮釋神話中變形思維的是：</span></div><div class="main"><div class="chain"><div class="ln opt bad on" data-k="o0"><span class="v v1"><b>A</b><span class="oe">未知生，焉知死</span></span></div><div class="ln opt ok on" data-k="o1"><span class="v v1"><b>B</b><span class="oe">生也死之徒，死也生之始，孰知其紀</span></span></div><div class="ln opt bad on" data-k="o2"><span class="v v1"><b>C</b><span class="oe">生，事之以禮；死，葬之以禮，祭之以禮</span></span></div><div class="ln opt bad on" data-k="o3"><span class="v v1"><b>D</b><span class="oe">谷神不死，是謂玄牝。玄牝之門，是謂天地根</span></span></div><div class="ln src on" data-k="l0"><span class="v v1">1．(B) 對：「生也死之徒，死也生之始」＝生是死的同類，死是生的開端，生死循環相續，…</span></div><div class="ln src on" data-k="l1"><span class="v v1">2．(A) 「未知生，焉知死」強調先盡生事，回避死亡問題。</span></div><div class="ln src on" data-k="l2"><span class="v v1">3．(C) 講的是事生、葬死的禮儀規範。</span></div><div class="ln src on" data-k="l3"><span class="v v1">4．(D) 「谷神不死……玄牝之門，是謂天地根」形容道體生生不息、為天地根源，談的是「…</span></div></div><div class="side"><div class="anscard on" data-k="ans"><div class="tag">ANSWER</div><div class="val">(B) 生也死之徒，死也生之始，孰知其紀</div><div class="note">題組・變形神話（19-20 題組）</div></div></div></div><div class="rule on" data-k="rule">通則：要找出「生死相續、死即再生」的句子。</div></section>
+  <div class="cap" id="CAPG" data-k="cap"><span>答案：(B) 生也死之徒，死也生之始，孰知其紀</span></div>
+  <div class="bar">
+    <button class="btn" id="BT">▶</button>
+    <button class="btn" id="RP" title="重播">↺</button>
+    <div class="track" id="TK"><div class="fill" id="FL" style="width: 99.6261%;"></div></div>
+    <div class="tm" id="TM">1:19 / 1:20</div>
+    <div class="vo">旁白・<b>曉曉</b>　第 <span id="CN">20</span> 題</div>
+  </div>
+</div>
+<script>
+const PAGES = [{"no": 1, "has": 1, "dur": 55.03, "audio": "audio/q1.mp3", "steps": [["q", "on", 1.15], ["o0", "on bad", 10.71], ["o1", "on bad", 12.34], ["o2", "on bad", 14.15], ["o3", "on ok", 15.93], ["l0", "on", 22.66], ["l1", "on", 31.52], ["l2", "on", 37.7], ["l3", "on", 42.9], ["ans", "on", 52.48], ["rule", "on", 53.28]], "caps": [["第 1 題，下列文句中的「當」，與〈鴻門宴〉中「料大王士卒足以當項王乎」的「當」字，意義相同的是：", 0.1], ["四個選項：A，「當」仁不讓；B，安步「當」車；C，旗鼓相「當」；D，螳臂「當」車", 9.0], ["關鍵想法：先確定題幹「當」的意思，再逐一比對。", 17.55], ["「料大王士卒足以當項王乎」是說「估計大王的軍隊足以抵擋項王嗎」，故「當」＝抵擋、抗拒。", 22.66], ["(D) 螳臂「當」車：螳螂舉臂想抵擋車輪，正是「抵擋」義 ⇒ 相同。", 31.52], ["(A) 當仁不讓：面對仁德之事不推讓，「當」＝面對。", 37.7], ["(B) 安步當車：以從容步行當作乘車，「當」＝當作。", 42.9], ["答案：(D) 螳臂「當」車", 52.78]]}, {"no": 2, "has": 1, "dur": 68.7, "audio": "audio/q2.mp3", "steps": [["q", "on", 1.15], ["o0", "on bad", 10.66], ["o1", "on ok", 13.64], ["o2", "on bad", 16.74], ["o3", "on bad", 20.55], ["l0", "on", 33.86], ["l1", "on", 43.19], ["l2", "on", 50.47], ["l3", "on", 56.97], ["ans", "on", 64.9], ["rule", "on", 65.7]], "caps": [["第 2 題，下列文句皆出自諸葛亮的〈出師表〉，「」內的字所表達的意思，最接近該字本義的是：", 0.0], ["四個選項：A，「陟」罰臧否，不宜異同；B，臣本布衣，「躬」耕於南陽；C，由是感激，遂許先帝以驅「馳」；D，後值傾「覆」，受…", 8.98], ["關鍵想法：「本義」指該字最初的意義，文中用法若仍貼近字形本意，就是答案。", 25.7], ["(B) 「躬」的本義是身體、自身；「躬耕於南陽」即「親自耕作」，由「自身」直接引申，最接近本義。", 33.86], ["(A) 「陟」本義為登高，文中作「獎賞、升遷」（陟罰＝獎懲），已是引申義。", 43.19], ["(C) 「馳」本義為車馬奔馳，文中「驅馳」作「奔走效力」，是引申用法。", 50.47], ["(D) 「覆」本義為翻覆、傾倒，文中「傾覆」指國勢危亡、局勢敗壞，也是引申義。", 56.97], ["答案：(B) 臣本布衣，「躬」耕於南陽", 65.2]]}, {"no": 3, "has": 1, "dur": 68.5, "audio": "audio/q3.mp3", "steps": [["q", "on", 1.26], ["o0", "on ok", 11.46], ["o1", "on bad", 16.66], ["o2", "on bad", 22.94], ["o3", "on bad", 29.06], ["l0", "on", 41.94], ["l1", "on", 48.58], ["l2", "on", 53.44], ["l3", "on", 59.0], ["ans", "on", 62.52], ["rule", "on", 63.32]], "caps": [["第 3 題，下列文句中的「洞然」，與歸有光〈項脊軒志〉「日影反照，室始洞然」的「洞然」，意義相同的是：", 0.1], ["四個選項：A，忽然如同揭開殿頂，射下一道光明來，殿中「洞然」；B，（陳阿六）遂率賊用洋槍轟擊兄柩三百餘創，前後「洞然」；C…", 9.61], ["關鍵想法：〈項脊軒志〉的「洞然」是形容光線照進來後明亮、通亮的樣子。", 34.75], ["(A) 「殿中洞然」承接「射下一道光明來」，同樣是明亮透徹的意思 ⇒ 相同。", 41.94], ["(B) 前後「洞然」是棺木被槍彈穿透（洞穿）之意。", 48.58], ["(C) 「洞然有水聲」是形容水聲清亮深遠，用來寫聲音。", 53.44], ["(D) 胸中「洞然」無物是空無所有之意。", 59.0], ["答案：(A) 忽然如同揭開殿頂，射下一道光明來，殿中「洞然」", 62.82]]}, {"no": 4, "has": 1, "dur": 77.99, "audio": "audio/q4.mp3", "steps": [["q", "on", 1.21], ["o0", "on ok", 7.15], ["o1", "on bad", 13.43], ["o2", "on bad", 19.51], ["o3", "on bad", 25.59], ["l0", "on", 38.52], ["l1", "on", 47.79], ["l2", "on", 54.96], ["l3", "on", 63.19], ["ans", "on", 70.91], ["rule", "on", 71.71]], "caps": [["第 4 題，下列文句畫底線的詞語，運用最適當的是：", 0.1], ["四個選項：A，你即將飄洋過海遠赴異域求學，預祝布帆無恙，旅途平安；B，夜市裡的射氣球攤位，難免會遇上幾個率爾操觚的神射手……", 5.35], ["關鍵想法：先弄清每個成語的意思，再看它能不能套進句子的情境。", 31.78], ["(A) 布帆無恙：指旅途平安，常用於祝人遠行 ⇒ 用在「遠赴異域求學，預祝旅途平安」完全貼切。", 38.52], ["(B) 率爾操觚：指輕率地提筆寫作，用來形容「射氣球的準度」張冠李戴。", 47.79], ["(C) 金科玉律：指不可改變的信條、法則，不能用來形容承載歷史文化的殘卷。", 54.96], ["(D) 拔得頭籌：指在競賽中奪得第一，此處只是搶先買股，並非比賽奪冠。", 63.19], ["答案：(A) 你即將飄洋過海遠赴異域求學，預祝布帆無恙，旅途平安", 71.21]]}, {"no": 5, "has": 1, "dur": 81.69, "audio": "audio/q5.mp3", "steps": [["q", "on", 1.13], ["o0", "on bad", 11.81], ["o1", "on bad", 15.94], ["o2", "on ok", 21.66], ["o3", "on bad", 27.78], ["l0", "on", 39.08], ["l1", "on", 39.78], ["l2", "on", 58.55], ["l3", "on", 68.32], ["ans", "on", 74.91], ["rule", "on", 75.71]], "caps": [["第 5 題，下列各組文句，前句皆出自屈原〈漁父〉。「」內的詞語，前後詞性與意義皆相同的是：", 0.1], ["四個選項：A，是以「見」放／汝家屠沽小輩，有何「見」識；B，何故深思「高舉」／更聞商旅相呼，片帆「高舉」；C，「顏色」憔悴…", 10.01], ["關鍵想法：必須「詞性」與「意義」兩者都相同，缺一不可。", 33.42], ["(C) 前「顏色」＝臉色、容貌（名詞）；後「顏色」＝容顏、神采（名詞）。詞性同為名詞，意義都是「面容」 ⇒ 符合。", 39.08], ["(A) 「見」放＝被（表被動，助詞）；「見」識＝見聞、知識（名詞）⇒ 詞性不同。", 39.68], ["(B) 深思「高舉」＝（志向）高潔的行為（動詞性）；片帆「高舉」＝帆高高掛起 ⇒ 詞性與意義皆異。", 58.55], ["(D) 「鼓」枻而去＝敲擊（動詞）；漏「鼓」移＝更鼓（名詞）⇒ 詞性不同。", 68.32], ["答案：(C)「顏色」憔悴，形容枯槁／風簷展書讀，古道照「顏色」", 75.21]]}, {"no": 6, "has": 1, "dur": 61.49, "audio": "audio/q6.mp3", "steps": [["q", "on", 1.11], ["o0", "on bad", 19.59], ["o1", "on bad", 21.25], ["o2", "on ok", 23.16], ["o3", "on bad", 24.96], ["l0", "on", 34.11], ["l1", "on", 43.78], ["l2", "on", 51.7], ["ans", "on", 58.81], ["rule", "on", 59.61]], "caps": [["第 6 題，下文 □□ 中，最適合填入的字詞是： 「『文化』一詞，來自《易傳》『觀乎人文，以化成天下』一語，其意義在鼓勵人…", 0.1], ["四個選項：A，幸而／轉而／時而；B，幸而／偶而／而且；C，進而／轉而／而且；D，進而／偶而／時而", 17.93], ["關鍵想法：依前後文的邏輯關係（遞進、轉換、並列／遞加）選連接詞。", 26.54], ["第一格：發揚藝術創造，更進一步用人文成就教導民眾 ⇒ 「進而」（遞進）。「幸而」表慶幸，不合。", 34.11], ["第二格：字義由「栽培動植物」轉換到「教育、訓練人」 ⇒ 「轉而」。「偶而」表偶爾，不合。", 43.78], ["第三格：「不僅要了解文化為何物，更要藉了解文化的行動……」是遞加關係 ⇒ 「而且」。", 51.7], ["答案：(C) 進而／轉而／而且", 59.11]]}, {"no": 7, "has": 1, "dur": 75.72, "audio": "audio/q7.mp3", "steps": [["q", "on", 1.25], ["o0", "on bad", 23.34], ["o1", "on ok", 25.0], ["o2", "on bad", 26.82], ["o3", "on bad", 28.52], ["l0", "on", 38.09], ["l1", "on", 47.03], ["l2", "on", 57.27], ["l3", "on", 70.03], ["ans", "on", 73.33], ["rule", "on", 74.13]], "caps": [["第 7 題，宋儒朱熹曾為漳洲開元寺撰寫一副對聯，上下聯各有兩句。依據對聯原則，甲、乙、丙、丁排列順序最適當的是： 甲、鳥識…", 0.1], ["四個選項：A，甲丙乙丁；B，甲丁乙丙；C，乙丙甲丁；D，乙丁甲丙", 21.62], ["關鍵想法：對聯「上聯末字仄聲、下聯末字平聲」，且同聯內兩句語意要相承。", 30.0], ["先看句末聲調：甲「機」＝平聲；乙「脈」＝仄聲；丙「吞」＝平聲；丁「弄」＝仄聲。", 38.09], ["凡句末為仄聲者宜置於上聯末句 ⇒ 甲、丁為上聯（丁在後，收仄）；乙、丙為下聯（丙在後，收平）。", 47.03], ["再看語意相承：鳥識玄機，故能「銜得春來花上弄」（甲→丁）；魚穿地脈，故能「挹將月向水邊吞」（乙→丙）。兩組各自成對，順序自…", 57.27], ["故順序為：甲、丁、乙、丙。", 70.03], ["答案：(B) 甲丁乙丙", 73.63]]}, {"no": 8, "has": 1, "dur": 72.7, "audio": "audio/q8.mp3", "steps": [["q", "on", 1.19], ["o0", "on bad", 15.68], ["o1", "on bad", 20.19], ["o2", "on bad", 25.24], ["o3", "on ok", 31.68], ["l0", "on", 44.34], ["l1", "on", 50.62], ["l2", "on", 54.84], ["l3", "on", 58.51], ["ans", "on", 62.93], ["rule", "on", 63.73]], "caps": [["第 8 題，下列文句中的「文」，與《論語》「弟子入則孝，出則弟，謹而信，汎愛眾，而親仁；行有餘力，則以學文」中的「文」，所…", 0.1], ["四個選項：A，周監於二代，郁郁乎「文」哉！吾從周；B，「文」武興，則民好善；幽厲興，則民好暴；C，質勝「文」則野，文勝質則…", 13.94], ["關鍵想法：「則以學文」的「文」指詩書等典籍文獻（古時六藝之書）。", 38.32], ["(D) 「文獻不足故也」的「文」正是典籍、文書，與「學文」的「文」最相近。", 44.34], ["(A) 「郁郁乎文哉」的「文」指周代的禮樂典章制度。", 50.62], ["(B) 「文武」指文王與武王，是諡號。", 54.84], ["(C) 「質勝文則野」的「文」指文飾、外在修飾。", 58.51], ["答案：(D) 夏禮，吾能言之，杞不足徵也；殷禮，吾能言之，宋不足徵也。「文」獻不足故也", 63.23]]}, {"no": 9, "has": 1, "dur": 69.1, "audio": "audio/q9.mp3", "steps": [["q", "on", 1.18], ["o0", "on bad", 7.37], ["o1", "on ok", 13.79], ["o2", "on bad", 20.46], ["o3", "on bad", 26.64], ["l0", "on", 38.22], ["l1", "on", 46.98], ["l2", "on", 51.98], ["l3", "on", 58.32], ["ans", "on", 64.16], ["rule", "on", 64.95]], "caps": [["第 9 題，關於下列文學作品的體裁，敘述最適當的是：", 0.1], ["四個選項：A，所謂小說，是指透過人物形塑、情節營造、描寫或反映生…；B，所謂新詩，是指以白話文書寫，不受格律、押韻約束，以…", 5.6], ["關鍵想法：比對「文體定義」與「舉例作品」是否相符。", 32.98], ["(B) 對：新詩以白話書寫、不拘格律押韻、以分行決定結構，〈再別康橋〉是典型例子。", 38.22], ["(A) 錯：小說容許虛構，並不「必須具備真實性」。", 46.98], ["(C) 錯：洪醒夫〈散戲〉是小說，不是劇本（劇本例如《牡丹亭》等）。", 51.98], ["(D) 錯：散文重在抒發情志，並非「內容虛構、目的單一」。", 58.32], ["答案：(B) 所謂新詩……例如徐志摩的〈再別康橋〉", 64.45]]}, {"no": 10, "has": 1, "dur": 84.15, "audio": "audio/q10.mp3", "steps": [["q", "on", 1.17], ["o0", "on bad", 6.53], ["o1", "on ok", 12.39], ["o2", "on bad", 18.12], ["o3", "on bad", 23.63], ["l0", "on", 35.57], ["l1", "on", 44.59], ["l2", "on", 55.96], ["l3", "on", 63.58], ["ans", "on", 75.31], ["rule", "on", 76.11]], "caps": [["第 10 題，關於下列文章的說明，最適當的是：", 0.1], ["四個選項：A，〈桃花源記〉開頭點出時代及漁人籍貫，文末提及劉子驥…；B，〈師說〉之「說」指文體而言，全文緊扣師與道的關係，…", 4.71], ["關鍵想法：逐一核對「文體判斷」與「內容主旨」是否與原文相符。", 29.31], ["(B) 對：「說」是古代議論說理的一種文體；〈師說〉全文圍繞「師」與「道」，論述從師問學的重要。", 35.57], ["(A) 錯：〈桃花源記〉是寄託理想的寓言之作，開頭與文末的寫法是增添似真似幻的氛圍，並非「佐證事件真實不虛」。", 44.59], ["(C) 錯：〈晚遊六橋待月記〉重點在西湖桃花與「待月」之趣，不是「月下梅花」。", 55.96], ["(D) 錯：〈畫菊自序〉是為畫菊題寫的序，作者藉菊花自期堅貞勁節、言「有志竟成」，重點不在「學畫始末與畫藝精進」。", 63.58], ["答案：(B) 〈師說〉之「說」指文體而言，全文緊扣師與道的關係，論述從師問學的重要性", 75.61]]}, {"no": 11, "has": 1, "dur": 80.04, "audio": "audio/q11.mp3", "steps": [["q", "on", 1.37], ["o0", "on ok", 7.1], ["o1", "on bad", 13.51], ["o2", "on bad", 20.08], ["o3", "on bad", 26.21], ["l0", "on", 37.79], ["l1", "on", 52.35], ["l2", "on", 57.34], ["l3", "on", 64.04], ["ans", "on", 71.02], ["rule", "on", 71.82]], "caps": [["第 11 題，關於下列詩詞文句的說明，不適當的是：", 0.1], ["四個選項：A，獨自莫憑欄，無限江山，別時容易見時難：寫與情人分離…；B，行行重行行，與君生別離：重複使用「行行」一詞，旨在…", 5.32], ["關鍵想法：本題問「不適當」，先查每句的出處與主旨。", 32.33], ["(A) 不適當：「獨自莫憑欄，無限江山，別時容易見時難」出自李煜〈浪淘沙〉，寫的是亡國之君對故國江山的追念與別離之痛，並非…", 37.79], ["(B) 疊用「行行」確有綿延不盡、行者遠去之感。", 52.35], ["(C) 「鱠縷分」以魚片細切比喻亂臣被分割誅除，抒發痛恨之情。", 57.34], ["(D) 龔自珍借「天公」喻朝廷，呼籲振作、打破成規用人，屬借題發揮。", 64.04], ["答案：(A) 獨自莫憑欄，無限江山，別時容易見時難：寫與情人分離，兩地相思之苦", 71.32]]}, {"no": 12, "has": 1, "dur": 95.36, "audio": "audio/q12.mp3", "steps": [["q", "on", 1.31], ["o0", "on ok", 24.79], ["o1", "on bad", 30.53], ["o2", "on bad", 36.26], ["o3", "on bad", 41.42], ["l0", "on", 57.22], ["l1", "on", 64.67], ["l2", "on", 72.7], ["l3", "on", 79.61], ["ans", "on", 89.0], ["rule", "on", 89.8]], "caps": [["第 12 題，依據下文，最符合文意的是： 古之教者，教以人倫。後世記誦詞章之習起，而先王之教亡。今教童子，惟當以孝弟忠信、…", 0.1], ["四個選項：A，以歌詩為教，循循善誘之下，當可興發童子的志向；B，童子需習禮的原因，在為日後為官之威儀預作準備；C，童子誦讀…", 23.02], ["關鍵想法：把文中「誘之歌詩以發其志意／導之習禮以肅其威儀／諷之讀書以開其知覺」三句對回選項。", 47.22], ["(A) 對：「誘之歌詩以發其志意」＝以歌詩循循善誘，興發童子的志向。", 57.22], ["(B) 錯：習禮的目的是「肅其威儀」（端正儀態），並非為將來當官的排場預作準備。", 64.67], ["(C) 錯：讀書的目的是「開其知覺」（啟發覺悟），重點不在累積知識。", 72.7], ["(D) 錯：文中強調「以孝弟忠信、禮義廉恥為專務」，立教首重人倫德行的涵養，不是知識的累積。", 79.61], ["答案：(A) 以歌詩為教，循循善誘之下，當可興發童子的志向", 89.3]]}, {"no": 13, "has": 1, "dur": 93.16, "audio": "audio/q13.mp3", "steps": [["q", "on", 1.34], ["o0", "on bad", 22.33], ["o1", "on bad", 27.1], ["o2", "on bad", 31.89], ["o3", "on ok", 36.72], ["l0", "on", 49.56], ["l1", "on", 61.91], ["l2", "on", 68.74], ["l3", "on", 80.17], ["ans", "on", 87.67], ["rule", "on", 88.47]], "caps": [["第 13 題，依據下文，關於「爵」的說明，最適當的是： 爵是某種特定形式的酒器名稱，在古文獻裡，它也被用作一般行禮時酒器的…", 0.1], ["四個選項：A，爵乃酒器之通稱，所有酒器均可以爵稱之；B，爵亦可指雀鳥的原因，僅只緣於同音假借；C，爵的造型不實用，乃為顯示…", 20.56], ["關鍵想法：文末推論「商發源於東方、鳥圖騰是東方氏族共同信仰」是解題關鍵。", 41.28], ["(D) 對：爵的形象「象爵（雀）鳥之形」，而鳥圖騰是東方氏族（含商）的共同信仰，故其造型可能與商朝對鳥圖騰的崇拜有關。", 49.56], ["(A) 錯：爵是「一般行禮時酒器的通稱」之一，並非所有酒器都能稱爵。", 61.91], ["(B) 錯：爵指雀鳥雖可用同音假借解釋，但文中強調形象相似、且與圖騰信仰有關，並非「僅只」緣於假借。", 68.74], ["(C) 錯：造型不實用是因為「基於某種信仰」，並未說是為了「顯示文化優越性」。", 80.17], ["答案：(D) 爵的造型可能與商朝對鳥圖騰的崇拜有關", 87.97]]}, {"no": 14, "has": 1, "dur": 100.48, "audio": "audio/q14.mp3", "steps": [["q", "on", 1.33], ["o0", "on bad", 2.9], ["o1", "on bad", 6.09], ["o2", "on bad", 16.7], ["o3", "on ok", 22.06], ["l0", "on", 54.31], ["l1", "on", 64.95], ["l2", "on", 73.36], ["l3", "on", 83.17], ["ans", "on", 93.82], ["rule", "on", 94.62]], "caps": [["第 14 題，依據下文，關於〈赤壁賦〉的論述，最適當的是： 蘇軾〈赤壁賦〉其實是一篇議論縱橫的遊記，不過因為抒情性強，知性…", 0.1], ["四個選項：A，〈赤壁賦〉主要優點在議論縱橫，並提供豐富知識性訊息；B，〈赤壁賦〉之寫景敘事，著重於對三國歷史、地理的論述；…", 20.24], ["關鍵想法：本文主旨是讚美蘇軾「化知性為感性」——把知識材料化成生動意象。", 46.24], ["(D) 對：文中說蘇軾把史地材料「化成生動的意象」放入「客」的口中，正是知性被感性化，而非知識的堆砌。", 54.31], ["(A) 錯：作者明確說〈赤壁賦〉「抒情性強，知性乃不顯眼」，重點不在提供知識訊息。", 64.95], ["(B) 錯：恰恰相反，〈赤壁賦〉「不贅述三國史實，也不詳考赤壁地理」，寫景敘事只是次要因素。", 73.36], ["(C) 錯：作者認為蘇軾是「化知性為感性的天才」，並未說感性完全掩蓋知性，也未評論桐城派是否滿意。", 83.17], ["答案：(D) 〈赤壁賦〉中知性已充分感性化，並非是知識的堆砌而已", 94.12]]}, {"no": 15, "has": 1, "dur": 111.85, "audio": "audio/q15.mp3", "steps": [["q", "on", 1.41], ["o0", "on bad", 20.29], ["o1", "on bad", 26.48], ["o2", "on bad", 32.42], ["o3", "on ok", 38.43], ["l0", "on", 51.36], ["l1", "on", 66.4], ["l2", "on", 74.99], ["l3", "on", 90.36], ["ans", "on", 101.0], ["rule", "on", 101.8]], "caps": [["第 15 題，洪醒夫的〈散戲〉描述一個歌仔戲團由興盛而趨於沒落的故事，同時也寫出在面對社會變遷之際，小說人物在現實與理想間…", 0.1], ["四個選項：A，秦香蓮回到戲臺邊，一面叮嚀孩子們不要亂跑，一面輕描…；B，秀潔突然咬牙切齒地說：「不管有沒有觀眾，戲都應該好…", 18.5], ["關鍵想法：小說鑑賞題要同時檢核「引文情境」與「手法／人物詮釋」是否吻合。", 43.88], ["(D) 對：今昔對比（蒼老憂鬱的現況 vs. 當年教戲時的威嚴自信），並以「一閃一滅」的火光象徵劇團由盛而衰、前途未明，手…", 51.36], ["(A) 錯：〈散戲〉以今昔交錯的方式敘寫劇團沒落的過程，並非「單向線性式」的故事結構。", 66.4], ["(B) 錯：該段引文是秀潔責備阿旺嫂對演戲的敷衍，重點在呈現秀潔對戲曲理想的堅持，選項把「為照顧孩子留在劇團、象徵現實人生…", 74.99], ["(C) 錯：金發伯宣布演完就解散，是面對現實、不得不放手的無奈，「不忘本分的理想堅持者」的詮釋與文意不符。", 90.36], ["答案：(D) 秀潔從人與人之間的縫隙裡望過去……象徵劇團現今的衰落與過往的榮景，同時也暗示著劇團的未來", 101.3]]}, {"no": 16, "has": 1, "dur": 99.36, "audio": "audio/q16.mp3", "steps": [["q", "on", 1.3], ["o0", "on bad", 23.55], ["o1", "on bad", 29.19], ["o2", "on ok", 35.66], ["o3", "on bad", 41.64], ["l0", "on", 56.06], ["l1", "on", 65.31], ["l2", "on", 74.88], ["l3", "on", 82.66], ["ans", "on", 91.97], ["rule", "on", 92.77]], "caps": [["第 16 題，依據下文，關於文意的闡釋，最適當的是： 食物是最深刻的記憶與認同，像基因一樣嵌織著一套複雜的暗碼，標幟著個人…", 0.1], ["四個選項：A，作者以基因比喻食物的記憶與認同，是因為食物會改變基…；B，作者以社會階級做為不同世代人們尋覓自我成長的辨識線…", 21.75], ["關鍵想法：選項與文句要能一一對應，特別注意「比喻」的解讀與範圍詞（各種／特定）。", 47.66], ["(C) 對：原文「有鑑於懷舊情緒『民氣可用』，『古早味』的復古零食遂伺機而起」——正是選項所述。", 56.06], ["(A) 錯：以基因比喻是形容食物記憶與認同的深刻、像暗碼般標幟身分，並非食物會改變基因。", 65.31], ["(B) 錯：文中說「零食」是重要的辨識線索，不是以「社會階級」作為辨識線索。", 74.88], ["(D) 錯：文中談的是「以五六年級生為主力的懷舊零食」，並非「各種零食」對「特定年級」都有懷舊意義。", 82.66], ["答案：(C) 作者指出古早味零食的伺機而起，乃是由於懷舊情緒「民氣可用」", 92.27]]}, {"no": 17, "has": 1, "dur": 92.47, "audio": "audio/q17.mp3", "steps": [["q", "on", 1.29], ["o0", "on bad", 18.56], ["o1", "on bad", 22.82], ["o2", "on bad", 27.98], ["o3", "on ok", 35.03], ["l0", "on", 47.41], ["l1", "on", 57.05], ["l2", "on", 64.91], ["l3", "on", 75.5], ["ans", "on", 83.14], ["rule", "on", 83.94]], "caps": [["第 17 題，依據下文，下列說明最適當的是： 父親還真有好幾個名字。他行七，小名七子、啟子，學名啟京，字東侯。（張大春《我…", 0.1], ["四個選項：A，行七，指的是在全家人中排行第七；B，學名，指的是現今兒童入學時所取的名字；C，父親的名字有很多，行七、七子、…", 16.81], ["關鍵想法：要注意「行七」「學名」「字」在傳統命名文化中的確切意義。", 40.74], ["(D) 對：「字」又稱表字，是本名之外的正式代稱；古人基於禮貌，稱呼他人多稱字而不直呼其名。", 47.41], ["(A) 錯：「行七」是指在家族同輩（兄弟）中排行第七，不是全家人中的第七。", 57.05], ["(B) 錯：「學名」是入學（或啟蒙）時所取、供讀書應試使用的正式名字，並非「現今兒童入學時」才有的新制度。", 64.91], ["(C) 錯：「行七」是排行稱呼，不是名字；小名、學名、字才是名字系統。", 75.5], ["答案：(D) 字，又稱表字，指的是本名之外的正式代稱，基於禮貌，稱呼他人通常稱字而不名", 83.44]]}, {"no": 18, "has": 1, "dur": 88.88, "audio": "audio/q18.mp3", "steps": [["q", "on", 1.42], ["o0", "on bad", 8.16], ["o1", "on ok", 14.2], ["o2", "on bad", 19.41], ["o3", "on bad", 24.55], ["l0", "on", 35.74], ["l1", "on", 47.06], ["l2", "on", 57.66], ["l3", "on", 67.98], ["ans", "on", 76.91], ["rule", "on", 77.71]], "caps": [["第 18 題，下列關於「」內詩句寫作技巧的說明，最適當的是：", 0.1], ["四個選項：A，「髮，在激流中盤繞如一窩水蛇」，詩人以擬物手法描寫…；B，「在我高築的城垛之上／憂鬱便架起雲梯／翻身降落」，…", 6.38], ["關鍵想法：先確認「修辭名稱」與「文本證據」能不能對上。", 30.16], ["(B) 對：「憂鬱便架起雲梯／翻身降落」把抽象的憂鬱寫成能架梯、翻身的人 ⇒ 擬人，且生動表現憂鬱輕易侵入心靈。", 35.74], ["(A) 錯：這句是把頭髮比作「一窩水蛇」（以物喻物，屬擬物／比喻），並非「以頭髮比喻思緒」；解讀方向偏離原句。", 47.06], ["(C) 錯：「五百年」與「一段塵緣」不是對比關係，而是以長時間的祈求凸顯緣分的珍貴；修辭判斷不當。", 57.66], ["(D) 錯：該段以反覆、頂真般的語句寫人我之間的相知，並非「化身為魚、冷眼觀人」的比喻。", 67.98], ["答案：(B) 「在我高築的城垛之上／憂鬱便架起雲梯／翻身降落」，詩人善用擬人技巧，形容憂鬱輕易翻身進入作者的心靈世界", 77.21]]}, {"no": 19, "has": 1, "dur": 71.56, "audio": "audio/q19.mp3", "steps": [["q", "on", 0.0], ["o0", "on bad", 23.75], ["o1", "on bad", 25.09], ["o2", "on ok", 26.54], ["o3", "on bad", 27.86], ["l0", "on", 37.54], ["l1", "on", 45.53], ["l2", "on", 52.46], ["l3", "on", 59.19], ["ans", "on", 69.54], ["rule", "on", 70.34]], "caps": [["第 19 題，【19-20 為題組】 無可掩飾地是在試圖解釋生和死。簡單地說，神話用變形來代替生命死亡的這一事實。整個神話…", 0.1], ["四個選項：A，甲乙；B，甲丙；C，乙丙；D，乙丁", 22.11], ["關鍵想法：「變形再生」的判準是——形體改變之後以另一種形態繼續存在（死亡即再生）。", 28.91], ["乙：夸父渴死後「棄其杖，化為鄧林」——形體化為樹林，是死亡後的再生 ⇒ 符合。", 37.54], ["丙：女娃溺死後「故為精衛」——化為精衛鳥，銜木石以堙東海 ⇒ 符合。", 45.53], ["甲：羲和生十日，是神話中的創生敘述，並未涉及形體改化。", 52.46], ["丁：吳剛伐桂「樹創隨合」，寫的是樹木自癒與受罰，也不涉及形體改變而再生。", 59.19], ["答案：(C) 乙丙", 69.84]]}, {"no": 20, "has": 1, "dur": 80.23, "audio": "audio/q20.mp3", "steps": [["q", "on", 0.0], ["o0", "on bad", 18.52], ["o1", "on ok", 21.21], ["o2", "on bad", 25.97], ["o3", "on bad", 31.26], ["l0", "on", 42.15], ["l1", "on", 54.92], ["l2", "on", 60.62], ["l3", "on", 64.45], ["ans", "on", 74.85], ["rule", "on", 75.65]], "caps": [["第 20 題，【19-20 為題組】承第 19 題引文：神話用變形來代替生命死亡的這一事實……透過變形，死亡就是再生。下列…", 0.1], ["四個選項：A，未知生，焉知死；B，生也死之徒，死也生之始，孰知其紀；C，生，事之以禮；死，葬之以禮，祭之以禮；D，谷神不死…", 16.8], ["關鍵想法：要找出「生死相續、死即再生」的句子。", 36.98], ["(B) 對：「生也死之徒，死也生之始」＝生是死的同類，死是生的開端，生死循環相續，正可詮釋「透過變形，死亡就是再生」。", 42.15], ["(A) 「未知生，焉知死」強調先盡生事，回避死亡問題。", 54.92], ["(C) 講的是事生、葬死的禮儀規範。", 60.62], ["(D) 「谷神不死……玄牝之門，是謂天地根」形容道體生生不息、為天地根源，談的是「道」，不是形體變化的再生。", 64.45], ["答案：(B) 生也死之徒，死也生之始，孰知其紀", 75.15]]}], VOICE = "Xiaoxiao";
+const $ = id => document.getElementById(id);
+const dbg = m => { try { $("DBG").textContent = m; } catch (e) { } };
+window.onerror = (m, s, l) => { dbg("ERR@" + l + ":" + m); return false; };
+
+let curNo = 0, curPage = null, ci = 0, capIdx = -1;
+const RESET_CLS = ["on", "s2", "s3", "pw", "balanced", "m0", "m1", "m2", "m3"];
+const audio = new Audio();
+audio.preload = "auto";
+const pg = n => $("pg" + n);
+const el = (page, k) => page.querySelector('[data-k="' + k + '"]');
+const dur = n => (PAGES[n - 1] && PAGES[n - 1].dur) || 0;
+
+function reset(page) {
+  page.querySelectorAll("*").forEach(e => RESET_CLS.forEach(c => e.classList.remove(c)));
+  $("CAPG").innerHTML = "";   /* 字幕為全卷共用元素 */
+  capIdx = -1;
+}
+function addStep(s) {
+  const e = el(curPage, s[0]);
+  if (!e) return;
+  s[1].split(" ").forEach(c => e.classList.add(c));
+}
+function paint(page) {  /* 靜態：一次畫到 t 秒 */
+  const cs = $("CAPG");
+  page.querySelectorAll("*").forEach(e => RESET_CLS.forEach(c => e.classList.remove(c)));
+  capIdx = -1;
+  const st = PAGES[curNo - 1].steps;
+  for (let i = 0; i < st.length; i++) if (st[i][2] <= paint.t) { const e = el(page, st[i][0]); if (e) st[i][1].split(" ").forEach(c => e.classList.add(c)); }
+  const cp = PAGES[curNo - 1].caps;
+  let k = -1; for (let i = 0; i < cp.length; i++) if (cp[i][1] <= paint.t) k = i;
+  if (k >= 0 && cs) { cs.innerHTML = "<span>" + cp[k][0] + "</span>"; capIdx = k; }
+  $("FL").style.width = (dur(curNo) ? (100 * paint.t / dur(curNo)) : 0) + "%";
+  $("TM").textContent = fmt(paint.t) + " / " + fmt(dur(curNo));
+}
+function updateCap(t) {
+  const cp = PAGES[curNo - 1].caps;
+  let k = -1; for (let i = 0; i < cp.length; i++) if (cp[i][1] <= t) k = i;
+  if (k === capIdx) return;
+  capIdx = k;
+  const box = $("CAPG");
+  if (k < 0) { box.innerHTML = ""; return; }
+  box.innerHTML = "<span>" + cp[k][0] + "</span>";
+  requestAnimationFrame(() => box.firstChild && box.firstChild.classList.add("on"));
+}
+function fmt(s) { s = Math.max(0, s | 0); return (s / 60 | 0) + ":" + String(s % 60).padStart(2, "0"); }
+
+function tick() {
+  if (!audio.paused && curPage) {
+    const t = audio.currentTime, st = PAGES[curNo - 1].steps;
+    while (ci < st.length && st[ci][2] <= t) { addStep(st[ci]); ci++; }
+    updateCap(t);
+    const D = audio.duration || dur(curNo);
+    $("FL").style.width = (D ? (100 * t / D) : 0) + "%";
+    $("TM").textContent = fmt(t) + " / " + fmt(D);
+  }
+  requestAnimationFrame(tick);
+}
+requestAnimationFrame(tick);
+
+function goto(n, t) {
+  if (!PAGES[n - 1]) return;
+  audio.pause(); audio.removeAttribute("src"); audio.load();
+  $("BT").textContent = "▶";
+  document.querySelectorAll(".qpage").forEach(p => p.classList.remove("cur"));
+  const page = pg(n); page.classList.add("cur");
+  document.querySelectorAll(".qno").forEach(b => b.classList.toggle("act", +b.dataset.n === n));
+  curNo = n; curPage = page; ci = 0;
+  reset(page);
+  $("CN").textContent = n;
+  const P = PAGES[n - 1];
+  if (!P.has) { $("TM").textContent = "— / —"; $("FL").style.width = "0%"; $("CAPG").innerHTML = ""; return; }
+  audio.src = P.audio;
+  if (t != null) { paint.t = t; paint(page); }
+  else {
+    $("FL").style.width = "0%"; $("TM").textContent = "0:00 / " + fmt(P.dur);
+    ci = 0;
+    audio.play().then(() => $("BT").textContent = "❚❚").catch(() => { });
+  }
+}
+
+document.querySelectorAll(".qno").forEach(b => b.onclick = () => goto(+b.dataset.n));
+$("BT").onclick = () => {
+  if (!PAGES[curNo - 1].has) return;
+  if (audio.paused) audio.play().then(() => $("BT").textContent = "❚❚").catch(() => { });
+  else { audio.pause(); $("BT").textContent = "▶"; }
+};
+$("RP").onclick = () => { if (PAGES[curNo - 1].has) { reset(curPage); ci = 0; audio.currentTime = 0; audio.play().catch(() => { }); $("BT").textContent = "❚❚"; } };
+audio.onpause = () => $("BT").textContent = "▶";
+audio.onended = () => $("BT").textContent = "▶";
+audio.onplay = () => $("BT").textContent = "❚❚";
+$("TK").onclick = e => {
+  if (!PAGES[curNo - 1].has) return;
+  const r = $("TK").getBoundingClientRect();
+  const p = Math.min(1, Math.max(0, (e.clientX - r.left) / r.width));
+  const D = audio.duration || dur(curNo);
+  audio.currentTime = p * D;
+  if (audio.paused) { paint.t = audio.currentTime; paint(curPage); } else { ci = 0; }
+};
+function audit() {  /* 版面自檢：越界 / 文字溢出 / 元素重疊 */
+  const WR = $("wrap").getBoundingClientRect(), L = [], items = [];
+  const nm = e => e.dataset.k || (e.className.split(" ")[0] || "el");
+  const all = curPage.querySelectorAll(".q,.ln,.fig,.anscard,.rule"), capEl2 = $("CAPG");
+  const list = Array.prototype.slice.call(all);
+  if (capEl2) list.push(capEl2);
+  list.forEach(e => {
+    const r = e.getBoundingClientRect(), k = nm(e);
+    items.push({ k: k, r: r });
+    if (r.bottom > WR.bottom + 1 || r.top < WR.top - 1 || r.left < WR.left - 1 || r.right > WR.right + 1)
+      L.push("OUT:" + k + "[t" + Math.round(r.top - WR.top) + ",b" + Math.round(r.bottom - WR.top) + ",l" + Math.round(r.left - WR.left) + ",r" + Math.round(r.right - WR.left) + "]");
+    if (e.classList.contains("ln")) {
+      const v = e.firstElementChild;
+      if (v && v.scrollHeight > e.clientHeight + 1) L.push("CLIP:" + k + "[" + v.scrollHeight + ">" + e.clientHeight + "]");
+    }
+    if (e.classList.contains("fig") && e.scrollHeight > e.clientHeight + 1) L.push("CLIPF[" + e.scrollHeight + ">" + e.clientHeight + "]");
+  });
+  for (let i = 0; i < items.length; i++) for (let j = i + 1; j < items.length; j++) {
+    const a = items[i].r, b = items[j].r;
+    const ov = Math.min(a.bottom, b.bottom) - Math.max(a.top, b.top);
+    const oh = Math.min(a.right, b.right) - Math.max(a.left, b.left);
+    if (ov > 1.5 && oh > 1.5) L.push("OVL:" + items[i].k + "~" + items[j].k + "[" + Math.round(ov) + "x" + Math.round(oh) + "]");
+  }
+  return "AUDIT|" + (L.length ? L.join(" ; ") : "clean");
+}
+function fit() {
+  const k = Math.min(window.innerWidth / 1320, window.innerHeight / 830);
+  document.documentElement.style.setProperty("--k", Math.max(.45, Math.min(1.25, k)));
+}
+window.addEventListener("resize", fit); fit();
+
+const qs = new URLSearchParams(location.search);
+const qn = parseInt(qs.get("q") || "1", 10);
+if (qs.has("at")) {
+  document.body.classList.add("st");
+  goto(qn, parseFloat(qs.get("at")) || 0);
+  dbg("st|q=" + qn + "|at=" + qs.get("at") + "|cap=" + ($("CAPG").textContent || "").slice(0, 12)
+    + "|" + (qs.has("audit") ? audit() : ""));
+} else {
+  goto(qn, null);
+  dbg("ok|ready|q=" + qn + "|dur=" + dur(qn));
+}
+</script>
+<script>
+(function(){
+ const L=[];
+ document.body.classList.add('st');
+ for (const P of PAGES){
+   if(!P.has) continue;
+   const pts=[Math.max(0.4,P.dur*0.5), Math.max(0.8,P.dur*0.8), Math.max(1.0,P.dur-0.3)];
+   for (const at of pts){ goto(P.no, at); L.push('Q'+P.no+' '+audit()); }
+ }
+ document.getElementById('DBG').textContent = L.join('\n');
+})();
+</script>
+
+</body></html>

@@ -1,0 +1,898 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>115 物理 3B1B 動態講解（整卷）</title>
+<style>
+:root{--fg:#e9eefc;--dim:#93a1c8;--gold:#ffd166;--cy:#66d9ef;--pk:#ff8fa3;}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;overflow:hidden;background:#070a14;color:var(--fg);
+  font-family:"PingFang TC","Helvetica Neue",system-ui,sans-serif;
+  background-image:radial-gradient(1100px 620px at 50% -10%,#16203c,#070a14 72%)}
+#wrap{position:fixed;left:50%;top:50%;width:1280px;height:790px;
+  transform:translate(-50%,-50%) scale(var(--k,1));transform-origin:center center}
+.nav{position:absolute;left:36px;right:36px;top:10px;height:46px;display:flex;align-items:center;gap:6px}
+.nav .ttl{font-size:15px;color:var(--dim);margin-right:10px;white-space:nowrap}
+.nav .ttl b{color:var(--cy);font-weight:600}
+.qno{width:34px;height:34px;border-radius:9px;border:1px solid #25315a;background:#111a33;color:#8fa0cc;
+  font-size:14px;cursor:pointer;font-variant-numeric:tabular-nums;transition:.2s;flex:0 0 auto}
+.qno:hover{border-color:#41558c;color:var(--fg)}
+.qno.act{background:linear-gradient(180deg,#2a3a68,#1b2748);border-color:var(--cy);color:#fff;
+  box-shadow:0 0 14px rgba(102,217,239,.35)}
+.qno.todo{opacity:.38}
+.qno.todo:hover{border-color:#31406e;color:#8fa0cc}
+.qpage{position:absolute;inset:0;display:none}
+.qpage.cur{display:block}
+.q{position:absolute;left:60px;right:60px;top:62px;text-align:center;
+  font-family:"Times New Roman",Georgia,serif;font-size:30px;letter-spacing:.5px;
+  opacity:0;transform:translateY(-14px);transition:opacity .9s ease,transform .9s ease}
+.q.on{opacity:1;transform:none}
+.q .ask{display:block;margin-top:8px;font-size:22px;color:var(--gold);font-family:inherit}
+.main{position:absolute;left:48px;right:48px;top:178px;height:462px;display:flex;gap:24px}
+.chain{flex:0 0 726px;display:flex;flex-direction:column;justify-content:center;gap:4px}
+.ln{position:relative;min-height:46px;font-family:"Times New Roman",Georgia,serif;font-size:22px}
+.ln .v{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;text-align:center;
+  padding:0 6px;line-height:1.25;
+  opacity:0;transform:translateY(14px);transition:opacity .55s ease,transform .55s ease,color .5s ease}
+.ln.on .v{transform:none}
+.ln.on .v1{opacity:1}
+.ln.on.s2 .v1{opacity:0}
+.ln.on.s2 .v2{opacity:1}
+.ln.on.s3 .v2{opacity:0}
+.ln.on.s3 .v3{opacity:1}
+.tint1{color:var(--pk)}.tint2{color:var(--cy)}
+.side{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px}
+.fig{width:100%;height:300px;display:flex;align-items:center;justify-content:center;
+  opacity:0;transform:translateY(18px) scale(.96);transition:opacity .9s ease,transform .9s ease}
+.fig.on{opacity:1;transform:none}
+.anscard{width:100%;max-width:430px;padding:16px 22px;border:2px solid var(--gold);border-radius:16px;
+  background:linear-gradient(180deg,rgba(255,209,102,.14),rgba(255,209,102,.05));
+  box-shadow:0 0 34px rgba(255,209,102,.22);text-align:center;opacity:0;transform:translateY(20px) scale(.95);
+  transition:opacity .8s ease,transform .8s ease}
+.anscard.on{opacity:1;transform:none}
+.anscard .tag{font-size:14px;letter-spacing:3px;color:var(--dim)}
+.anscard .val{margin-top:4px;font-family:"Times New Roman",Georgia,serif;font-size:30px;color:var(--gold)}
+.anscard .note{margin-top:4px;font-size:13px;color:#8b9ac6;font-family:"Menlo",monospace}
+.rule{position:absolute;left:48px;right:48px;top:656px;text-align:center;font-size:16px;color:var(--dim);
+  opacity:0;transform:translateY(10px);transition:opacity .8s ease,transform .8s ease}
+.rule.on{opacity:1;transform:none}
+.rule b{color:var(--cy);font-weight:600}
+.cap{position:absolute;left:60px;right:60px;bottom:56px;min-height:30px;text-align:center;font-size:17px;
+  color:var(--fg);font-family:"Times New Roman","PingFang TC",serif}
+.cap span{opacity:0;transition:opacity .3s ease}
+.cap span.on{opacity:.92}
+.bar{position:absolute;left:48px;right:48px;bottom:12px;height:42px;display:flex;align-items:center;gap:14px}
+.btn{width:42px;height:42px;border-radius:50%;border:1px solid #2b3a63;background:#131c33;color:var(--fg);
+  font-size:15px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:.2s;flex:0 0 auto}
+.btn:hover{background:#1c2745;border-color:#41558c}
+.track{flex:1;height:6px;border-radius:3px;background:#1a2340;position:relative;cursor:pointer}
+.track .fill{position:absolute;left:0;top:0;bottom:0;width:0;border-radius:3px;
+  background:linear-gradient(90deg,#66d9ef,#ffd166)}
+.tm{font-size:13px;color:var(--dim);font-variant-numeric:tabular-nums;flex:0 0 auto}
+.vo{font-size:13px;color:var(--dim);white-space:nowrap;flex:0 0 auto}
+.vo b{color:var(--cy);font-weight:600}
+.empty{position:absolute;left:0;right:0;top:320px;text-align:center;color:var(--dim);font-size:20px}
+.empty b{color:var(--gold)}
+/* ---- 天平（Q1） ---- */
+.beam{transform-box:fill-box;transform-origin:50% 12%;transform:rotate(-8deg);
+  transition:transform 1.1s cubic-bezier(.34,1.4,.5,1)}
+.fig.balanced .beam{transform:rotate(0deg)}
+.scale{width:100%;height:300px}
+.scale text{font-family:"Times New Roman",Georgia,serif;font-size:23px;fill:var(--fg);opacity:0;
+  transition:opacity .6s ease}
+.fig.pw .scale text{opacity:1}
+/* ---- 圖元通用（Q2–Q4） ---- */
+.fig svg.svgp{width:100%;height:auto;max-height:300px}
+.tx{fill:#8b9ac6;font-size:14px;font-family:"Menlo",monospace}
+.mk{opacity:0;transition:.6s}
+.fig.m0 .k0,.fig.m1 .k1,.fig.m2 .k2,.fig.m3 .k3{opacity:1}
+.q3fig{display:flex;flex-direction:column;gap:10px;font-family:"Menlo",monospace}
+.q3fig .ct{color:#7f8db8;font-size:13px}
+.q3fig .row{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.bx{background:#16223f;border:1px solid #2c3d6b;border-radius:8px;padding:7px 13px;font-size:17px;transition:.5s}
+.bx.hi{border-color:var(--gold);color:var(--gold)}
+.plus{color:#7f8db8}
+.ar{color:var(--cy);font-size:13px}
+.tip{margin-top:8px;color:var(--gold);font-size:14px}
+.mtx{display:flex;flex-direction:column;gap:8px;margin-left:6px}
+.mrow{display:flex;align-items:center;gap:7px;padding:6px 8px;border-radius:9px;transition:.5s}
+.mrow .vl{color:#7f8db8;font-size:13px;width:34px}
+.mrow .m,.mrow .cst{width:56px;text-align:center;background:#16223f;border:1px solid #2c3d6b;border-radius:7px;
+  padding:7px 0;font-family:"Menlo",monospace;font-size:16px}
+.mrow .cst{border-color:#3a5a9a}
+.vbar{color:#3d4a76}
+.fig.m0 .mrow:nth-child(1),.fig.m1 .mrow:nth-child(2),.fig.m2 .mrow:nth-child(3){background:#1b2b52}
+.fig.m3 .mrow:nth-child(3){border:1px dashed var(--gold)}
+body.st *{transition:none!important;animation:none!important}
+
+/* ============ 物理科版面微調 ============ */
+.q{font-size:16.5px;line-height:1.62}
+.chain .ln{font-size:15.5px;line-height:1.98}
+.anscard .val{font-size:21px;line-height:1.42}
+.anscard .note{font-size:12.5px;line-height:1.5}
+.fig svg.svgp{max-height:298px}
+.rule{font-size:14.5px}
+</style></head>
+<body><div id="DBG" hidden></div>
+<div id="wrap">
+  <div class="nav" id="NAV"><span class="ttl">115 學年度　<b>物理</b>　3B1B 動態講解</span><button class="qno" data-n="1" type="button">1</button><button class="qno" data-n="2" type="button">2</button><button class="qno" data-n="3" type="button">3</button><button class="qno" data-n="4" type="button">4</button><button class="qno" data-n="5" type="button">5</button><button class="qno" data-n="6" type="button">6</button><button class="qno" data-n="7" type="button">7</button><button class="qno" data-n="8" type="button">8</button><button class="qno" data-n="9" type="button">9</button><button class="qno" data-n="10" type="button">10</button><button class="qno" data-n="11" type="button">11</button><button class="qno" data-n="12" type="button">12</button><button class="qno" data-n="13" type="button">13</button><button class="qno" data-n="14" type="button">14</button><button class="qno" data-n="15" type="button">15</button><button class="qno" data-n="16" type="button">16</button><button class="qno" data-n="17" type="button">17</button><button class="qno" data-n="18" type="button">18</button><button class="qno" data-n="19" type="button">19</button><button class="qno" data-n="20" type="button">20</button></div>
+<section class="qpage" id="pg1" data-no="1">
+  <div class="q" data-k="q">絕熱密閉容器沿光滑水平面等速度移動，內裝氫氣
+    <span class="ask">氫氣的總動能、內能與溫度如何變化？</span></div>
+  <div class="main">
+    <div class="chain"><div class="ln" data-k="l0"><span class="v v1">質心整體等速前進　⇒　質心動能 K 增加</span></div><div class="ln" data-k="l1"><span class="v v1">不變形 ＋ 絕熱 ＋ 密閉　⇒　W = 0、Q = 0</span></div><div class="ln" data-k="l2"><span class="v v1">ΔU = Q − W = 0　⇒　內能不變</span></div><div class="ln" data-k="l3"><span class="v v1">內能只與分子相對於容器的雜亂運動有關</span></div><div class="ln" data-k="l4"><span class="v v1">⇒　總動能增加、內能不變、溫度不變</span></div></div>
+    <div class="side">
+      <div class="fig" data-k="fig"><svg viewBox="0 0 420 330" class="svgp">
+  <text class="mk k0 tx" x="210" y="22" text-anchor="middle" style="fill:#ffd166;font-size:14px">絕熱密閉容器・等速度水平移動</text>
+  <rect class="mk k0" x="60" y="52" width="270" height="132" rx="14" fill="#16223f" stroke="#66d9ef" stroke-width="2"/>
+  <circle class="mk k0" cx="100" cy="88" r="7" fill="#41558c"/><circle class="mk k0" cx="150" cy="120" r="7" fill="#41558c"/>
+  <circle class="mk k0" cx="196" cy="80" r="7" fill="#41558c"/><circle class="mk k0" cx="235" cy="132" r="7" fill="#41558c"/>
+  <circle class="mk k0" cx="272" cy="92" r="7" fill="#41558c"/><circle class="mk k0" cx="196" cy="150" r="7" fill="#41558c"/>
+  <circle class="mk k0" cx="120" cy="158" r="7" fill="#41558c"/><circle class="mk k0" cx="290" cy="152" r="7" fill="#41558c"/>
+  <line class="mk k0" x1="50" y1="196" x2="390" y2="196" stroke="#3b4b7d" stroke-width="2"/>
+  <text class="mk k0 tx" x="220" y="216" text-anchor="middle" style="font-size:12px">光滑水平面（無摩擦）</text>
+  <path class="mk k0" d="M336 118 h40 m-11 -8 l11 8 l-11 8" stroke="#4ade80" stroke-width="2.4" fill="none"/>
+  <text class="mk k0 tx" x="380" y="106" style="fill:#4ade80;font-size:13px">v</text>
+  <text class="mk k1 tx" x="60" y="256" style="fill:#66d9ef;font-size:14px">不變形・絕熱・密閉</text>
+  <text class="mk k1 tx" x="60" y="280" style="fill:#93a1c8;font-size:13px">體積不變　外界不作功</text>
+  <text class="mk k2 tx" x="60" y="256" style="fill:#ffd166;font-size:14px">W = 0　Q = 0</text>
+  <text class="mk k2 tx" x="60" y="280" style="fill:#ffd166;font-size:14px">⇒　ΔU = 0</text>
+  <text class="mk k3 tx" x="240" y="256" style="fill:#4ade80;font-size:15px">動能 ↑</text>
+  <text class="mk k3 tx" x="240" y="282" style="fill:#4ade80;font-size:15px">內能 →　溫度 →</text>
+</svg></div>
+      <div class="anscard" data-k="ans">
+        <div class="tag">答　案</div>
+        <div class="val">(C)　總動能增加、內能不變、溫度不變</div>
+        <div class="note">W = 0 且 Q = 0　⇒　ΔU = 0；等速度前進只增加質心動能</div>
+      </div>
+    </div>
+  </div>
+  <div class="rule" data-k="rule">通則：<b>整體前進的動能不屬於內能，內能只看分子雜亂運動</b></div>
+</section>
+<section class="qpage" id="pg2" data-no="2">
+  <div class="q" data-k="q">彈簧秤平放於光滑桌面，左右兩端各以 T 與 T′ 的水平拉力拉住
+    <span class="ask">靜止平衡時，T、F、T′ 三者的關係為何？</span></div>
+  <div class="main">
+    <div class="chain"><div class="ln" data-k="l0"><span class="v v1">彈簧秤靜止　⇒　水平合力為零　⇒　T = T′</span></div><div class="ln" data-k="l1"><span class="v v1">讀數 F 顯示「掛勾所受張力」＝ 右端繩張力 T′</span></div><div class="ln" data-k="l2"><span class="v v1">同一條輕繩兩端張力相等</span></div><div class="ln" data-k="l3"><span class="v v1">⇒　T = F = T′</span></div><div class="ln" data-k="l4"><span class="v v1">兩力不是「互相抵消成 0」，彈簧伸長量只由一端張力決定</span></div></div>
+    <div class="side">
+      <div class="fig" data-k="fig"><svg viewBox="0 0 420 330" class="svgp">
+  <text class="mk k0 tx" x="210" y="22" text-anchor="middle" style="fill:#ffd166;font-size:14px">彈簧秤靜止：兩端拉力大小相等</text>
+  <line class="mk k0" x1="40" y1="126" x2="380" y2="126" stroke="#3b4b7d" stroke-width="2"/>
+  <rect class="mk k0" x="150" y="96" width="120" height="60" rx="10" fill="#16223f" stroke="#66d9ef" stroke-width="2"/>
+  <text class="mk k0 tx" x="210" y="132" text-anchor="middle" style="fill:#66d9ef;font-size:13px">彈簧秤</text>
+  <path class="mk k0" d="M150 126 h-46 m9 -8 l-9 8 l9 8" stroke="#4ade80" stroke-width="2.4" fill="none"/>
+  <path class="mk k0" d="M270 126 h46 m-9 -8 l9 8 l-9 8" stroke="#ff8fa3" stroke-width="2.4" fill="none"/>
+  <text class="mk k0 tx" x="98" y="112" text-anchor="middle" style="fill:#4ade80;font-size:13px">T</text>
+  <text class="mk k0 tx" x="322" y="112" text-anchor="middle" style="fill:#ff8fa3;font-size:13px">T′</text>
+  <text class="mk k0 tx" x="210" y="184" text-anchor="middle" style="fill:#93a1c8;font-size:12px">靜止不動（光滑桌面、無摩擦）</text>
+  <text class="mk k1 tx" x="60" y="236" style="fill:#66d9ef;font-size:14px">靜止 ⇒ 合力 = 0</text>
+  <text class="mk k1 tx" x="60" y="260" style="fill:#66d9ef;font-size:14px">⇒　T = T′</text>
+  <text class="mk k2 tx" x="60" y="236" style="fill:#ffd166;font-size:14px">讀數 F = 掛勾張力</text>
+  <text class="mk k2 tx" x="60" y="260" style="fill:#ffd166;font-size:14px">⇒　F = T′</text>
+  <text class="mk k3 tx" x="240" y="236" style="fill:#4ade80;font-size:16px">T = F = T′</text>
+  <text class="mk k3 tx" x="240" y="264" style="fill:#93a1c8;font-size:12px">答案 (C)</text>
+</svg></div>
+      <div class="anscard" data-k="ans">
+        <div class="tag">答　案</div>
+        <div class="val">(C)　T = F = T′</div>
+        <div class="note">靜止 ⇒ T = T′；讀數 F = 掛勾張力 = T′　⇒　T = F = T′</div>
+      </div>
+    </div>
+  </div>
+  <div class="rule" data-k="rule">通則：<b>靜止 ⇒ 合力為零；彈簧秤讀數只由一端張力決定</b></div>
+</section>
+<section class="qpage" id="pg3" data-no="3">
+  <div class="q" data-k="q">甲 普朗克能量量子化、乙 赫茲證實電磁波並發現光電效應、丙 愛因斯坦提出光子
+    <span class="ask">依時間先後排列，何者正確？</span></div>
+  <div class="main">
+    <div class="chain"><div class="ln" data-k="l0"><span class="v v1">乙　赫茲：1887 年證實電磁波、同年發現光電效應　（最早）</span></div><div class="ln" data-k="l1"><span class="v v1">甲　普朗克：1900 年提出能量量子化 E = hf　（居中）</span></div><div class="ln" data-k="l2"><span class="v v1">丙　愛因斯坦：1905 年提出光量子，解釋光電效應　（最晚）</span></div><div class="ln" data-k="l3"><span class="v v1">⇒　順序　乙 → 甲 → 丙</span></div><div class="ln" data-k="l4"><span class="v v1">延伸時間軸：1913 波耳氫原子模型</span></div></div>
+    <div class="side">
+      <div class="fig" data-k="fig"><svg viewBox="0 0 420 330" class="svgp">
+  <text class="mk k0 tx" x="210" y="22" text-anchor="middle" style="fill:#ffd166;font-size:14px">近代物理時間軸</text>
+  <line class="mk k0" x1="46" y1="150" x2="380" y2="150" stroke="#3b4b7d" stroke-width="3"/>
+  <path class="mk k0" d="M380 150 l-14 -6 v12 z" fill="#3b4b7d"/>
+  <text class="mk k0 tx" x="60" y="176" style="font-size:11px">1880</text>
+  <text class="mk k0 tx" x="352" y="176" style="font-size:11px">1910</text>
+  <circle class="mk k1" cx="118" cy="150" r="7" fill="#4ade80"/>
+  <text class="mk k1 tx" x="118" y="110" text-anchor="middle" style="fill:#4ade80;font-size:13px">乙 赫茲</text>
+  <text class="mk k1 tx" x="118" y="92" text-anchor="middle" style="fill:#93a1c8;font-size:12px">1887 電磁波・光電效應</text>
+  <circle class="mk k2" cx="222" cy="150" r="7" fill="#66d9ef"/>
+  <text class="mk k2 tx" x="222" y="204" text-anchor="middle" style="fill:#66d9ef;font-size:13px">甲 普朗克</text>
+  <text class="mk k2 tx" x="222" y="224" text-anchor="middle" style="fill:#93a1c8;font-size:12px">1900 能量量子化</text>
+  <circle class="mk k3" cx="308" cy="150" r="7" fill="#ff8fa3"/>
+  <text class="mk k3 tx" x="308" y="110" text-anchor="middle" style="fill:#ff8fa3;font-size:13px">丙 愛因斯坦</text>
+  <text class="mk k3 tx" x="308" y="92" text-anchor="middle" style="fill:#93a1c8;font-size:12px">1905 光量子</text>
+  <text class="mk k3 tx" x="210" y="280" text-anchor="middle" style="fill:#ffd166;font-size:17px">乙 → 甲 → 丙　(C)</text>
+  <text class="mk k3 tx" x="210" y="306" text-anchor="middle" style="fill:#93a1c8;font-size:12px">1913 波耳氫原子模型</text>
+</svg></div>
+      <div class="anscard" data-k="ans">
+        <div class="tag">答　案</div>
+        <div class="val">(C)　乙、甲、丙</div>
+        <div class="note">赫茲 1887（電磁波、光電效應）→ 普朗克 1900（量子化）→ 愛因斯坦 1905（光量子）</div>
+      </div>
+    </div>
+  </div>
+  <div class="rule" data-k="rule">通則：<b>1887 赫茲 → 1900 普朗克 → 1905 愛因斯坦 → 1913 波耳</b></div>
+</section>
+<section class="qpage" id="pg4" data-no="4">
+  <div class="q" data-k="q">關於核能發電的敘述，何者錯誤？
+    <span class="ask">穩定發電需要的是「反應率固定」還是「反應率成長」？</span></div>
+  <div class="main">
+    <div class="chain"><div class="ln" data-k="l0"><span class="v v1">(A) 中子撞鈾-235 引發連鎖分裂並放出能量　→ 正確</span></div><div class="ln" data-k="l1"><span class="v v1">(B) 發電時中子數必須持續倍數成長　→ 錯誤</span></div><div class="ln" data-k="l2"><span class="v v1">(C) 核分裂熱能加熱水成蒸氣，推動渦輪發電機　→ 正確</span></div><div class="ln" data-k="l3"><span class="v v1">(D) 降低鈾濃度、中子減速、控制棒吸收中子　→ 正確</span></div><div class="ln" data-k="l4"><span class="v v1">穩定發電：有效增殖因數 ≈ 1，功率才能穩定輸出</span></div></div>
+    <div class="side">
+      <div class="fig" data-k="fig"><svg viewBox="0 0 420 330" class="svgp">
+  <text class="mk k0 tx" x="210" y="22" text-anchor="middle" style="fill:#ffd166;font-size:14px">連鎖核分裂：鈾-235 吸收中子後分裂</text>
+  <circle class="mk k0" cx="210" cy="96" r="30" fill="#16223f" stroke="#66d9ef" stroke-width="2"/>
+  <text class="mk k0 tx" x="210" y="102" text-anchor="middle" style="fill:#66d9ef;font-size:12px">U-235</text>
+  <circle class="mk k0" cx="120" cy="60" r="5" fill="#ffd166"/>
+  <path class="mk k0" d="M138 68 L180 88 m-11 -8 l11 8 l-11 8" stroke="#ffd166" stroke-width="2" fill="none"/>
+  <text class="mk k0 tx" x="104" y="48" style="fill:#ffd166;font-size:11px">中子</text>
+  <circle class="mk k0" cx="160" cy="164" r="16" fill="#1d2745" stroke="#ff8fa3"/>
+  <circle class="mk k0" cx="260" cy="164" r="16" fill="#1d2745" stroke="#ff8fa3"/>
+  <path class="mk k0" d="M186 156 L222 146 m-10 -3 l10 3 l-9 6" stroke="#4ade80" stroke-width="1.8" fill="none"/>
+  <path class="mk k0" d="M234 156 L198 146 m10 -3 l-10 3 l9 6" stroke="#4ade80" stroke-width="1.8" fill="none"/>
+  <text class="mk k0 tx" x="210" y="200" text-anchor="middle" style="fill:#93a1c8;font-size:12px">放出 2~3 個中子，可再引發分裂</text>
+  <text class="mk k1 tx" x="60" y="240" style="fill:#4ade80;font-size:13px">(A) 可發電　正確</text>
+  <text class="mk k1 tx" x="60" y="262" style="fill:#93a1c8;font-size:12px">分裂放出大量能量</text>
+  <text class="mk k2 tx" x="60" y="240" style="fill:#ff8fa3;font-size:14px">(B) 中子數倍數成長　錯誤</text>
+  <text class="mk k2 tx" x="60" y="264" style="fill:#93a1c8;font-size:12px">應維持 k ≈ 1，功率才穩定</text>
+  <text class="mk k3 tx" x="240" y="240" style="fill:#ffd166;font-size:16px">答案 (B)</text>
+  <text class="mk k3 tx" x="240" y="266" style="fill:#93a1c8;font-size:11px">(C)(D) 敘述皆正確</text>
+</svg></div>
+      <div class="anscard" data-k="ans">
+        <div class="tag">答　案</div>
+        <div class="val">(B)　發電時中子數必須持續增加以倍數成長</div>
+        <div class="note">穩定發電需有效增殖因數 ≈ 1，中子數維持穩定；持續成長會失控</div>
+      </div>
+    </div>
+  </div>
+  <div class="rule" data-k="rule">通則：<b>穩定發電要讓有效增殖因數約等於 1，反應率固定不失控</b></div>
+</section>
+<section class="qpage" id="pg5" data-no="5">
+  <div class="q" data-k="q">【題組 5-6】絕熱汽缸內理想氣體推動活塞向左移動（膨脹）
+    <span class="ask">氣體內能變化量 ΔU 與活塞動能 K 的關係為何？</span></div>
+  <div class="main">
+    <div class="chain"><div class="ln" data-k="l0"><span class="v v1">活塞左移　⇒　氣體體積變大　⇒　膨脹對外作功 W &gt; 0</span></div><div class="ln" data-k="l1"><span class="v v1">絕熱又無物質交換　⇒　Q = 0</span></div><div class="ln" data-k="l2"><span class="v v1">ΔU = Q − W = −W &lt; 0　⇒　內能減少</span></div><div class="ln" data-k="l3"><span class="v v1">作功的去處：活塞動能 K ＋ 克服大氣壓力推開活塞</span></div><div class="ln" data-k="l4"><span class="v v1">⇒　W &gt; K　⇒　|ΔU| &gt; K　（答案 B）</span></div></div>
+    <div class="side">
+      <div class="fig" data-k="fig"><svg viewBox="0 0 420 330" class="svgp">
+  <text class="mk k0 tx" x="210" y="22" text-anchor="middle" style="fill:#ffd166;font-size:14px">絕熱汽缸・活塞向左移動（氣體膨脹）</text>
+  <rect class="mk k0" x="90" y="60" width="250" height="120" rx="6" fill="none" stroke="#3b4b7d" stroke-width="2.5"/>
+  <line class="mk k0" x1="340" y1="58" x2="340" y2="182" stroke="#3b4b7d" stroke-width="6"/>
+  <rect class="mk k0" x="164" y="62" width="12" height="116" rx="4" fill="#2c3a66"/>
+  <line class="mk k0" x1="170" y1="120" x2="120" y2="120" stroke="#4ade80" stroke-width="3"/>
+  <path class="mk k0" d="M120 120 l12 -6 v12 z" fill="#4ade80"/>
+  <text class="mk k0 tx" x="110" y="106" style="fill:#4ade80;font-size:12px">活塞</text>
+  <circle class="mk k0" cx="220" cy="96" r="5" fill="#41558c"/><circle class="mk k0" cx="256" cy="132" r="5" fill="#41558c"/>
+  <circle class="mk k0" cx="292" cy="90" r="5" fill="#41558c"/><circle class="mk k0" cx="238" cy="156" r="5" fill="#41558c"/>
+  <text class="mk k0 tx" x="272" y="204" text-anchor="middle" style="fill:#93a1c8;font-size:12px">理想氣體・絕熱・無摩擦</text>
+  <text class="mk k1 tx" x="40" y="244" style="fill:#66d9ef;font-size:13px">體積 ↑　⇒　膨脹作功 W &gt; 0</text>
+  <text class="mk k1 tx" x="40" y="266" style="fill:#93a1c8;font-size:12px">一部分變成活塞動能 K</text>
+  <text class="mk k2 tx" x="40" y="244" style="fill:#ff8fa3;font-size:14px">Q = 0　⇒　ΔU = −W &lt; 0</text>
+  <text class="mk k2 tx" x="40" y="266" style="fill:#93a1c8;font-size:12px">內能減少</text>
+  <text class="mk k3 tx" x="250" y="244" style="fill:#ffd166;font-size:14px">W = K ＋ 推開大氣作功</text>
+  <text class="mk k3 tx" x="250" y="268" style="fill:#4ade80;font-size:15px">|ΔU| &gt; K　(B)</text>
+</svg></div>
+      <div class="anscard" data-k="ans">
+        <div class="tag">答　案</div>
+        <div class="val">(B)　缸內氣體內部能減少，且 |ΔU| &gt; K</div>
+        <div class="note">膨脹 W &gt; 0、Q = 0 ⇒ ΔU = −W &lt; 0；W = K ＋ 推開大氣的功 ⇒ |ΔU| &gt; K</div>
+      </div>
+    </div>
+  </div>
+  <div class="rule" data-k="rule">通則：<b>絕熱且膨脹作功 ⇒ 內能必減少；推開大氣也要作功</b></div>
+</section>
+<section class="qpage" id="pg6" data-no="6">
+  <div class="q" data-k="q">【承第 5 題】分子撞擊向左移動的活塞，撞前速率 u、撞後速率 v
+    <span class="ask">u 與 v 的大小關係為何？</span></div>
+  <div class="main">
+    <div class="chain"><div class="ln" data-k="l0"><span class="v v1">活塞向左移動，方向與分子飛來方向相同＝「離去的牆」</span></div><div class="ln" data-k="l1"><span class="v v1">切到活塞參考座標：活塞靜止，分子以 (u − v<sub>活塞</sub>) 撞來</span></div><div class="ln" data-k="l2"><span class="v v1">彈性碰撞後以相同速率反彈</span></div><div class="ln" data-k="l3"><span class="v v1">換回實驗室座標：v = u − 2v<sub>活塞</sub> &lt; u</span></div><div class="ln" data-k="l4"><span class="v v1">微觀意義：分子把動能傳給活塞 ⇒ 自己的動能變少</span></div></div>
+    <div class="side">
+      <div class="fig" data-k="fig"><svg viewBox="0 0 420 330" class="svgp">
+  <text class="mk k0 tx" x="210" y="22" text-anchor="middle" style="fill:#ffd166;font-size:14px">分子撞上「正在後退」的活塞</text>
+  <line class="mk k0" x1="60" y1="60" x2="60" y2="190" stroke="#3b4b7d" stroke-width="6"/>
+  <rect class="mk k0" x="150" y="58" width="12" height="134" rx="4" fill="#2c3a66"/>
+  <line class="mk k0" x1="156" y1="126" x2="104" y2="126" stroke="#4ade80" stroke-width="3"/>
+  <path class="mk k0" d="M104 126 l12 -6 v12 z" fill="#4ade80"/>
+  <text class="mk k0 tx" x="96" y="112" style="fill:#4ade80;font-size:11px">活塞</text>
+  <circle class="mk k0" cx="250" cy="126" r="7" fill="#ffd166"/>
+  <line class="mk k0" x1="300" y1="126" x2="266" y2="126" stroke="#ffd166" stroke-width="2.4"/>
+  <path class="mk k0" d="M266 126 l11 -6 v12 z" fill="#ffd166"/>
+  <text class="mk k0 tx" x="308" y="118" style="fill:#ffd166;font-size:12px">u</text>
+  <text class="mk k0 tx" x="210" y="216" text-anchor="middle" style="fill:#93a1c8;font-size:12px">撞前速率 u</text>
+  <text class="mk k1 tx" x="40" y="256" style="fill:#66d9ef;font-size:14px">活塞座標：牆靜止</text>
+  <text class="mk k1 tx" x="40" y="280" style="fill:#93a1c8;font-size:12px">相對速率 u − v<sub>活塞</sub> 撞來</text>
+  <text class="mk k2 tx" x="40" y="256" style="fill:#ff8fa3;font-size:14px">彈性碰撞 ⇒ 同速率反彈</text>
+  <text class="mk k2 tx" x="40" y="280" style="fill:#93a1c8;font-size:12px">回實驗室座標再換算</text>
+  <text class="mk k3 tx" x="248" y="256" style="fill:#4ade80;font-size:15px">v = u − 2v<sub>活塞</sub></text>
+  <text class="mk k3 tx" x="248" y="282" style="fill:#ffd166;font-size:15px">⇒　v &lt; u　(B)</text>
+</svg></div>
+      <div class="anscard" data-k="ans">
+        <div class="tag">答　案</div>
+        <div class="val">(B)　速率 v 一定小於 u</div>
+        <div class="note">活塞座標下彈性反彈，換回實驗室座標得 v = u − 2v<sub>活塞</sub> &lt; u</div>
+      </div>
+    </div>
+  </div>
+  <div class="rule" data-k="rule">通則：<b>撞上後退的牆變慢、撞上迎面的牆變快</b></div>
+</section>
+<section class="qpage" id="pg7" data-no="7">
+  <div class="q" data-k="q">月球距離約為地球半徑 R 的 60 倍；求同步衛星的軌道半徑
+    <span class="ask">同步衛星軌道半徑最接近幾個 R？</span></div>
+  <div class="main">
+    <div class="chain"><div class="ln" data-k="l0"><span class="v v1">同步衛星週期 = 地球自轉週期 T = 1 天 = 8.64×10⁴ s</span></div><div class="ln" data-k="l1"><span class="v v1">GMm/r² = m(2π/T)²r　⇒　r³ = GMT²/(4π²)</span></div><div class="ln" data-k="l2"><span class="v v1">取 GM = gR²、g = 9.8、R = 6.4×10⁶ ⇒ r ≈ 4.2×10⁷ m</span></div><div class="ln" data-k="l3"><span class="v v1">r/R = 4.2×10⁷ ÷ 6.4×10⁶ ≈ 6.6</span></div><div class="ln" data-k="l4"><span class="v v1">⇒　答案 (B) 6.6 R　（地表上方約 3.6×10⁷ m）</span></div></div>
+    <div class="side">
+      <div class="fig" data-k="fig"><svg viewBox="0 0 420 330" class="svgp">
+  <text class="mk k0 tx" x="210" y="22" text-anchor="middle" style="fill:#ffd166;font-size:14px">同步衛星：週期 = 地球自轉 1 天</text>
+  <circle class="mk k0" cx="210" cy="150" r="42" fill="#16223f" stroke="#66d9ef" stroke-width="2"/>
+  <text class="mk k0 tx" x="210" y="155" text-anchor="middle" style="fill:#66d9ef;font-size:12px">地球 R</text>
+  <line class="mk k0" x1="210" y1="150" x2="252" y2="150" stroke="#93a1c8" stroke-width="1.6"/>
+  <ellipse class="mk k0" cx="210" cy="150" rx="128" ry="86" fill="none" stroke="#3b4b7d" stroke-width="1.5" stroke-dasharray="5 5"/>
+  <circle class="mk k0" cx="338" cy="150" r="7" fill="#ffd166"/>
+  <text class="mk k0 tx" x="352" y="144" style="fill:#ffd166;font-size:11px">同步衛星</text>
+  <text class="mk k1 tx" x="46" y="268" style="fill:#66d9ef;font-size:13px">GMm/r² = m(2π/T)²r</text>
+  <text class="mk k1 tx" x="46" y="292" style="fill:#93a1c8;font-size:12px">T = 8.64×10⁴ s</text>
+  <text class="mk k2 tx" x="46" y="268" style="fill:#ff8fa3;font-size:13px">GM = gR²　⇒　r ≈ 4.2×10⁷ m</text>
+  <text class="mk k2 tx" x="46" y="292" style="fill:#93a1c8;font-size:12px">r / R = 4.2e7 / 6.4e6</text>
+  <text class="mk k3 tx" x="248" y="268" style="fill:#4ade80;font-size:16px">r ≈ 6.6 R</text>
+  <text class="mk k3 tx" x="248" y="292" style="fill:#93a1c8;font-size:12px">月球 60 R　(B)</text>
+</svg></div>
+      <div class="anscard" data-k="ans">
+        <div class="tag">答　案</div>
+        <div class="val">(B)　6.6 R</div>
+        <div class="note">T = 1 天 ⇒ r³ = GMT²/4π² ⇒ r ≈ 4.2×10⁷ m ⇒ r/R ≈ 6.6</div>
+      </div>
+    </div>
+  </div>
+  <div class="rule" data-k="rule">通則：<b>同步衛星週期等於地球自轉一天，軌道半徑約 6.6 個地球半徑</b></div>
+</section>
+<section class="qpage" id="pg8" data-no="8">
+  <div class="q" data-k="q">電子質量 9.11×10⁻³¹ kg、速率 4.00×10⁷ m/s，5.00×10⁻⁸ s 內共 1.25×10¹⁴ 個電子射入靶後靜止
+    <span class="ask">該時段作用於靶的平均力為何？</span></div>
+  <div class="main">
+    <div class="chain"><div class="ln" data-k="l0"><span class="v v1">單一電子動量 p = mv = 9.11×10⁻³¹ × 4.00×10⁷ = 3.644×10⁻²³ kg·m/s</span></div><div class="ln" data-k="l1"><span class="v v1">總動量變化 Δp = 1.25×10¹⁴ × 3.644×10⁻²³ ≈ 4.56×10⁻⁹ kg·m/s</span></div><div class="ln" data-k="l2"><span class="v v1">F = Δp/Δt = 4.56×10⁻⁹ ÷ 5.00×10⁻⁸ ≈ 9.1×10⁻² N</span></div><div class="ln" data-k="l3"><span class="v v1">速算：F = n·m·v，n 為每秒撞擊數 = 2.5×10²¹ 個/s</span></div><div class="ln" data-k="l4"><span class="v v1">⇒　答案 (A) 9.11×10⁻² N</span></div></div>
+    <div class="side">
+      <div class="fig" data-k="fig"><svg viewBox="0 0 420 330" class="svgp">
+  <text class="mk k0 tx" x="210" y="22" text-anchor="middle" style="fill:#ffd166;font-size:14px">電子束撞靶：動量全部被靶吸收</text>
+  <rect class="mk k0" x="286" y="72" width="34" height="140" rx="6" fill="#16223f" stroke="#ff8fa3" stroke-width="2"/>
+  <text class="mk k0 tx" x="303" y="236" text-anchor="middle" style="fill:#ff8fa3;font-size:12px">靶</text>
+  <circle class="mk k0" cx="90" cy="112" r="5" fill="#66d9ef"/><circle class="mk k0" cx="90" cy="142" r="5" fill="#66d9ef"/>
+  <circle class="mk k0" cx="90" cy="172" r="5" fill="#66d9ef"/>
+  <line class="mk k0" x1="106" y1="142" x2="272" y2="142" stroke="#66d9ef" stroke-width="1.8" stroke-dasharray="7 5"/>
+  <path class="mk k0" d="M272 142 l-13 -6 v12 z" fill="#66d9ef"/>
+  <text class="mk k0 tx" x="190" y="128" text-anchor="middle" style="fill:#66d9ef;font-size:12px">v = 4.00×10⁷ m/s</text>
+  <text class="mk k1 tx" x="40" y="268" style="fill:#66d9ef;font-size:13px">p = mv ≈ 3.64×10⁻²³ kg·m/s</text>
+  <text class="mk k2 tx" x="40" y="268" style="fill:#ffd166;font-size:13px">Δp = N·p ≈ 4.56×10⁻⁹ kg·m/s</text>
+  <text class="mk k2 tx" x="40" y="292" style="fill:#93a1c8;font-size:12px">Δt = 5.00×10⁻⁸ s</text>
+  <text class="mk k3 tx" x="244" y="268" style="fill:#4ade80;font-size:15px">F = Δp/Δt ≈ 9.1×10⁻² N</text>
+  <text class="mk k3 tx" x="244" y="292" style="fill:#93a1c8;font-size:12px">答案 (A)</text>
+</svg></div>
+      <div class="anscard" data-k="ans">
+        <div class="tag">答　案</div>
+        <div class="val">(A)　9.11×10⁻² N</div>
+        <div class="note">p = mv = 3.644×10⁻²³；Δp = 1.25×10¹⁴ × p ≈ 4.56×10⁻⁹；F = Δp/Δt ≈ 9.1×10⁻² N</div>
+      </div>
+    </div>
+  </div>
+  <div class="rule" data-k="rule">通則：<b>平均力 = 動量時變率 = Δp 除以 Δt</b></div>
+</section>
+<section class="qpage" id="pg9" data-no="9">
+  <div class="q" data-k="q">E₁→E₂ 輻射 λ₁、E₁→E₃ 輻射 λ₂（λ₁ &gt; λ₂）；求 E₃→E₂ 吸收光的波長
+    <span class="ask">吸收光的波長為何？</span></div>
+  <div class="main">
+    <div class="chain"><div class="ln" data-k="l0"><span class="v v1">E₂ − E₁ = hc/λ₁　（λ₁ 較大 ⇒ 能量較小 ⇒ E₂ 在 E₃ 之下）</span></div><div class="ln" data-k="l1"><span class="v v1">E₃ − E₁ = hc/λ₂</span></div><div class="ln" data-k="l2"><span class="v v1">E₃ → E₂ 需吸收能量 = hc/λ₂ − hc/λ₁ = hc(λ₁ − λ₂)/(λ₁λ₂)</span></div><div class="ln" data-k="l3"><span class="v v1">hc/λ = hc(λ₁ − λ₂)/(λ₁λ₂)　⇒　λ = λ₁λ₂/(λ₁ − λ₂)</span></div><div class="ln" data-k="l4"><span class="v v1">⇒　答案 (A)　（能量相加 ⇔ 1/λ 相加）</span></div></div>
+    <div class="side">
+      <div class="fig" data-k="fig"><svg viewBox="0 0 420 330" class="svgp">
+  <text class="mk k0 tx" x="210" y="22" text-anchor="middle" style="fill:#ffd166;font-size:14px">能階圖：能量相加要換成 1/λ 相加</text>
+  <line class="mk k0" x1="70" y1="240" x2="350" y2="240" stroke="#3b4b7d" stroke-width="2.5"/>
+  <text class="mk k0 tx" x="52" y="245" style="fill:#93a1c8;font-size:11px">E₁</text>
+  <line class="mk k0" x1="70" y1="150" x2="350" y2="150" stroke="#3b4b7d" stroke-width="2.5"/>
+  <text class="mk k0 tx" x="52" y="155" style="fill:#93a1c8;font-size:11px">E₂</text>
+  <line class="mk k0" x1="70" y1="80" x2="350" y2="80" stroke="#3b4b7d" stroke-width="2.5"/>
+  <text class="mk k0 tx" x="52" y="85" style="fill:#93a1c8;font-size:11px">E₃</text>
+  <path class="mk k1" d="M120 240 L120 150" stroke="#66d9ef" stroke-width="2.5"/>
+  <path class="mk k1" d="M120 240 l-5 11 h10 z" fill="#66d9ef"/>
+  <text class="mk k1 tx" x="132" y="192" style="fill:#66d9ef;font-size:12px">hc/λ₁</text>
+  <path class="mk k2" d="M300 240 L300 80" stroke="#ff8fa3" stroke-width="2.5"/>
+  <path class="mk k2" d="M300 240 l-5 11 h10 z" fill="#ff8fa3"/>
+  <text class="mk k2 tx" x="252" y="160" style="fill:#ff8fa3;font-size:12px">hc/λ₂</text>
+  <path class="mk k3" d="M210 150 L210 80" stroke="#4ade80" stroke-width="2.5"/>
+  <path class="mk k3" d="M210 80 l-5 -11 h10 z" fill="#4ade80"/>
+  <text class="mk k3 tx" x="222" y="118" style="fill:#4ade80;font-size:12px">hc/λ</text>
+  <text class="mk k3 tx" x="210" y="286" text-anchor="middle" style="fill:#ffd166;font-size:15px">λ = λ₁λ₂ / (λ₁ − λ₂)　(A)</text>
+</svg></div>
+      <div class="anscard" data-k="ans">
+        <div class="tag">答　案</div>
+        <div class="val">(A)　λ₁λ₂ /(λ₁ − λ₂)</div>
+        <div class="note">E₃ − E₂ = hc/λ₂ − hc/λ₁ = hc(λ₁−λ₂)/(λ₁λ₂)　⇒　λ = λ₁λ₂/(λ₁−λ₂)</div>
+      </div>
+    </div>
+  </div>
+  <div class="rule" data-k="rule">通則：<b>能量相加對應 1/λ 相加，波長不能直接加減</b></div>
+</section>
+<section class="qpage" id="pg10" data-no="10">
+  <div class="q" data-k="q">金屬導線迴路通有穩定不變的電流，周圍空間的電場與磁場如何？
+    <span class="ask">迴路周圍的場會不會發出電磁波？</span></div>
+  <div class="main">
+    <div class="chain"><div class="ln" data-k="l0"><span class="v v1">穩定電流　⇒　導線表面靜電荷分布不隨時間變　⇒　電場不變</span></div><div class="ln" data-k="l1"><span class="v v1">穩定電流產生的磁場也不隨時間變</span></div><div class="ln" data-k="l2"><span class="v v1">場不隨時間變　⇒　不能互相感應發出電磁波</span></div><div class="ln" data-k="l3"><span class="v v1">迴路周圍「電場與磁場同時存在」⇒ (A)(B) 皆錯</span></div><div class="ln" data-k="l4"><span class="v v1">⇒　答案 (D)　（要發電磁波需隨時間變化的電流）</span></div></div>
+    <div class="side">
+      <div class="fig" data-k="fig"><svg viewBox="0 0 420 330" class="svgp">
+  <text class="mk k0 tx" x="210" y="22" text-anchor="middle" style="fill:#ffd166;font-size:14px">穩定電流迴路：電場、磁場都不隨時間變</text>
+  <rect class="mk k0" x="110" y="70" width="200" height="120" rx="8" fill="none" stroke="#66d9ef" stroke-width="3"/>
+  <rect class="mk k0" x="188" y="180" width="44" height="26" rx="4" fill="#16223f" stroke="#93a1c8"/>
+  <text class="mk k0 tx" x="210" y="198" text-anchor="middle" style="fill:#93a1c8;font-size:11px">電源</text>
+  <path class="mk k0" d="M110 110 h-26 m7 -6 l-7 6 l7 6" stroke="#ffd166" stroke-width="2" fill="none"/>
+  <text class="mk k0 tx" x="66" y="100" style="fill:#ffd166;font-size:12px">I</text>
+  <text class="mk k0 tx" x="210" y="220" text-anchor="middle" style="fill:#93a1c8;font-size:12px">導線靜止不動、電流穩定不變</text>
+  <text class="mk k1 tx" x="40" y="252" style="fill:#66d9ef;font-size:13px">表面靜電荷不變 ⇒ 電場不變</text>
+  <text class="mk k2 tx" x="40" y="252" style="fill:#ff8fa3;font-size:13px">穩定電流 ⇒ 磁場不變</text>
+  <text class="mk k3 tx" x="40" y="296" style="fill:#4ade80;font-size:14px">場不隨時間變 ⇒ 不互相感應 ⇒ 不發電磁波</text>
+  <text class="mk k3 tx" x="340" y="296" style="fill:#ffd166;font-size:15px">(D)</text>
+</svg></div>
+      <div class="anscard" data-k="ans">
+        <div class="tag">答　案</div>
+        <div class="val">(D)　電場與磁場不隨時間而變，不會相互感應發出電磁波</div>
+        <div class="note">穩定電流 ⇒ 電荷分布與磁場皆不隨時間變 ⇒ 不能互相感應發射電磁波；且電場與磁場同時存在</div>
+      </div>
+    </div>
+  </div>
+  <div class="rule" data-k="rule">通則：<b>要產生電磁波，需要隨時間變化的電流或加速中的電荷</b></div>
+</section>
+<section class="qpage" id="pg11" data-no="11">
+  <div class="q" data-k="q">演奏使管樂器氣柱充滿熱氣、弦樂器琴弦摩擦升溫；波長近似不隨溫度改變
+    <span class="ask">升溫後兩類樂器發出的聲波頻率如何變化？</span></div>
+  <div class="main">
+    <div class="chain"><div class="ln" data-k="l0"><span class="v v1">波長固定　⇒　f = v / λ，頻率高低完全看波速</span></div><div class="ln" data-k="l1"><span class="v v1">管樂器：氣柱升溫　⇒　空氣中聲速 v 變大　⇒　f 升高</span></div><div class="ln" data-k="l2"><span class="v v1">弦樂器：題目明說琴弦升溫後橫波波速變慢　⇒　f 降低</span></div><div class="ln" data-k="l3"><span class="v v1">⇒　管樂器頻率升高、弦樂器頻率降低</span></div><div class="ln" data-k="l4"><span class="v v1">日常對應：管樂器吹熱了音會偏高</span></div></div>
+    <div class="side">
+      <div class="fig" data-k="fig"><svg viewBox="0 0 420 330" class="svgp">
+  <text class="mk k0 tx" x="210" y="22" text-anchor="middle" style="fill:#ffd166;font-size:14px">波長固定：f = v / λ　只看波速</text>
+  <rect class="mk k0" x="60" y="52" width="130" height="60" rx="10" fill="#16223f" stroke="#66d9ef" stroke-width="2"/>
+  <text class="mk k0 tx" x="125" y="88" text-anchor="middle" style="fill:#66d9ef;font-size:12px">管樂器氣柱</text>
+  <path class="mk k0" d="M70 150 q14 -16 28 0 t28 0 t28 0 t28 0 t28 0" stroke="#66d9ef" stroke-width="2" fill="none"/>
+  <text class="mk k0 tx" x="125" y="176" text-anchor="middle" style="fill:#93a1c8;font-size:11px">λ 固定</text>
+  <line class="mk k0" x1="60" y1="196" x2="300" y2="196" stroke="#3b4b7d" stroke-width="2"/>
+  <path class="mk k0" d="M70 250 q20 -20 40 0 t40 0 t40 0" stroke="#ff8fa3" stroke-width="2" fill="none"/>
+  <text class="mk k0 tx" x="220" y="246" style="fill:#ff8fa3;font-size:12px">絃樂器琴弦 λ 固定</text>
+  <text class="mk k1 tx" x="220" y="74" style="fill:#4ade80;font-size:14px">氣柱升溫 ⇒ v ↑</text>
+  <text class="mk k1 tx" x="220" y="96" style="fill:#4ade80;font-size:14px">⇒ 頻率 f ↑</text>
+  <text class="mk k2 tx" x="40" y="292" style="fill:#ff8fa3;font-size:14px">琴弦升溫 ⇒ v ↓　⇒ 頻率 f ↓</text>
+  <text class="mk k3 tx" x="40" y="292" style="fill:#ffd166;font-size:15px">管：f ↑　　弦：f ↓　　(C)</text>
+</svg></div>
+      <div class="anscard" data-k="ans">
+        <div class="tag">答　案</div>
+        <div class="val">(C)　管樂器氣柱發出的聲波頻率升高，絃樂器發出的聲波頻率降低</div>
+        <div class="note">λ 不變 ⇒ f = v/λ：氣柱升溫 v 變大（f↑）、琴弦升溫 v 變慢（f↓）</div>
+      </div>
+    </div>
+  </div>
+  <div class="rule" data-k="rule">通則：<b>波長固定時 f = v/λ，頻率看波速</b></div>
+</section>
+<section class="qpage" id="pg12" data-no="12">
+  <div class="q" data-k="q">人蹲在踏板上自由盪擺，在最低點突然起身站直（吊繩保持共平面）
+    <span class="ask">與不起身相比，起身瞬間的能量與最大擺角如何？</span></div>
+  <div class="main">
+    <div class="chain"><div class="ln" data-k="l0"><span class="v v1">最低點：重力與張力皆通過轉軸　⇒　力矩為零　⇒　角動量 Iω 守恆</span></div><div class="ln" data-k="l1"><span class="v v1">起身站直　⇒　質量靠近轉軸　⇒　I 變小　⇒　ω 變大</span></div><div class="ln" data-k="l2"><span class="v v1">轉動動能 K = L² / (2I)　⇒　I 變小　⇒　K 增加</span></div><div class="ln" data-k="l3"><span class="v v1">重心同時提高　⇒　重力位能增加（由肌肉作功提供）</span></div><div class="ln" data-k="l4"><span class="v v1">⇒　動能↑、位能↑　⇒　最大擺角增大</span></div></div>
+    <div class="side">
+      <div class="fig" data-k="fig"><svg viewBox="0 0 420 330" class="svgp">
+  <text class="mk k0 tx" x="210" y="22" text-anchor="middle" style="fill:#ffd166;font-size:14px">最低點起身：質量收向轉軸</text>
+  <line class="mk k0" x1="80" y1="50" x2="340" y2="50" stroke="#3b4b7d" stroke-width="3"/>
+  <line class="mk k0" x1="210" y1="50" x2="210" y2="196" stroke="#93a1c8" stroke-width="1.6"/>
+  <circle class="mk k0" cx="210" cy="50" r="4" fill="#93a1c8"/>
+  <rect class="mk k0" x="182" y="196" width="56" height="12" rx="4" fill="#2c3a66"/>
+  <text class="mk k0 tx" x="272" y="120" style="fill:#93a1c8;font-size:11px">吊繩通過轉軸</text>
+  <text class="mk k0 tx" x="210" y="234" text-anchor="middle" style="fill:#93a1c8;font-size:12px">最低點：v 水平、重力過轉軸</text>
+  <text class="mk k1 tx" x="40" y="272" style="fill:#66d9ef;font-size:14px">力矩 = 0 ⇒ L = Iω 守恆</text>
+  <text class="mk k2 tx" x="40" y="272" style="fill:#ff8fa3;font-size:14px">I 變小 ⇒ ω 變大</text>
+  <text class="mk k2 tx" x="40" y="296" style="fill:#93a1c8;font-size:12px">K = L²/(2I) ⇒ K 增加</text>
+  <text class="mk k3 tx" x="236" y="272" style="fill:#4ade80;font-size:14px">位能也增加（肌肉作功）</text>
+  <text class="mk k3 tx" x="236" y="296" style="fill:#ffd166;font-size:15px">最大擺角增大 (A)</text>
+</svg></div>
+      <div class="anscard" data-k="ans">
+        <div class="tag">答　案</div>
+        <div class="val">(A)　系統的擺動動能增加，重力位能增加，可達到的最大擺角增大</div>
+        <div class="note">最低點力矩為零 ⇒ Iω 守恆 ⇒ I 變小 ω 變大、K = L²/2I 增加；起身重心提高使位能增加（肌肉作功）</div>
+      </div>
+    </div>
+  </div>
+  <div class="rule" data-k="rule">通則：<b>最低點收身使角速度變大，肌肉作功使機械能增加、擺角變大</b></div>
+</section>
+<section class="qpage" id="pg13" data-no="13">
+  <div class="q" data-k="q">太陽光傳到地球約 500 秒；太陽角直徑約 0.5°（360° = 2π rad，c ≈ 3×10⁸ m/s）
+    <span class="ask">太陽的半徑約為何？</span></div>
+  <div class="main">
+    <div class="chain"><div class="ln" data-k="l0"><span class="v v1">日地距離 d = c·t = 3×10⁸ × 500 = 1.5×10¹¹ m</span></div><div class="ln" data-k="l1"><span class="v v1">角直徑 θ = 0.5° = 0.5 × π/180 ≈ 8.73×10⁻³ rad</span></div><div class="ln" data-k="l2"><span class="v v1">小角度估算　θ ≈ 直徑 / d</span></div><div class="ln" data-k="l3"><span class="v v1">半徑 R = (θ/2)·d ≈ 4.36×10⁻³ × 1.5×10¹¹ ≈ 6.5×10⁸ m</span></div><div class="ln" data-k="l4"><span class="v v1">⇒　答案 (A) 7×10⁸ m</span></div></div>
+    <div class="side">
+      <div class="fig" data-k="fig"><svg viewBox="0 0 420 330" class="svgp">
+  <text class="mk k0 tx" x="210" y="22" text-anchor="middle" style="fill:#ffd166;font-size:14px">小角度估算：θ ≈ 直徑 ÷ 距離</text>
+  <circle class="mk k0" cx="320" cy="120" r="34" fill="#16223f" stroke="#ffd166" stroke-width="2"/>
+  <text class="mk k0 tx" x="320" y="124" text-anchor="middle" style="fill:#ffd166;font-size:11px">太陽</text>
+  <line class="mk k0" x1="286" y1="104" x2="286" y2="136" stroke="#4ade80" stroke-width="2"/>
+  <line class="mk k0" x1="80" y1="120" x2="286" y2="100" stroke="#3b4b7d" stroke-width="1.6" stroke-dasharray="6 4"/>
+  <line class="mk k0" x1="80" y1="120" x2="286" y2="140" stroke="#3b4b7d" stroke-width="1.6" stroke-dasharray="6 4"/>
+  <circle class="mk k0" cx="80" cy="120" r="6" fill="#66d9ef"/>
+  <text class="mk k0 tx" x="70" y="146" text-anchor="middle" style="fill:#66d9ef;font-size:11px">地球</text>
+  <path class="mk k0" d="M112 108 a30 30 0 0 1 0 24" stroke="#ff8fa3" stroke-width="1.8" fill="none"/>
+  <text class="mk k0 tx" x="122" y="106" style="fill:#ff8fa3;font-size:11px">θ = 0.5°</text>
+  <text class="mk k1 tx" x="40" y="212" style="fill:#66d9ef;font-size:13px">d = c t = 3×10⁸ × 500 = 1.5×10¹¹ m</text>
+  <text class="mk k2 tx" x="40" y="212" style="fill:#ffd166;font-size:13px">θ = 0.5° × π/180 ≈ 8.73×10⁻³ rad</text>
+  <text class="mk k3 tx" x="40" y="256" style="fill:#4ade80;font-size:14px">R = (θ/2)d ≈ 6.5×10⁸ m</text>
+  <text class="mk k3 tx" x="40" y="282" style="fill:#ffd166;font-size:15px">⇒ 7×10⁸ m　(A)</text>
+</svg></div>
+      <div class="anscard" data-k="ans">
+        <div class="tag">答　案</div>
+        <div class="val">(A)　7×10⁸ m</div>
+        <div class="note">d = ct = 1.5×10¹¹ m；θ = 8.73×10⁻³ rad；R = (θ/2)d ≈ 6.5×10⁸ m ⇒ 最接近 7×10⁸ m</div>
+      </div>
+    </div>
+  </div>
+  <div class="rule" data-k="rule">通則：<b>角度先換成弧度，再用 θ ≈ 弧長 除以 距離</b></div>
+</section>
+<section class="qpage" id="pg14" data-no="14">
+  <div class="q" data-k="q">真空管中，以頻率 f 的入射光照射發射極，另有收集極收集光電子形成光電流 I
+    <span class="ask">關於光電子能量、V 正負與 V-I 關係，何者正確？</span></div>
+  <div class="main">
+    <div class="chain"><div class="ln" data-k="l0"><span class="v v1">單一光子能量 E = hf；光電子最大動能 K<sub>max</sub> = hf − W（W 為功函數）</span></div><div class="ln" data-k="l1"><span class="v v1">(A) 錯：f 改變　⇒　光電子獲得的能量跟著改變</span></div><div class="ln" data-k="l2"><span class="v v1">(B) 對：f 固定　⇒　光電子能量固定，與光強無關（強度只影響數量）</span></div><div class="ln" data-k="l3"><span class="v v1">(C) 錯：V 為正表示收集極接正極，電場加速光電子，動能小者也能到達</span></div><div class="ln" data-k="l4"><span class="v v1">(D) 錯：I 隨 V 上升至飽和後不再增加　⇒　V/I 不是定值　⇒　答案 (B)</span></div></div>
+    <div class="side">
+      <div class="fig" data-k="fig"><svg viewBox="0 0 420 330" class="svgp">
+  <text class="mk k0 tx" x="210" y="22" text-anchor="middle" style="fill:#ffd166;font-size:14px">光電效應：光子能量只由頻率決定</text>
+  <rect class="mk k0" x="70" y="52" width="280" height="118" rx="10" fill="none" stroke="#3b4b7d" stroke-width="2"/>
+  <rect class="mk k0" x="104" y="80" width="14" height="66" rx="4" fill="#2c3a66"/>
+  <text class="mk k0 tx" x="111" y="166" text-anchor="middle" style="fill:#93a1c8;font-size:11px">發射極</text>
+  <rect class="mk k0" x="300" y="80" width="14" height="66" rx="4" fill="#2c3a66"/>
+  <text class="mk k0 tx" x="307" y="166" text-anchor="middle" style="fill:#93a1c8;font-size:11px">收集極</text>
+  <path class="mk k0" d="M60 96 h40 m-10 -6 l10 6 l-10 6" stroke="#ffd166" stroke-width="2.2" fill="none"/>
+  <text class="mk k0 tx" x="52" y="84" style="fill:#ffd166;font-size:12px">hf</text>
+  <circle class="mk k0" cx="150" cy="112" r="4" fill="#66d9ef"/>
+  <path class="mk k0" d="M170 112 L286 112 m-10 -6 l10 6 l-10 6" stroke="#66d9ef" stroke-width="1.8" fill="none"/>
+  <text class="mk k1 tx" x="40" y="212" style="fill:#66d9ef;font-size:13px">K<sub>max</sub> = hf − W</text>
+  <text class="mk k1 tx" x="40" y="234" style="fill:#93a1c8;font-size:12px">f 變 ⇒ 能量跟著變</text>
+  <text class="mk k2 tx" x="40" y="212" style="fill:#4ade80;font-size:13px">f 固定 ⇒ 能量固定</text>
+  <text class="mk k2 tx" x="40" y="234" style="fill:#93a1c8;font-size:12px">光強只增加電子數量</text>
+  <text class="mk k3 tx" x="40" y="284" style="fill:#ffd166;font-size:14px">(C) V&gt;0 加速；(D) I 會飽和 ⇒ V/I 非定值</text>
+  <text class="mk k3 tx" x="40" y="308" style="fill:#4ade80;font-size:15px">答案 (B)</text>
+</svg></div>
+      <div class="anscard" data-k="ans">
+        <div class="tag">答　案</div>
+        <div class="val">(B)　入射光頻率 f 固定時，光電子由入射光獲得的能量與入射光的強度無關</div>
+        <div class="note">E = hf 只與頻率有關；光強只影響光電子數量（電流大小）。(C) V&gt;0 為加速；(D) I 會飽和，V/I 非定值</div>
+      </div>
+    </div>
+  </div>
+  <div class="rule" data-k="rule">通則：<b>光電子能量只跟頻率有關，光強只決定光電子的數量</b></div>
+</section>
+<section class="qpage" id="pg15" data-no="15">
+  <div class="q" data-k="q">微波爐玻璃門上的帶孔金屬片：孔徑約 1 mm，可阻擋微波又能透光
+    <span class="ask">關於柵欄阻擋電磁波的功能，何者正確？</span></div>
+  <div class="main">
+    <div class="chain"><div class="ln" data-k="l0"><span class="v v1">微波波長約公分級　≫　1 mm 孔徑　⇒　繞射明顯、被擋住不外洩</span></div><div class="ln" data-k="l1"><span class="v v1">可見光波長約 400～700 nm　≪　孔徑　⇒　可通過　⇒　能透光看見爐內</span></div><div class="ln" data-k="l2"><span class="v v1">(A) 錯：波長遠大於狹縫時不是「較易直進」，而是被擋住</span></div><div class="ln" data-k="l3"><span class="v v1">(B) 錯：光就是電磁波</span></div><div class="ln" data-k="l4"><span class="v v1">(C) 對：阻擋作用取決於「波長與孔徑的相對大小」</span></div><div class="ln" data-k="l5"><span class="v v1">(D) 錯：能否通過與波速快慢無關　⇒　答案 (C)</span></div></div>
+    <div class="side">
+      <div class="fig" data-k="fig"><svg viewBox="0 0 420 330" class="svgp">
+  <text class="mk k0 tx" x="210" y="22" text-anchor="middle" style="fill:#ffd166;font-size:14px">帶孔金屬片：孔徑約 1 mm</text>
+  <rect class="mk k0" x="130" y="52" width="14" height="140" rx="4" fill="#2c3a66"/>
+  <rect class="mk k0" x="190" y="52" width="14" height="140" rx="4" fill="#2c3a66"/>
+  <rect class="mk k0" x="250" y="52" width="14" height="140" rx="4" fill="#2c3a66"/>
+  <path class="mk k0" d="M40 92 q16 -22 32 0 t32 0" stroke="#ff8fa3" stroke-width="2.4" fill="none"/>
+  <text class="mk k0 tx" x="76" y="76" text-anchor="middle" style="fill:#ff8fa3;font-size:12px">微波 λ ~ cm</text>
+  <path class="mk k0" d="M290 122 q6 -8 12 0 t12 0 t12 0" stroke="#4ade80" stroke-width="2.4" fill="none"/>
+  <text class="mk k0 tx" x="336" y="112" text-anchor="middle" style="fill:#4ade80;font-size:12px">可見光 λ ~ nm</text>
+  <text class="mk k1 tx" x="40" y="228" style="fill:#ff8fa3;font-size:13px">微波 λ ≫ 1 mm ⇒ 被擋住</text>
+  <text class="mk k2 tx" x="40" y="228" style="fill:#4ade80;font-size:13px">可見光 λ ≪ 1 mm ⇒ 可通過</text>
+  <text class="mk k3 tx" x="40" y="276" style="fill:#ffd166;font-size:14px">關鍵是「波長與孔徑的相對大小」</text>
+  <text class="mk k3 tx" x="40" y="302" style="fill:#4ade80;font-size:15px">與波速快慢無關　(C)</text>
+</svg></div>
+      <div class="anscard" data-k="ans">
+        <div class="tag">答　案</div>
+        <div class="val">(C)　柵欄阻擋電磁波的作用與電磁波的波長有關</div>
+        <div class="note">微波 λ ~ cm ≫ 1 mm ⇒ 被擋；可見光 λ ~ 數百 nm ≪ 1 mm ⇒ 可通過。光即電磁波，且與波速無關</div>
+      </div>
+    </div>
+  </div>
+  <div class="rule" data-k="rule">通則：<b>電磁波能否通過小孔，取決於波長與孔徑的相對大小</b></div>
+</section>
+<section class="qpage" id="pg16" data-no="16">
+  <div class="q" data-k="q">氣球直徑約 0.10 m，距人耳約 10 m，聲速 340 m/s；雖只響一次卻聽得見
+    <span class="ask">為何單次爆破聲仍落在人耳可聽範圍？</span></div>
+  <div class="main">
+    <div class="chain"><div class="ln" data-k="l0"><span class="v v1">氣壓擾動的尺寸約等於氣球直徑　⇒　有效波長 λ ≈ 0.10 m</span></div><div class="ln" data-k="l1"><span class="v v1">f = v / λ = 340 ÷ 0.10 = 3400 Hz = 3.4 kHz</span></div><div class="ln" data-k="l2"><span class="v v1">3.4 kHz 落在人耳 20 Hz～2.0×10⁴ Hz 的可聽範圍內</span></div><div class="ln" data-k="l3"><span class="v v1">(C) 錯：空氣分子只在原處振動，不是氣球內的氣體跑到耳朵</span></div><div class="ln" data-k="l4"><span class="v v1">⇒　答案 (D) 有效波長約 0.10 m，與 3.4 kHz 的聲音相近</span></div></div>
+    <div class="side">
+      <div class="fig" data-k="fig"><svg viewBox="0 0 420 330" class="svgp">
+  <text class="mk k0 tx" x="210" y="22" text-anchor="middle" style="fill:#ffd166;font-size:14px">短促脈衝：有效波長約等於氣球尺寸</text>
+  <circle class="mk k0" cx="86" cy="104" r="32" fill="#16223f" stroke="#ff8fa3" stroke-width="2"/>
+  <text class="mk k0 tx" x="86" y="108" text-anchor="middle" style="fill:#ff8fa3;font-size:11px">氣球</text>
+  <text class="mk k0 tx" x="86" y="156" text-anchor="middle" style="fill:#93a1c8;font-size:11px">直徑 0.10 m</text>
+  <path class="mk k0" d="M134 104 q10 -18 20 0 t20 0 t20 0" stroke="#ffd166" stroke-width="2.2" fill="none"/>
+  <line class="mk k0" x1="134" y1="104" x2="368" y2="104" stroke="#3b4b7d" stroke-width="1.6" stroke-dasharray="5 5"/>
+  <path class="mk k0" d="M368 104 l-12 -6 v12 z" fill="#3b4b7d"/>
+  <text class="mk k0 tx" x="250" y="88" text-anchor="middle" style="fill:#93a1c8;font-size:11px">10 m　聲速 340 m/s</text>
+  <text class="mk k1 tx" x="40" y="212" style="fill:#66d9ef;font-size:14px">λ 約 0.10 m</text>
+  <text class="mk k2 tx" x="40" y="212" style="fill:#ffd166;font-size:14px">f = 340 / 0.10 = 3.4 kHz</text>
+  <text class="mk k3 tx" x="40" y="262" style="fill:#4ade80;font-size:13px">3.4 kHz 落在 20 Hz ~ 20 kHz 內</text>
+  <text class="mk k3 tx" x="40" y="292" style="fill:#ffd166;font-size:15px">⇒ 聽得見　(D)</text>
+</svg></div>
+      <div class="anscard" data-k="ans">
+        <div class="tag">答　案</div>
+        <div class="val">(D)　爆破所造成的脈衝波，其有效波長約 0.10 m，與頻率 3.4 kHz 的聲音相近</div>
+        <div class="note">λ 約等於氣球直徑 0.10 m ⇒ f = 340/0.10 = 3.4 kHz，落在 20 Hz~20 kHz 可聽範圍</div>
+      </div>
+    </div>
+  </div>
+  <div class="rule" data-k="rule">通則：<b>短脈衝的有效波長約等於擾動尺寸，換算頻率即可判斷能否聽見</b></div>
+</section>
+<section class="qpage" id="pg17" data-no="17">
+  <div class="q" data-k="q">天線沿 z 軸發射：電場平行 z 軸、磁場平行 y 軸，電磁波沿 x 軸傳播
+    <span class="ask">圓形線圈如何擺放，感應電流最強？</span></div>
+  <div class="main">
+    <div class="chain"><div class="ln" data-k="l0"><span class="v v1">感應電流正比於「垂直穿過線圈平面的磁力線數目」的時變率</span></div><div class="ln" data-k="l1"><span class="v v1">⇒　線圈的法線須與磁場方向（y 軸）平行</span></div><div class="ln" data-k="l2"><span class="v v1">法線沿 y 軸　⇒　線圈平面由 x 軸與 z 軸張成，即與 xz 平面重合</span></div><div class="ln" data-k="l3"><span class="v v1">與 xy 或 yz 平面重合時，磁場幾乎躺在線圈平面內，穿過數趨近 0</span></div><div class="ln" data-k="l4"><span class="v v1">⇒　答案 (A) 線圈平面與 xz 平面重合</span></div></div>
+    <div class="side">
+      <div class="fig" data-k="fig"><svg viewBox="0 0 420 330" class="svgp">
+  <text class="mk k0 tx" x="210" y="22" text-anchor="middle" style="fill:#ffd166;font-size:14px">線圈法線要對準磁場（y 軸）</text>
+  <line class="mk k0" x1="56" y1="180" x2="384" y2="180" stroke="#3b4b7d" stroke-width="2"/>
+  <path class="mk k0" d="M384 180 l-12 -6 v12 z" fill="#3b4b7d"/>
+  <text class="mk k0 tx" x="360" y="202" style="fill:#93a1c8;font-size:12px">x（傳播）</text>
+  <line class="mk k0" x1="210" y1="180" x2="210" y2="56" stroke="#66d9ef" stroke-width="2"/>
+  <path class="mk k0" d="M210 56 l-6 12 h12 z" fill="#66d9ef"/>
+  <text class="mk k0 tx" x="220" y="60" style="fill:#66d9ef;font-size:12px">z（電場）</text>
+  <line class="mk k0" x1="210" y1="180" x2="306" y2="242" stroke="#ff8fa3" stroke-width="2"/>
+  <path class="mk k0" d="M306 242 l-13 -3 l6 -11 z" fill="#ff8fa3"/>
+  <text class="mk k0 tx" x="314" y="258" style="fill:#ff8fa3;font-size:12px">y（磁場）</text>
+  <ellipse class="mk k0" cx="142" cy="180" rx="9" ry="60" fill="none" stroke="#4ade80" stroke-width="2.6"/>
+  <text class="mk k0 tx" x="142" y="266" text-anchor="middle" style="fill:#4ade80;font-size:12px">線圈面 = xz 面</text>
+  <text class="mk k1 tx" x="252" y="120" style="fill:#93a1c8;font-size:12px">法線沿 y</text>
+  <text class="mk k2 tx" x="252" y="146" style="fill:#ffd166;font-size:12px">⇒ 磁力線垂直穿過</text>
+  <text class="mk k3 tx" x="40" y="298" style="fill:#4ade80;font-size:14px">與 xy 或 yz 重合 ⇒ 穿過數趨近 0　⇒ 答案 (A)</text>
+</svg></div>
+      <div class="anscard" data-k="ans">
+        <div class="tag">答　案</div>
+        <div class="val">(A)　線圈平面與 xz 平面重合</div>
+        <div class="note">磁場沿 y 軸 ⇒ 線圈法線須沿 y 軸 ⇒ 線圈平面由 x、z 軸張成（恰為 xz 平面）⇒ 穿過磁力線最多</div>
+      </div>
+    </div>
+  </div>
+  <div class="rule" data-k="rule">通則：<b>線圈法線對準磁場方向時，穿過的磁力線最多、感應最強</b></div>
+</section>
+<section class="qpage" id="pg18" data-no="18">
+  <div class="q" data-k="q">開關「打開」瞬間，間隙出現火花；開關「閉合」瞬間，卻不產生火花
+    <span class="ask">關於電路周圍磁場與電流的變化，下列敘述何者正確？</span></div>
+  <div class="main">
+    <div class="chain"><div class="ln" data-k="l0"><span class="v v1">開關打開：電流由 I 急速降為 0 ⇒ 磁通量快速減少 ⇒ 必生感應電流</span></div><div class="ln" data-k="l1"><span class="v v1">冷次定律：感應電流努力維持原有電流 ⇒ 與原電流同向，不是反向</span></div><div class="ln" data-k="l2"><span class="v v1">⇒ (A) 錯：磁場並非維持不變；(B) 錯：感應電流與原電流同向</span></div><div class="ln" data-k="l3"><span class="v v1">開關閉合：原本沒有電流 ⇒ 感應電流對抗電流的增加 ⇒ 與電源驅動反向</span></div><div class="ln" data-k="l4"><span class="v v1">⇒ 電流是漸增而非瞬間跳升，故不產生火花　⇒　答案 (D)</span></div></div>
+    <div class="side">
+      <div class="fig" data-k="fig"><svg viewBox="0 0 420 330" class="svgp">
+  <text class="mk k0 tx" x="210" y="22" text-anchor="middle" style="fill:#ffd166;font-size:14px">感應電流總是反抗磁通量的變化</text>
+  <rect class="mk k0" x="52" y="92" width="316" height="116" rx="12" fill="none" stroke="#3b4b7d" stroke-width="2"/>
+  <circle class="mk k0" cx="52" cy="150" r="17" fill="#16223f" stroke="#66d9ef" stroke-width="2"/>
+  <text class="mk k0 tx" x="52" y="154" text-anchor="middle" style="fill:#66d9ef;font-size:11px">源</text>
+  <line class="mk k0" x1="368" y1="104" x2="368" y2="134" stroke="#4ade80" stroke-width="3"/>
+  <line class="mk k0" x1="368" y1="166" x2="368" y2="196" stroke="#4ade80" stroke-width="3"/>
+  <circle class="mk k0" cx="336" cy="150" r="14" fill="#16223f" stroke="#ffd166" stroke-width="2"/>
+  <text class="mk k0 tx" x="336" y="154" text-anchor="middle" style="fill:#ffd166;font-size:11px">燈</text>
+  <text class="mk k1 tx" x="40" y="252" style="fill:#ff8fa3;font-size:13px">打開瞬間：I 變為 0，磁通量驟減</text>
+  <text class="mk k1 tx" x="40" y="278" style="fill:#ff8fa3;font-size:13px">⇒ 感應電流與原電流同向，補上缺口</text>
+  <text class="mk k2 tx" x="40" y="306" style="fill:#4ade80;font-size:13px">⇒ 感應電壓足以游離空氣，出現火花</text>
+  <text class="mk k3 tx" x="238" y="252" style="fill:#93a1c8;font-size:13px">閉合瞬間：原本 I 等於 0</text>
+  <text class="mk k3 tx" x="238" y="278" style="fill:#93a1c8;font-size:13px">⇒ 感應電流反抗增加，維持為零</text>
+</svg></div>
+      <div class="anscard" data-k="ans">
+        <div class="tag">答　案</div>
+        <div class="val">(D)　開關閉合的瞬間，由於電磁感應，電路電流趨向於維持為零</div>
+        <div class="note">斷路時感應電流補上原電流（同向，火花）；閉合時擋住電流上升（維持為零）</div>
+      </div>
+    </div>
+  </div>
+  <div class="rule" data-k="rule">通則：<b>感應電流的方向總是反抗磁通量的變化，盡力維持電流原有的狀態</b></div>
+</section>
+<section class="qpage" id="pg19" data-no="19">
+  <div class="q" data-k="q">靜止原子吸收頻率 f 的光子即躍遷；容器中作熱運動的原子，吸收靜止光源頻率 f 一撇的光子也能躍遷
+    <span class="ask">關於 f 一撇與 f 的關係，下列敘述何者正確？</span></div>
+  <div class="main">
+    <div class="chain"><div class="ln" data-k="l0"><span class="v v1">原子靜止：hf = ΔE（能階差）⇒ 只能吸收頻率正好為 f 的光子</span></div><div class="ln" data-k="l1"><span class="v v1">原子朝光源運動 ⇒ 感受到的光頻率偏高 ⇒ 光源只需發出較低的 f 一撇（f 一撇 < f）</span></div><div class="ln" data-k="l2"><span class="v v1">原子背向光源運動 ⇒ 感受到的頻率偏低 ⇒ 必須用較高的 f 一撇（f 一撇 > f）</span></div><div class="ln" data-k="l3"><span class="v v1">熱運動中各方向都有 ⇒ f 一撇 可能大於、也可能小於 f</span></div><div class="ln" data-k="l4"><span class="v v1">⇒ 答案 (D)　依原子的運動方向，f 一撇 可能大於或小於 f</span></div></div>
+    <div class="side">
+      <div class="fig" data-k="fig"><svg viewBox="0 0 420 330" class="svgp">
+  <text class="mk k0 tx" x="210" y="22" text-anchor="middle" style="fill:#ffd166;font-size:14px">原子吸收光子＝都卜勒效應（能階差不變）</text>
+  <line class="mk k0" x1="40" y1="196" x2="386" y2="196" stroke="#3b4b7d" stroke-width="2"/>
+  <path class="mk k0" d="M386 196 l-12 -6 v12 z" fill="#3b4b7d"/>
+  <text class="mk k0 tx" x="352" y="218" style="fill:#93a1c8;font-size:12px">光子 前進</text>
+  <circle class="mk k0" cx="150" cy="196" r="16" fill="#16223f" stroke="#66d9ef" stroke-width="2"/>
+  <text class="mk k0 tx" x="150" y="240" text-anchor="middle" style="fill:#66d9ef;font-size:11px">原子</text>
+  <line class="mk k1" x1="150" y1="150" x2="232" y2="150" stroke="#ff8fa3" stroke-width="2"/>
+  <path class="mk k1" d="M232 150 l-12 -6 v12 z" fill="#ff8fa3"/>
+  <text class="mk k1 tx" x="244" y="146" style="fill:#ff8fa3;font-size:12px">迎向光源</text>
+  <text class="mk k1 tx" x="244" y="168" style="fill:#ff8fa3;font-size:12px">⇒ 感頻偏高 ⇒ f 一撇 較小</text>
+  <line class="mk k2" x1="150" y1="272" x2="68" y2="272" stroke="#4ade80" stroke-width="2"/>
+  <path class="mk k2" d="M68 272 l12 -6 v12 z" fill="#4ade80"/>
+  <text class="mk k2 tx" x="40" y="300" style="fill:#4ade80;font-size:12px">背向光源 ⇒ 須較高頻 ⇒ f 一撇 較大</text>
+  <text class="mk k3 tx" x="40" y="90" style="fill:#ffd166;font-size:14px">熱運動各方向都有 ⇒ 答案 (D)</text>
+  <text class="mk k3 tx" x="40" y="116" style="fill:#93a1c8;font-size:12px">光譜線的都卜勒增寬就是這個道理</text>
+</svg></div>
+      <div class="anscard" data-k="ans">
+        <div class="tag">答　案</div>
+        <div class="val">(D)　依據原子的運動方向，f 一撇 可能大於或小於 f</div>
+        <div class="note">能階差不變 ⇒ 迎向光源時所需頻率較低、背向時較高 ⇒ 兩個方向都可能</div>
+      </div>
+    </div>
+  </div>
+  <div class="rule" data-k="rule">通則：<b>能階差固定時，吸收頻率是否偏移取決於原子相對光源的運動方向</b></div>
+</section>
+<section class="qpage" id="pg20" data-no="20">
+  <div class="q" data-k="q">電子繞核受平方反比靜電力、能量量子化；行星繞日同樣受平方反比重力，卻不以能階描述
+    <span class="ask">行星軌道運動不以能階描述，其理由何者正確？</span></div>
+  <div class="main">
+    <div class="chain"><div class="ln" data-k="l0"><span class="v v1">電子繞核屬微觀尺度 ⇒ 量子效應顯著 ⇒ 必須用量子力學、能量呈能階</span></div><div class="ln" data-k="l1"><span class="v v1">行星繞日屬巨觀尺度 ⇒ 量子數極大、能階間距小到無法觀測</span></div><div class="ln" data-k="l2"><span class="v v1">⇒ 用古典力學（萬有引力）就能描述得非常精確</span></div><div class="ln" data-k="l3"><span class="v v1">⇒ 理由在於：不同尺度的現象、在不同精確度要求下，適用不同的物理模型</span></div><div class="ln" data-k="l4"><span class="v v1">⇒ (A)(B)(C) 提到的力、電荷正負、粒子性都不是關鍵　⇒　答案 (D)</span></div></div>
+    <div class="side">
+      <div class="fig" data-k="fig"><svg viewBox="0 0 420 330" class="svgp">
+  <text class="mk k0 tx" x="210" y="22" text-anchor="middle" style="fill:#ffd166;font-size:14px">同樣平方反比，尺度不同 ⇒ 模型不同</text>
+  <circle class="mk k0" cx="110" cy="150" r="9" fill="#ff8fa3"/>
+  <text class="mk k0 tx" x="110" y="126" text-anchor="middle" style="fill:#ff8fa3;font-size:11px">原子核</text>
+  <circle class="mk k0" cx="110" cy="150" r="46" fill="none" stroke="#66d9ef" stroke-width="1.6" stroke-dasharray="4 4"/>
+  <circle class="mk k0" cx="110" cy="104" r="6" fill="#66d9ef"/>
+  <text class="mk k1 tx" x="110" y="228" text-anchor="middle" style="fill:#66d9ef;font-size:12px">微觀尺度</text>
+  <text class="mk k1 tx" x="110" y="250" text-anchor="middle" style="fill:#66d9ef;font-size:12px">能量量子化 ⇒ 能階</text>
+  <circle class="mk k2" cx="310" cy="150" r="15" fill="#ffd166"/>
+  <text class="mk k2 tx" x="310" y="122" text-anchor="middle" style="fill:#ffd166;font-size:11px">太陽</text>
+  <ellipse class="mk k2" cx="310" cy="150" rx="66" ry="46" fill="none" stroke="#4ade80" stroke-width="1.6"/>
+  <circle class="mk k2" cx="244" cy="150" r="7" fill="#4ade80"/>
+  <text class="mk k3 tx" x="310" y="228" text-anchor="middle" style="fill:#4ade80;font-size:12px">巨觀尺度</text>
+  <text class="mk k3 tx" x="310" y="250" text-anchor="middle" style="fill:#4ade80;font-size:12px">古典力學即足夠精確</text>
+  <text class="mk k3 tx" x="40" y="300" style="fill:#ffd166;font-size:14px">尺度不同、精確度要求不同 ⇒ 適用不同模型　(D)</text>
+</svg></div>
+      <div class="anscard" data-k="ans">
+        <div class="tag">答　案</div>
+        <div class="val">(D)　不同尺度的自然現象在不同的精確度要求下，可用不同的物理模型來描述</div>
+        <div class="note">微觀 → 量子力學（能階）；巨觀 → 古典力學即可。關鍵是尺度與精確度，不是力的形式</div>
+      </div>
+    </div>
+  </div>
+  <div class="rule" data-k="rule">通則：<b>選用哪一套物理模型，取決於尺度與所需的精確度</b></div>
+</section>
+  <div class="cap" id="CAPG" data-k="cap"><span></span></div>
+  <div class="bar">
+    <button class="btn" id="BT">▶</button>
+    <button class="btn" id="RP" title="重播">↺</button>
+    <div class="track" id="TK"><div class="fill" id="FL"></div></div>
+    <div class="tm" id="TM">0:00 / 0:00</div>
+    <div class="vo">旁白・<b>曉曉</b>　第 <span id="CN">1</span> 題</div>
+  </div>
+</div>
+<script>
+const PAGES = [{"no": 1, "has": 1, "dur": 79.71, "audio": "audio/q1.mp3", "steps": [["q", "on", 1.2], ["fig", "on", 36.6], ["l0", "on", 39.6], ["l1", "on", 46.7], ["l2", "on", 57.57], ["l3", "on", 64.99], ["l4", "on", 71.45], ["fig", "m0", 71.7], ["fig", "m1", 71.95], ["fig", "m2", 72.2], ["fig", "m3", 72.45], ["ans", "on", 72.7], ["rule", "on", 72.97]], "caps": [["絕熱密閉容器裝氫氣，沿光滑水平面等速度移動", 4.5], ["選項 A 動能↑內能→溫↑　B 動能↑內能↓溫↓　C 動能↑內能→溫→　D 動能↑內能↓溫→", 22.5], ["第一步：把整體前進的動能與分子雜亂運動的內能分開看", 39.6], ["第二步：容器不變形又絕熱密閉 ⇒ 體積不變、不作功、無熱交換", 46.7], ["第三步：內能只跟分子相對於容器的雜亂運動有關，這部分沒變", 57.57], ["第四步：內能不變、溫度不變，只有整體前進的動能增加", 64.99], ["答案 <b>(C)</b>　總動能增加、內能不變、溫度不變", 71.45], ["通則：整體前進的動能不屬於內能，內能只看分子的雜亂運動", 73.56]]}, {"no": 2, "has": 1, "dur": 88.32, "audio": "audio/q2.mp3", "steps": [["q", "on", 1.2], ["fig", "on", 40.39], ["l0", "on", 43.39], ["l1", "on", 53.26], ["l2", "on", 64.85], ["l3", "on", 74.71], ["l4", "on", 79.65], ["fig", "m0", 79.9], ["fig", "m1", 80.15], ["fig", "m2", 80.4], ["fig", "m3", 80.65], ["ans", "on", 80.9], ["rule", "on", 81.17]], "caps": [["彈簧秤平放光滑桌面，左右繩各受 T、T′ 拉力", 1.73], ["選項 A T = F + T′　B T &gt; F &gt; T′　C T = F = T′　D F = 0", 34.26], ["第一步：彈簧秤靜止 ⇒ 水平合力為零 ⇒ T = T′", 43.39], ["第二步：讀數 F 顯示掛勾所受的拉力量值，F = T′", 53.26], ["第三步：同一條輕繩兩端張力相等，且彈簧伸長量只由一端張力決定", 64.85], ["第四步：合併兩式得到 T = F = T′", 74.71], ["答案 <b>(C)</b>　T = F = T′", 79.65], ["通則：靜止 ⇒ 合力為零；讀數看一端張力，不是兩力相減", 81.78]]}, {"no": 3, "has": 1, "dur": 72.78, "audio": "audio/q3.mp3", "steps": [["q", "on", 1.2], ["fig", "on", 27.23], ["l0", "on", 30.23], ["l1", "on", 39.76], ["l2", "on", 48.78], ["l3", "on", 58.14], ["l4", "on", 62.41], ["fig", "m0", 62.66], ["fig", "m1", 62.91], ["fig", "m2", 63.16], ["fig", "m3", 63.41], ["ans", "on", 63.66], ["rule", "on", 63.92]], "caps": [["甲 普朗克、乙 赫茲、丙 愛因斯坦，依時間先後排列", 40.72], ["選項 A 甲乙丙　B 甲丙乙　C 乙甲丙　D 乙丙甲", 41.02], ["第一步：乙 赫茲 1887 年證實電磁波、同年發現光電效應，最早", 41.32], ["第二步：甲 普朗克 1900 年為解釋黑體輻射提出能量量子化，居中", 41.62], ["第三步：丙 愛因斯坦 1905 年提出光量子，成功解釋光電效應，最晚", 48.78], ["第四步：所以順序是 乙 到 甲 到 丙", 58.14], ["答案 <b>(C)</b>　乙、甲、丙", 62.41], ["通則：1887 赫茲 → 1900 普朗克 → 1905 愛因斯坦 → 1913 波耳", 64.55]]}, {"no": 4, "has": 1, "dur": 92.95, "audio": "audio/q4.mp3", "steps": [["q", "on", 1.2], ["fig", "on", 32.9], ["l0", "on", 35.9], ["l1", "on", 47.55], ["l2", "on", 63.07], ["l3", "on", 72.01], ["l4", "on", 82.75], ["fig", "m0", 83.0], ["fig", "m1", 83.25], ["fig", "m2", 83.5], ["fig", "m3", 83.75], ["ans", "on", 84.0], ["rule", "on", 84.42]], "caps": [["核能發電：中子撞擊鈾-235 引發連鎖核分裂", 2.42], ["選項 A 連鎖反應可發電　B 中子數須倍數成長　C 加熱水推動渦輪　D 降低濃度・減速・控制中子", 5.6], ["第一步：A 正確，鈾-235 吸收中子後分裂，同時放出 2 到 3 個中子形成連鎖反應", 35.9], ["第二步：B 錯誤，發電要讓每次分裂平均只再引發一次分裂，中子數維持穩定", 47.55], ["第三步：C 正確，核分裂熱能加熱水產生蒸氣，推動渦輪機帶動發電機", 63.07], ["第四步：D 正確，降低鈾濃縮度、用減速劑、以控制棒吸收中子都是調控方式", 72.01], ["答案 <b>(B)</b>　發電時中子數必須持續增加以倍數成長", 82.75], ["通則：穩定發電要讓有效增殖因數約等於 1，反應率固定而非失控成長", 85.0]]}, {"no": 5, "has": 1, "dur": 103.71, "audio": "audio/q5.mp3", "steps": [["q", "on", 1.2], ["fig", "on", 49.95], ["l0", "on", 52.95], ["l1", "on", 62.39], ["l2", "on", 75.49], ["l3", "on", 82.1], ["l4", "on", 94.07], ["fig", "m0", 94.32], ["fig", "m1", 94.57], ["fig", "m2", 94.82], ["fig", "m3", 95.07], ["ans", "on", 95.32], ["rule", "on", 95.73]], "caps": [["題組 5．絕熱汽缸內理想氣體推動活塞向左移動", 33.97], ["選項 A 內能增且 |ΔU|=K　B 內能減且 |ΔU|&gt;K　C 內能減且 |ΔU|&lt;K　D ΔU=0", 36.97], ["第一步：活塞向左移動代表氣體體積變大，氣體膨脹對外界作功 W 大於 0", 52.95], ["第二步：絕熱且無物質交換 ⇒ Q = 0，由 ΔU = Q − W 得 ΔU = −W 小於 0，內能減少", 62.39], ["第三步：氣體所作的功有兩個去處，一部分變成活塞動能 K", 75.49], ["第四步：另一部分用來克服大氣壓力，所以 W 大於 K，|ΔU| 大於 K", 82.1], ["答案 <b>(B)</b>　內能減少且 |ΔU| &gt; K", 94.07], ["通則：絕熱且膨脹作功 ⇒ 內能必減少；別忘記推開大氣也要作功", 96.33]]}, {"no": 6, "has": 1, "dur": 74.33, "audio": "audio/q6.mp3", "steps": [["q", "on", 1.2], ["fig", "on", 23.77], ["l0", "on", 26.77], ["l1", "on", 34.6], ["l2", "on", 43.64], ["l3", "on", 50.56], ["l4", "on", 65.65], ["fig", "m0", 65.9], ["fig", "m1", 66.15], ["fig", "m2", 66.4], ["fig", "m3", 66.65], ["ans", "on", 66.9], ["rule", "on", 67.31]], "caps": [["承第 5 題：分子撞擊向左移動的活塞，撞前 u、撞後 v", 12.69], ["選項 A v 一定大於 u　B v 一定小於 u　C v 一定等於 u　D 沒有一定關係", 15.69], ["第一步：活塞向左移動，方向與分子飛來方向相同，等於一面離去的牆", 26.77], ["第二步：切到活塞的參考座標，活塞靜止，分子以 u 減 v 活塞 的速率撞來", 34.6], ["第三步：彈性碰撞後以相同速率反彈，再換回實驗室座標", 43.64], ["第四步：v 等於 u 減 2 倍 v 活塞，明顯小於 u", 50.56], ["答案 <b>(B)</b>　速率 v 一定小於 u", 65.65], ["通則：球撞上後退的球拍會變慢；撞上迎面而來的球拍會變快", 67.94]]}, {"no": 7, "has": 1, "dur": 69.48, "audio": "audio/q7.mp3", "steps": [["q", "on", 1.2], ["fig", "on", 19.45], ["l0", "on", 22.45], ["l1", "on", 28.63], ["l2", "on", 38.58], ["l3", "on", 51.38], ["l4", "on", 59.19], ["fig", "m0", 59.44], ["fig", "m1", 59.69], ["fig", "m2", 59.94], ["fig", "m3", 60.19], ["ans", "on", 60.44], ["rule", "on", 60.85]], "caps": [["月球距離約 60 倍地球半徑，求同步衛星軌道半徑", 1.57], ["選項 A 4.2R　B 6.6R　C 7.8R　D 8.3R", 15.49], ["第一步：同步衛星的週期就是地球自轉週期，也就是一天", 22.45], ["第二步：萬有引力提供向心力，GMm 除以 r 平方 等於 m 乘 2π 除以 T 的平方再乘 r", 28.63], ["第三步：取 GM 等於 gR 平方，代 g 和 R 得到 r 約為 4.2 乘 10 的 7 次方公尺", 38.58], ["第四步：把 r 除以 R，得到大約 6.6，最接近 6.6 R", 51.38], ["答案 <b>(B)</b>　6.6 R", 59.19], ["通則：同步衛星軌道半徑約 4.2×10⁷ m，地表上方約 3.6 萬公里", 61.44]]}, {"no": 8, "has": 1, "dur": 100.62, "audio": "audio/q8.mp3", "steps": [["q", "on", 1.2], ["fig", "on", 50.62], ["l0", "on", 53.62], ["l1", "on", 62.7], ["l2", "on", 74.92], ["l3", "on", 85.85], ["l4", "on", 90.77], ["fig", "m0", 91.02], ["fig", "m1", 91.27], ["fig", "m2", 91.52], ["fig", "m3", 91.77], ["ans", "on", 92.02], ["rule", "on", 92.29]], "caps": [["電子束打靶：1.25×10¹⁴ 個電子在 5.00×10⁻⁸ 秒內射入靶後靜止", 1.97], ["選項 A 9.11×10⁻²N　B 9.11×10⁻³N　C 4.55×10⁻³N　D 4.55×10⁻⁶N", 39.47], ["第一步：單一電子動量為 m 乘 v，約 3.64 乘 10 的 −23 次方", 53.62], ["第二步：時段內所有電子損失的總動量約 4.56 乘 10 的 −9 次方", 62.7], ["第三步：平均力等於動量變化量除以時間，4.56 乘 10 的 −9 除以 5.00 乘 10 的 −8", 74.92], ["第四步：得到約 9.1 乘 10 的 −2 次方牛頓，答案 A", 85.85], ["答案 <b>(A)</b>　9.11×10⁻² N", 90.77], ["通則：平均力就是動量時變率，抓住 Δp 除以 Δt 這條主線", 92.91]]}, {"no": 9, "has": 1, "dur": 70.56, "audio": "audio/q9.mp3", "steps": [["q", "on", 1.2], ["fig", "on", 25.27], ["l0", "on", 28.27], ["l1", "on", 34.15], ["l2", "on", 40.85], ["l3", "on", 52.27], ["l4", "on", 61.86], ["fig", "m0", 62.11], ["fig", "m1", 62.36], ["fig", "m2", 62.61], ["fig", "m3", 62.86], ["ans", "on", 63.11], ["rule", "on", 63.44]], "caps": [["E₁→E₂ 輻射波長 λ₁、E₁→E₃ 輻射 λ₂，且 λ₁ 大於 λ₂", 20.15], ["選項 A λ₁λ₂/(λ₁−λ₂)　B λ₁λ₂/(λ₁+λ₂)　C λ₁+λ₂　D λ₁−λ₂", 23.15], ["第一步：E₂ 減 E₁ 等於 hc 除以 λ₁，E₃ 減 E₁ 等於 hc 除以 λ₂", 28.27], ["第二步：因為 λ₁ 大於 λ₂，所以 E₂ 的能量比 E₃ 小，E₃ 在 E₂ 之上", 34.15], ["第三步：由 E₃ 升到 E₂ 要吸收的能量等於兩者相減，也就是 hc 乘 λ₁ 減 λ₂ 除以 λ₁λ₂", 40.85], ["第四步：設吸收光的波長為 λ，得 λ 等於 λ₁λ₂ 除以 λ₁ 減 λ₂", 52.27], ["答案 <b>(A)</b>　λ₁λ₂ / (λ₁ − λ₂)", 61.86], ["通則：能量守恆時，能量相加對應的是 1/λ 相加，波長不能直接加減", 64.06]]}, {"no": 10, "has": 1, "dur": 91.18, "audio": "audio/q10.mp3", "steps": [["q", "on", 1.2], ["fig", "on", 47.89], ["l0", "on", 50.89], ["l1", "on", 60.2], ["l2", "on", 65.52], ["l3", "on", 73.72], ["l4", "on", 82.82], ["fig", "m0", 83.07], ["fig", "m1", 83.32], ["fig", "m2", 83.57], ["fig", "m3", 83.82], ["ans", "on", 84.07], ["rule", "on", 84.39]], "caps": [["金屬導線迴路載有穩定不變的電流，周圍空間的場如何？", 2.79], ["選項 A 只有電場　B 只有磁場　C 場隨時間變並發出電磁波　D 場不隨時間變、不發電磁波", 25.96], ["第一步：電流穩定不變，導線表面的靜電荷不隨時間改變，所以電場不隨時間改變", 50.89], ["第二步：穩定電流產生的磁場同樣不隨時間改變", 60.2], ["第三步：電場與磁場都不隨時間變，就不能互相感應產生向外傳播的電磁波", 65.52], ["第四步：迴路周圍電場與磁場同時存在，所以只有電場或只有磁場的說法都錯", 73.72], ["答案 <b>(D)</b>　電場與磁場不隨時間變，不會相互感應發出電磁波", 82.82], ["通則：要產生電磁波，需要隨時間變化的電流或加速中的電荷", 85.0]]}, {"no": 11, "has": 1, "dur": 110.13, "audio": "audio/q11.mp3", "steps": [["q", "on", 1.2], ["fig", "on", 62.62], ["l0", "on", 65.62], ["l1", "on", 75.75], ["l2", "on", 83.62], ["l3", "on", 93.9], ["l4", "on", 99.43], ["fig", "m0", 99.68], ["fig", "m1", 99.93], ["fig", "m2", 100.18], ["fig", "m3", 100.43], ["ans", "on", 100.68], ["rule", "on", 100.94]], "caps": [["演奏升溫：管樂器氣柱充滿熱氣、弦樂器琴弦變熱，波長近似不變", 2.35], ["選項 A 管↑弦↑　B 管↓弦↑　C 管↑弦↓　D 管↓弦↓", 38.36], ["第一步：波長不隨溫度改變，由 f 等於 v 除以 λ，頻率高低完全由波速決定", 65.62], ["第二步：管樂器的氣柱升溫後，空氣中的聲速變快，所以頻率升高", 75.75], ["第三步：弦樂器的琴弦升溫後，題目明說琴弦上的橫波波速變慢，波長近似不變下頻率降低", 83.62], ["第四步：所以管樂器頻率升高、絃樂器頻率降低", 93.9], ["答案 <b>(C)</b>　管樂器頻率升高、絃樂器頻率降低", 99.43], ["通則：波長固定時 f = v 除以 λ，頻率看波速；管樂器吹熱了音會偏高", 101.53]]}, {"no": 12, "has": 1, "dur": 124.34, "audio": "audio/q12.mp3", "steps": [["q", "on", 1.2], ["fig", "on", 69.19], ["l0", "on", 72.19], ["l1", "on", 82.37], ["l2", "on", 91.17], ["l3", "on", 100.96], ["l4", "on", 114.48], ["fig", "m0", 114.73], ["fig", "m1", 114.98], ["fig", "m2", 115.23], ["fig", "m3", 115.48], ["ans", "on", 115.73], ["rule", "on", 116.06]], "caps": [["蹲姿盪到最低點時突然起身站直，身體保持與吊繩共平面", 83.68], ["選項 A 動能↑位能↑擺角增　B 動能↑位能↓擺角增　C 動能↓位能↑擺角減　D 動能↑位能↑擺角不變", 83.98], ["第一步：最低點時重力與張力都通過轉軸，力矩為零，角動量守恆", 84.28], ["第二步：起身站直使質量靠近轉軸，轉動慣量變小，角速度變大", 84.58], ["第三步：由動能等於角動量平方除以兩倍轉動慣量，轉動慣量變小使擺動動能增加", 91.17], ["第四步：站起來的同時重心提高、重力位能增加，這份能量由肌肉作功提供，所以最大擺角增大", 100.96], ["答案 <b>(A)</b>　擺動動能增加、重力位能增加、最大擺角增大", 114.48], ["通則：最低點收身、高點伸身，靠肌肉作功把振幅越盪越大", 116.68]]}, {"no": 13, "has": 1, "dur": 81.2, "audio": "audio/q13.mp3", "steps": [["q", "on", 1.2], ["fig", "on", 31.15], ["l0", "on", 34.15], ["l1", "on", 44.4], ["l2", "on", 55.01], ["l3", "on", 64.12], ["l4", "on", 71.93], ["fig", "m0", 72.18], ["fig", "m1", 72.43], ["fig", "m2", 72.68], ["fig", "m3", 72.93], ["ans", "on", 73.18], ["rule", "on", 73.51]], "caps": [["光從太陽到地球約 500 秒，太陽角直徑約 0.5 度", 1.79], ["選項 A 7×10⁸m　B 1×10⁹m　C 4×10⁹m　D 8×10⁹m", 23.09], ["第一步：日地距離等於光速乘時間，得到 1.5 乘 10 的 11 次方公尺", 34.15], ["第二步：角直徑 0.5 度要換成弧度，約為 8.73 乘 10 的 −3 次方弧度", 44.4], ["第三步：小角度時 θ 約等於直徑除以距離，所以半徑等於 θ 的一半乘距離", 55.01], ["第四步：代入得到約 6.5 乘 10 的 8 次方公尺，最接近 7 乘 10 的 8 次方公尺", 64.12], ["答案 <b>(A)</b>　7×10⁸ m", 71.93], ["通則：物理題中的角度幾乎都要換成弧度，才能代入 θ = s 除以 r", 74.14]]}, {"no": 14, "has": 1, "dur": 123.54, "audio": "audio/q14.mp3", "steps": [["q", "on", 1.2], ["fig", "on", 64.26], ["l0", "on", 67.26], ["l1", "on", 80.07], ["l2", "on", 93.72], ["l3", "on", 104.71], ["l4", "on", 115.21], ["fig", "m0", 115.46], ["fig", "m1", 115.71], ["fig", "m2", 115.96], ["fig", "m3", 116.21], ["ans", "on", 116.46], ["rule", "on", 116.88]], "caps": [["真空管光電效應實驗：入射光頻率 f、光電流 I、兩極電壓差 V", 2.02], ["選項 A 頻率改變能量不變　B 頻率固定時能量與光強無關　C V 為正只有最快電子能到達　D V/I 必為定值", 39.19], ["第一步：單一光子能量等於 hf，光電子最大動能等於 hf 減去功函數，頻率改變時能量就會跟著改變", 67.26], ["第二步：頻率固定時光子能量固定，光電子能量與光強無關，增強光強只是讓單位時間打出更多光電子", 80.07], ["第三步：V 為正表示收集極接正極，電場會加速光電子，動能較小的光電子也能到達收集極", 93.72], ["第四步：光電流 I 隨 V 先上升、到飽和後幾乎不再增加，所以 V 除以 I 不是定值", 104.71], ["答案 <b>(B)</b>　入射光頻率 f 固定時，光電子由入射光獲得的能量與入射光的強度無關", 115.21], ["通則：光電子能量只跟頻率有關，光強只決定光電子的數量", 117.5]]}, {"no": 15, "has": 1, "dur": 100.65, "audio": "audio/q15.mp3", "steps": [["q", "on", 1.2], ["fig", "on", 54.18], ["l0", "on", 57.18], ["l1", "on", 67.98], ["l2", "on", 77.27], ["l3", "on", 84.55], ["l4", "on", 91.57], ["l5", "on", 91.82], ["fig", "m0", 92.07], ["fig", "m1", 92.32], ["fig", "m2", 92.57], ["fig", "m3", 92.82], ["ans", "on", 93.07], ["rule", "on", 93.32]], "caps": [["微波爐門板金屬片布滿直徑約 1 公釐小孔，可擋微波又能透光", 1.73], ["選項 A 波長大於狹縫較易直進通過　B 光不是電磁波所以可穿過　C 阻擋作用與波長有關　D 光速遠大於微波所以較易通過", 36.17], ["第一步：微波波長約公分級，遠大於 1 公釐孔徑，繞射明顯，能量被擋住不易直進通過", 57.18], ["第二步：可見光波長只有數百奈米，遠小於孔徑，可以通過，所以能透光看見爐內", 67.98], ["第三步：可見光本身就是電磁波，所以「光波不是電磁波」的說法錯誤", 77.27], ["第四步：能否通過與波速快慢無關，關鍵是波長與孔徑的比值，所以答案是 C", 84.55], ["答案 <b>(C)</b>　柵欄阻擋電磁波的作用與電磁波的波長有關", 91.57], ["通則：電磁波能否通過小孔，看的是波長與孔徑的相對大小，不是速度", 93.64]]}, {"no": 16, "has": 1, "dur": 118.09, "audio": "audio/q16.mp3", "steps": [["q", "on", 1.2], ["fig", "on", 64.65], ["l0", "on", 67.65], ["l1", "on", 76.17], ["l2", "on", 86.48], ["l3", "on", 96.5], ["l4", "on", 108.47], ["fig", "m0", 108.72], ["fig", "m1", 108.97], ["fig", "m2", 109.22], ["fig", "m3", 109.47], ["ans", "on", 109.72], ["rule", "on", 110.04]], "caps": [["氣球直徑約 0.10 公尺、距人耳約 10 公尺，聲速 340 公尺每秒", 20.59], ["選項 A 頻率低於 10Hz　B 頻率高於兩萬 Hz　C 氣球內氣體跑到耳朵　D 有效波長約 0.10 公尺、頻率約 3.4 kHz", 35.6], ["第一步：氣壓擾動的尺寸大約就是氣球的直徑，所以有效波長約為 0.10 公尺", 67.65], ["第二步：由頻率等於波速除以波長，340 除以 0.10 得到 3400 Hz，也就是 3.4 kHz", 76.17], ["第三步：3.4 kHz 落在人耳 20 Hz 到兩萬 Hz 的可聽範圍內，所以雖然只響一次也聽得見", 86.48], ["第四步：聲波是空氣壓縮的擾動傳遞過來，空氣分子只在原處振動，不是氣球內的氣體跑到耳朵", 96.5], ["答案 <b>(D)</b>　脈衝波有效波長約 0.10 m，與頻率 3.4 kHz 的聲音相近", 108.47], ["通則：短脈衝也有對應的有效波長與頻率，能否聽見要看是否落在可聽範圍", 110.65]]}, {"no": 17, "has": 1, "dur": 112.31, "audio": "audio/q17.mp3", "steps": [["q", "on", 1.2], ["fig", "on", 53.85], ["l0", "on", 56.85], ["l1", "on", 64.07], ["l2", "on", 73.9], ["l3", "on", 85.9], ["l4", "on", 101.97], ["fig", "m0", 102.22], ["fig", "m1", 102.47], ["fig", "m2", 102.72], ["fig", "m3", 102.97], ["ans", "on", 103.22], ["rule", "on", 103.55]], "caps": [["天線沿 z 軸，發射的電磁波沿 x 軸傳播，電場平行 z 軸、磁場平行 y 軸", 6.61], ["選項 A 線圈平面與 xz 平面重合　B 與 xy 平面重合　C 與 yz 平面重合　D 與 yz 成 45 度", 41.29], ["第一步：感應電流正比於垂直穿過線圈平面的磁力線數目的時間變化率", 56.85], ["第二步：要讓磁力線垂直穿過線圈，線圈平面的法線必須與磁場方向平行，也就是沿著 y 軸", 64.07], ["第三步：法線沿 y 軸，線圈平面就由 x 軸與 z 軸張成，也就是與 xz 平面重合", 73.9], ["第四步：若與 xy 或 yz 平面重合，磁場幾乎平躺在線圈平面內，穿過的磁力線趨近於零，感應電流最弱", 85.9], ["答案 <b>(A)</b>　線圈平面與 xz 平面重合", 101.97], ["通則：這正是天線要對準極化方向的原理，電場方向決定接收天線該怎麼擺", 104.15]]}, {"no": 18, "has": 1, "dur": 131.86, "audio": "audio/q18.mp3", "steps": [["q", "on", 1.2], ["fig", "on", 71.39], ["l0", "on", 74.39], ["l1", "on", 86.09], ["l2", "on", 97.34], ["l3", "on", 110.35], ["l4", "on", 122.11], ["fig", "m0", 122.36], ["fig", "m1", 122.61], ["fig", "m2", 122.86], ["fig", "m3", 123.11], ["ans", "on", 123.36], ["rule", "on", 123.68]], "caps": [["在某些電路中，當電路與電源接通而且載有電流時，若在瞬間將電路上的開關打開形成斷路", 1.75], ["開關兩極之間的空氣隙會出現火花，表示空氣的絕緣失效形成電流通路", 10.62], ["但若電路未與電源接通而且不載有電流時，於瞬間將開關閉合形成電流通路，則不會出現火花", 18.19], ["選項是 A 開關打開的瞬間，周圍磁場一定維持不變，電路不會產生感應電流", 45.84], ["B 開關打開的瞬間，周圍磁場消失，產生的感應電流與原來電流反向", 53.52], ["C 開關閉合的瞬間，電磁感應產生的電流必定與電源驅動的電流同向", 60.6], ["D 開關閉合的瞬間，由於電磁感應，電路電流趨向於維持為零", 67.58], ["第一步，開關打開的瞬間，電流由 I 急速變為零，磁通量快速減少，電路必然產生感應電流，所以 A 是錯的", 74.39], ["第二步，由冷次定律，感應電流的作用是維持原有電流，所以它與原電流同向，不是反向，所以 B 也是錯的", 86.09], ["第三步，開關閉合的瞬間，電路原本沒有電流，感應電流的方向是對抗電流的增加，也就是與電源驅動的方向相反，所以 C 是錯的", 97.34], ["第四步，開關閉合瞬間，感應電流趨向使電流維持為零，因此電流是漸增而不是瞬間跳升，也就不會產生火花", 110.35], ["答案 <b>(D)</b>　開關閉合的瞬間，由於電磁感應，電路電流趨向於維持為零", 122.11], ["通則：把冷次定律翻成白話，電流不喜歡改變，想增加它就擋、想減少它就補", 124.32]]}, {"no": 19, "has": 1, "dur": 113.52, "audio": "audio/q19.mp3", "steps": [["q", "on", 1.2], ["fig", "on", 56.23], ["l0", "on", 59.23], ["l1", "on", 69.79], ["l2", "on", 84.51], ["l3", "on", 95.19], ["l4", "on", 103.46], ["fig", "m0", 103.71], ["fig", "m1", 103.96], ["fig", "m2", 104.21], ["fig", "m3", 104.46], ["ans", "on", 104.71], ["rule", "on", 105.03]], "caps": [["已知一種氣體的原子，在靜止時若吸收一個頻率為 f 的光子後，會從基態躍遷到其第一激發態", 1.78], ["此原子所吸收的光波，其頻率會因為該原子相對於光源的運動而有頻移現象，就像運動中的觀察者所聽到的聲波會有都卜勒頻移一樣", 11.16], ["已知原子各能階之間的能量差不隨其運動速度而變", 24.03], ["若該氣體的原子在容器中作熱運動，並在吸收一個由靜止光源所發出、頻率為 f 一撇 的光子後，從基態躍遷到第一激發態", 29.16], ["選項是 A f 一撇 一定小於 f、B f 一撇 一定等於 f、C f 一撇 一定大於 f", 44.26], ["D 依據原子的運動方向，f 一撇 可能大於或小於 f", 53.56], ["第一步，原子靜止時，必須吸收能量正好等於能階差的光子，也就是 h f 等於 ΔE，頻率為 f", 59.23], ["第二步，原子朝著光源運動時，原子感受到的光頻率比光源實際發出的高，因此光源只要發出較低頻率 f 一撇 小於 f 的光，原子就能吸收", 69.79], ["第三步，原子背向光源運動時，感受的頻率變低，就必須用較高頻率 f 一撇 大於 f 的光才能被吸收", 84.51], ["第四步，熱運動中各種方向都有，所以 f 一撇 可能大於、也可能小於 f", 95.19], ["答案 <b>(D)</b>　依據原子的運動方向，f 一撇 可能大於或小於 f", 103.46], ["通則：能階差固定時，頻移取決於原子的運動方向，這正是光譜線都卜勒增寬的原因", 105.61]]}, {"no": 20, "has": 1, "dur": 109.48, "audio": "audio/q20.mp3", "steps": [["q", "on", 1.2], ["fig", "on", 49.29], ["l0", "on", 52.29], ["l1", "on", 62.78], ["l2", "on", 76.09], ["l3", "on", 85.2], ["l4", "on", 99.55], ["fig", "m0", 99.8], ["fig", "m1", 100.05], ["fig", "m2", 100.3], ["fig", "m3", 100.55], ["ans", "on", 100.8], ["rule", "on", 101.12]], "caps": [["原子中的電子藉由與距離平方成反比的靜電吸引力，圍繞著原子核運行，其能量是量子化的，稱為能階", 1.68], ["行星也是在與距離平方成反比的重力吸引下，圍繞太陽運行，但卻不以量子化的能階來描述其能量", 11.79], ["選項是 A 靜電力可以是吸引力或排斥力，但重力只有吸引力；B 電荷可以分為正電荷和負電荷，但質量則無正負之分", 27.49], ["C 電子與原子核均具有波粒二象性，但行星只具有粒子性", 38.9], ["D 不同尺度的自然現象在不同的精確度要求下，可用不同的物理模型來描述", 44.83], ["第一步，電子繞原子核屬於微觀尺度，量子效應顯著，必須用量子力學描述，能量呈現量子化的能階", 52.29], ["第二步，行星繞太陽屬於巨觀尺度，其量子數極大、能階間距小到無法觀測，用古典力學就能描述得非常精確", 62.78], ["第三步，所以理由在於，不同尺度的自然現象，在不同的精確度要求下，適用不同的物理模型", 76.09], ["第四步，選項 A B C 提到的力是否只有吸引、電荷有正負、是否為粒子，都不是關鍵，行星在量子力學下也有波動性，只是波長短得可以忽略", 85.2], ["答案 <b>(D)</b>　不同尺度的自然現象在不同的精確度要求下，可用不同的物理模型來描述", 99.55], ["通則：判斷用哪一套物理，先看尺度與要求的精確度，而不是看力的形式是否相同", 101.72]]}], VOICE = "Xiaoxiao";
+const $ = id => document.getElementById(id);
+const dbg = m => { try { $("DBG").textContent = m; } catch (e) { } };
+window.onerror = (m, s, l) => { dbg("ERR@" + l + ":" + m); return false; };
+
+let curNo = 0, curPage = null, ci = 0, capIdx = -1;
+const RESET_CLS = ["on", "s2", "s3", "pw", "balanced", "m0", "m1", "m2", "m3"];
+const audio = new Audio();
+audio.preload = "auto";
+const pg = n => $("pg" + n);
+const el = (page, k) => page.querySelector('[data-k="' + k + '"]');
+const dur = n => (PAGES[n - 1] && PAGES[n - 1].dur) || 0;
+
+function reset(page) {
+  page.querySelectorAll("*").forEach(e => RESET_CLS.forEach(c => e.classList.remove(c)));
+  $("CAPG").innerHTML = "";   /* 字幕為全卷共用元素 */
+  capIdx = -1;
+}
+function addStep(s) {
+  const e = el(curPage, s[0]);
+  if (!e) return;
+  s[1].split(" ").forEach(c => e.classList.add(c));
+}
+function paint(page) {  /* 靜態：一次畫到 t 秒 */
+  const cs = $("CAPG");
+  page.querySelectorAll("*").forEach(e => RESET_CLS.forEach(c => e.classList.remove(c)));
+  capIdx = -1;
+  const st = PAGES[curNo - 1].steps;
+  for (let i = 0; i < st.length; i++) if (st[i][2] <= paint.t) { const e = el(page, st[i][0]); if (e) st[i][1].split(" ").forEach(c => e.classList.add(c)); }
+  const cp = PAGES[curNo - 1].caps;
+  let k = -1; for (let i = 0; i < cp.length; i++) if (cp[i][1] <= paint.t) k = i;
+  if (k >= 0 && cs) { cs.innerHTML = "<span>" + cp[k][0] + "</span>"; capIdx = k; }
+  $("FL").style.width = (dur(curNo) ? (100 * paint.t / dur(curNo)) : 0) + "%";
+  $("TM").textContent = fmt(paint.t) + " / " + fmt(dur(curNo));
+}
+function updateCap(t) {
+  const cp = PAGES[curNo - 1].caps;
+  let k = -1; for (let i = 0; i < cp.length; i++) if (cp[i][1] <= t) k = i;
+  if (k === capIdx) return;
+  capIdx = k;
+  const box = $("CAPG");
+  if (k < 0) { box.innerHTML = ""; return; }
+  box.innerHTML = "<span>" + cp[k][0] + "</span>";
+  requestAnimationFrame(() => box.firstChild && box.firstChild.classList.add("on"));
+}
+function fmt(s) { s = Math.max(0, s | 0); return (s / 60 | 0) + ":" + String(s % 60).padStart(2, "0"); }
+
+function tick() {
+  if (!audio.paused && curPage) {
+    const t = audio.currentTime, st = PAGES[curNo - 1].steps;
+    while (ci < st.length && st[ci][2] <= t) { addStep(st[ci]); ci++; }
+    updateCap(t);
+    const D = audio.duration || dur(curNo);
+    $("FL").style.width = (D ? (100 * t / D) : 0) + "%";
+    $("TM").textContent = fmt(t) + " / " + fmt(D);
+  }
+  requestAnimationFrame(tick);
+}
+requestAnimationFrame(tick);
+
+function goto(n, t) {
+  if (!PAGES[n - 1]) return;
+  audio.pause(); audio.removeAttribute("src"); audio.load();
+  $("BT").textContent = "▶";
+  document.querySelectorAll(".qpage").forEach(p => p.classList.remove("cur"));
+  const page = pg(n); page.classList.add("cur");
+  document.querySelectorAll(".qno").forEach(b => b.classList.toggle("act", +b.dataset.n === n));
+  curNo = n; curPage = page; ci = 0;
+  reset(page);
+  $("CN").textContent = n;
+  const P = PAGES[n - 1];
+  if (!P.has) { $("TM").textContent = "— / —"; $("FL").style.width = "0%"; $("CAPG").innerHTML = ""; return; }
+  audio.src = P.audio;
+  if (t != null) { paint.t = t; paint(page); }
+  else {
+    $("FL").style.width = "0%"; $("TM").textContent = "0:00 / " + fmt(P.dur);
+    ci = 0;
+    audio.play().then(() => $("BT").textContent = "❚❚").catch(() => { });
+  }
+}
+
+document.querySelectorAll(".qno").forEach(b => b.onclick = () => goto(+b.dataset.n));
+$("BT").onclick = () => {
+  if (!PAGES[curNo - 1].has) return;
+  if (audio.paused) audio.play().then(() => $("BT").textContent = "❚❚").catch(() => { });
+  else { audio.pause(); $("BT").textContent = "▶"; }
+};
+$("RP").onclick = () => { if (PAGES[curNo - 1].has) { reset(curPage); ci = 0; audio.currentTime = 0; audio.play().catch(() => { }); $("BT").textContent = "❚❚"; } };
+audio.onpause = () => $("BT").textContent = "▶";
+audio.onended = () => $("BT").textContent = "▶";
+audio.onplay = () => $("BT").textContent = "❚❚";
+$("TK").onclick = e => {
+  if (!PAGES[curNo - 1].has) return;
+  const r = $("TK").getBoundingClientRect();
+  const p = Math.min(1, Math.max(0, (e.clientX - r.left) / r.width));
+  const D = audio.duration || dur(curNo);
+  audio.currentTime = p * D;
+  if (audio.paused) { paint.t = audio.currentTime; paint(curPage); } else { ci = 0; }
+};
+function audit() {  /* 版面自檢：越界 / 文字溢出 / 元素重疊 */
+  const WR = $("wrap").getBoundingClientRect(), L = [], items = [];
+  const nm = e => e.dataset.k || (e.className.split(" ")[0] || "el");
+  const all = curPage.querySelectorAll(".q,.ln,.fig,.anscard,.rule"), capEl2 = $("CAPG");
+  const list = Array.prototype.slice.call(all);
+  if (capEl2) list.push(capEl2);
+  list.forEach(e => {
+    const r = e.getBoundingClientRect(), k = nm(e);
+    items.push({ k: k, r: r });
+    if (r.bottom > WR.bottom + 1 || r.top < WR.top - 1 || r.left < WR.left - 1 || r.right > WR.right + 1)
+      L.push("OUT:" + k + "[t" + Math.round(r.top - WR.top) + ",b" + Math.round(r.bottom - WR.top) + ",l" + Math.round(r.left - WR.left) + ",r" + Math.round(r.right - WR.left) + "]");
+    if (e.classList.contains("ln")) {
+      const v = e.firstElementChild;
+      if (v && v.scrollHeight > e.clientHeight + 1) L.push("CLIP:" + k + "[" + v.scrollHeight + ">" + e.clientHeight + "]");
+    }
+    if (e.classList.contains("fig") && e.scrollHeight > e.clientHeight + 1) L.push("CLIPF[" + e.scrollHeight + ">" + e.clientHeight + "]");
+  });
+  for (let i = 0; i < items.length; i++) for (let j = i + 1; j < items.length; j++) {
+    const a = items[i].r, b = items[j].r;
+    const ov = Math.min(a.bottom, b.bottom) - Math.max(a.top, b.top);
+    const oh = Math.min(a.right, b.right) - Math.max(a.left, b.left);
+    if (ov > 1.5 && oh > 1.5) L.push("OVL:" + items[i].k + "~" + items[j].k + "[" + Math.round(ov) + "x" + Math.round(oh) + "]");
+  }
+  return "AUDIT|" + (L.length ? L.join(" ; ") : "clean");
+}
+function fit() {
+  const k = Math.min(window.innerWidth / 1320, window.innerHeight / 830);
+  document.documentElement.style.setProperty("--k", Math.max(.45, Math.min(1.25, k)));
+}
+window.addEventListener("resize", fit); fit();
+
+const qs = new URLSearchParams(location.search);
+const qn = parseInt(qs.get("q") || "1", 10);
+if (qs.has("at")) {
+  document.body.classList.add("st");
+  goto(qn, parseFloat(qs.get("at")) || 0);
+  dbg("st|q=" + qn + "|at=" + qs.get("at") + "|cap=" + ($("CAPG").textContent || "").slice(0, 12)
+    + "|" + (qs.has("audit") ? audit() : ""));
+} else {
+  goto(qn, null);
+  dbg("ok|ready|q=" + qn + "|dur=" + dur(qn));
+}
+</script>
+</body></html>

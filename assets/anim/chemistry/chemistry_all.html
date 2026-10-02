@@ -1,0 +1,1025 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>115 化學 3B1B 動態講解（整卷）</title>
+<style>
+:root{--fg:#e9eefc;--dim:#93a1c8;--gold:#ffd166;--cy:#66d9ef;--pk:#ff8fa3;}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;overflow:hidden;background:#070a14;color:var(--fg);
+  font-family:"PingFang TC","Helvetica Neue",system-ui,sans-serif;
+  background-image:radial-gradient(1100px 620px at 50% -10%,#16203c,#070a14 72%)}
+#wrap{position:fixed;left:50%;top:50%;width:1280px;height:790px;
+  transform:translate(-50%,-50%) scale(var(--k,1));transform-origin:center center}
+.nav{position:absolute;left:36px;right:36px;top:10px;height:46px;display:flex;align-items:center;gap:6px}
+.nav .ttl{font-size:15px;color:var(--dim);margin-right:10px;white-space:nowrap}
+.nav .ttl b{color:var(--cy);font-weight:600}
+.qno{width:34px;height:34px;border-radius:9px;border:1px solid #25315a;background:#111a33;color:#8fa0cc;
+  font-size:14px;cursor:pointer;font-variant-numeric:tabular-nums;transition:.2s;flex:0 0 auto}
+.qno:hover{border-color:#41558c;color:var(--fg)}
+.qno.act{background:linear-gradient(180deg,#2a3a68,#1b2748);border-color:var(--cy);color:#fff;
+  box-shadow:0 0 14px rgba(102,217,239,.35)}
+.qno.todo{opacity:.38}
+.qno.todo:hover{border-color:#31406e;color:#8fa0cc}
+.qpage{position:absolute;inset:0;display:none}
+.qpage.cur{display:block}
+.q{position:absolute;left:60px;right:60px;top:62px;text-align:center;
+  font-family:"Times New Roman",Georgia,serif;font-size:30px;letter-spacing:.5px;
+  opacity:0;transform:translateY(-14px);transition:opacity .9s ease,transform .9s ease}
+.q.on{opacity:1;transform:none}
+.q .ask{display:block;margin-top:8px;font-size:22px;color:var(--gold);font-family:inherit}
+.main{position:absolute;left:48px;right:48px;top:178px;height:462px;display:flex;gap:24px}
+.chain{flex:0 0 726px;display:flex;flex-direction:column;justify-content:center;gap:4px}
+.ln{position:relative;min-height:46px;font-family:"Times New Roman",Georgia,serif;font-size:22px}
+.ln .v{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;text-align:center;
+  padding:0 6px;line-height:1.25;
+  opacity:0;transform:translateY(14px);transition:opacity .55s ease,transform .55s ease,color .5s ease}
+.ln.on .v{transform:none}
+.ln.on .v1{opacity:1}
+.ln.on.s2 .v1{opacity:0}
+.ln.on.s2 .v2{opacity:1}
+.ln.on.s3 .v2{opacity:0}
+.ln.on.s3 .v3{opacity:1}
+.tint1{color:var(--pk)}.tint2{color:var(--cy)}
+.side{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px}
+.fig{width:100%;height:300px;display:flex;align-items:center;justify-content:center;
+  opacity:0;transform:translateY(18px) scale(.96);transition:opacity .9s ease,transform .9s ease}
+.fig.on{opacity:1;transform:none}
+.anscard{width:100%;max-width:430px;padding:16px 22px;border:2px solid var(--gold);border-radius:16px;
+  background:linear-gradient(180deg,rgba(255,209,102,.14),rgba(255,209,102,.05));
+  box-shadow:0 0 34px rgba(255,209,102,.22);text-align:center;opacity:0;transform:translateY(20px) scale(.95);
+  transition:opacity .8s ease,transform .8s ease}
+.anscard.on{opacity:1;transform:none}
+.anscard .tag{font-size:14px;letter-spacing:3px;color:var(--dim)}
+.anscard .val{margin-top:4px;font-family:"Times New Roman",Georgia,serif;font-size:30px;color:var(--gold)}
+.anscard .note{margin-top:4px;font-size:13px;color:#8b9ac6;font-family:"Menlo",monospace}
+.rule{position:absolute;left:48px;right:48px;top:656px;text-align:center;font-size:16px;color:var(--dim);
+  opacity:0;transform:translateY(10px);transition:opacity .8s ease,transform .8s ease}
+.rule.on{opacity:1;transform:none}
+.rule b{color:var(--cy);font-weight:600}
+.cap{position:absolute;left:60px;right:60px;bottom:56px;min-height:30px;text-align:center;font-size:17px;
+  color:var(--fg);font-family:"Times New Roman","PingFang TC",serif}
+.cap span{opacity:0;transition:opacity .3s ease}
+.cap span.on{opacity:.92}
+.bar{position:absolute;left:48px;right:48px;bottom:12px;height:42px;display:flex;align-items:center;gap:14px}
+.btn{width:42px;height:42px;border-radius:50%;border:1px solid #2b3a63;background:#131c33;color:var(--fg);
+  font-size:15px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:.2s;flex:0 0 auto}
+.btn:hover{background:#1c2745;border-color:#41558c}
+.track{flex:1;height:6px;border-radius:3px;background:#1a2340;position:relative;cursor:pointer}
+.track .fill{position:absolute;left:0;top:0;bottom:0;width:0;border-radius:3px;
+  background:linear-gradient(90deg,#66d9ef,#ffd166)}
+.tm{font-size:13px;color:var(--dim);font-variant-numeric:tabular-nums;flex:0 0 auto}
+.vo{font-size:13px;color:var(--dim);white-space:nowrap;flex:0 0 auto}
+.vo b{color:var(--cy);font-weight:600}
+.empty{position:absolute;left:0;right:0;top:320px;text-align:center;color:var(--dim);font-size:20px}
+.empty b{color:var(--gold)}
+/* ---- 天平（Q1） ---- */
+.beam{transform-box:fill-box;transform-origin:50% 12%;transform:rotate(-8deg);
+  transition:transform 1.1s cubic-bezier(.34,1.4,.5,1)}
+.fig.balanced .beam{transform:rotate(0deg)}
+.scale{width:100%;height:300px}
+.scale text{font-family:"Times New Roman",Georgia,serif;font-size:23px;fill:var(--fg);opacity:0;
+  transition:opacity .6s ease}
+.fig.pw .scale text{opacity:1}
+/* ---- 圖元通用（Q2–Q4） ---- */
+.fig svg.svgp{width:100%;height:auto;max-height:300px}
+.tx{fill:#8b9ac6;font-size:14px;font-family:"Menlo",monospace}
+.mk{opacity:0;transition:.6s}
+.fig.m0 .k0,.fig.m1 .k1,.fig.m2 .k2,.fig.m3 .k3{opacity:1}
+.q3fig{display:flex;flex-direction:column;gap:10px;font-family:"Menlo",monospace}
+.q3fig .ct{color:#7f8db8;font-size:13px}
+.q3fig .row{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.bx{background:#16223f;border:1px solid #2c3d6b;border-radius:8px;padding:7px 13px;font-size:17px;transition:.5s}
+.bx.hi{border-color:var(--gold);color:var(--gold)}
+.plus{color:#7f8db8}
+.ar{color:var(--cy);font-size:13px}
+.tip{margin-top:8px;color:var(--gold);font-size:14px}
+.mtx{display:flex;flex-direction:column;gap:8px;margin-left:6px}
+.mrow{display:flex;align-items:center;gap:7px;padding:6px 8px;border-radius:9px;transition:.5s}
+.mrow .vl{color:#7f8db8;font-size:13px;width:34px}
+.mrow .m,.mrow .cst{width:56px;text-align:center;background:#16223f;border:1px solid #2c3d6b;border-radius:7px;
+  padding:7px 0;font-family:"Menlo",monospace;font-size:16px}
+.mrow .cst{border-color:#3a5a9a}
+.vbar{color:#3d4a76}
+.fig.m0 .mrow:nth-child(1),.fig.m1 .mrow:nth-child(2),.fig.m2 .mrow:nth-child(3){background:#1b2b52}
+.fig.m3 .mrow:nth-child(3){border:1px dashed var(--gold)}
+body.st *{transition:none!important;animation:none!important}
+
+/* ============ 化學科版面微調 ============ */
+.q{font-size:16.5px;line-height:1.62}
+.chain .ln{font-size:15.5px;line-height:1.98}
+.anscard .val{font-size:21px;line-height:1.42}
+.anscard .note{font-size:12.5px;line-height:1.5}
+.fig svg.svgp{max-height:298px}
+.rule{font-size:14.5px}
+</style></head>
+<body><div id="DBG" hidden></div>
+<div id="wrap">
+  <div class="nav" id="NAV"><span class="ttl">115 學年度　<b>化學</b>　3B1B 動態講解</span><button class="qno" data-n="1" type="button">1</button><button class="qno" data-n="2" type="button">2</button><button class="qno" data-n="3" type="button">3</button><button class="qno" data-n="4" type="button">4</button><button class="qno" data-n="5" type="button">5</button><button class="qno" data-n="6" type="button">6</button><button class="qno" data-n="7" type="button">7</button><button class="qno" data-n="8" type="button">8</button><button class="qno" data-n="9" type="button">9</button><button class="qno" data-n="10" type="button">10</button><button class="qno" data-n="11" type="button">11</button><button class="qno" data-n="12" type="button">12</button><button class="qno" data-n="13" type="button">13</button><button class="qno" data-n="14" type="button">14</button><button class="qno" data-n="15" type="button">15</button><button class="qno" data-n="16" type="button">16</button><button class="qno" data-n="17" type="button">17</button><button class="qno" data-n="18" type="button">18</button><button class="qno" data-n="19" type="button">19</button><button class="qno" data-n="20" type="button">20</button><button class="qno" data-n="21" type="button">21</button><button class="qno" data-n="22" type="button">22</button><button class="qno" data-n="23" type="button">23</button><button class="qno" data-n="24" type="button">24</button><button class="qno" data-n="25" type="button">25</button></div>
+<section class="qpage" id="pg1" data-no="1">
+  <div class="q" data-k="q">下列物質溶於水後，何者的水溶液無法導電？
+    <span class="ask">水溶液要導電，關鍵條件是什麼？</span></div>
+  <div class="main">
+    <div class="chain"><div class="ln" data-k="l0"><span class="v v1">水溶液導電　⇒　必須有可自由移動的離子</span></div><div class="ln" data-k="l1"><span class="v v1">HCl 為強酸；Na<sub>2</sub>SO<sub>4</sub>、KOH 為離子化合物　⇒　解離出離子</span></div><div class="ln" data-k="l2"><span class="v v1">Ar 是惰性氣體　⇒　幾乎不溶於水、也不解離</span></div><div class="ln" data-k="l3"><span class="v v1">溶液中沒有可移動的離子　⇒　無法導電</span></div><div class="ln" data-k="l4"><span class="v v1">⇒　答案 (B) 氬氣（Ar）</span></div></div>
+    <div class="side">
+      <div class="fig" data-k="fig"><svg viewBox="0 0 420 330" class="svgp">
+  <text class="mk k0 tx" x="210" y="22" text-anchor="middle" style="fill:#ffd166;font-size:14px">四杯水溶液・通電測試</text>
+  <line class="mk k0" x1="24" y1="64" x2="396" y2="64" stroke="#3b4b7d" stroke-width="2"/>
+  <rect class="mk k0" x="30" y="94" width="78" height="94" rx="8" fill="#16223f" stroke="#66d9ef" stroke-width="2"/>
+  <rect class="mk k0" x="126" y="94" width="78" height="94" rx="8" fill="#16223f" stroke="#66d9ef" stroke-width="2"/>
+  <rect class="mk k0" x="222" y="94" width="78" height="94" rx="8" fill="#16223f" stroke="#66d9ef" stroke-width="2"/>
+  <rect class="mk k0" x="318" y="94" width="78" height="94" rx="8" fill="#16223f" stroke="#ff8fa3" stroke-width="2"/>
+  <circle class="mk k0" cx="60" cy="128" r="6" fill="#4ade80"/><circle class="mk k0" cx="86" cy="158" r="6" fill="#ff8fa3"/>
+  <circle class="mk k0" cx="150" cy="124" r="6" fill="#4ade80"/><circle class="mk k0" cx="180" cy="156" r="6" fill="#4ade80"/>
+  <circle class="mk k0" cx="246" cy="128" r="6" fill="#4ade80"/><circle class="mk k0" cx="276" cy="156" r="6" fill="#ff8fa3"/>
+  <circle class="mk k0" cx="346" cy="138" r="7" fill="#93a1c8"/><circle class="mk k0" cx="372" cy="166" r="7" fill="#93a1c8"/>
+  <text class="mk k0 tx" x="69" y="210" text-anchor="middle" style="fill:#93a1c8;font-size:11px">HCl</text>
+  <text class="mk k0 tx" x="165" y="210" text-anchor="middle" style="fill:#93a1c8;font-size:11px">Na2SO4</text>
+  <text class="mk k0 tx" x="261" y="210" text-anchor="middle" style="fill:#93a1c8;font-size:11px">KOH</text>
+  <text class="mk k0 tx" x="357" y="210" text-anchor="middle" style="fill:#93a1c8;font-size:11px">Ar</text>
+  <text class="mk k1 tx" x="30" y="244" style="fill:#4ade80;font-size:14px">解離出離子　⇒　導電</text>
+  <text class="mk k1 tx" x="30" y="266" style="fill:#4ade80;font-size:12.5px">燈泡亮、電流計有讀數</text>
+  <text class="mk k2 tx" x="30" y="244" style="fill:#ff8fa3;font-size:14px">Ar 只是溶解，沒有解離</text>
+  <text class="mk k2 tx" x="30" y="266" style="fill:#ff8fa3;font-size:12.5px">沒有可移動的離子</text>
+  <text class="mk k3 tx" x="236" y="250" style="fill:#ffd166;font-size:16px">不導電 ⇒ (B) 氬氣</text>
+  <text class="mk k3 tx" x="236" y="276" style="fill:#93a1c8;font-size:12px">溶於水 ≠ 會解離</text>
+</svg></div>
+      <div class="anscard" data-k="ans">
+        <div class="tag">答　案</div>
+        <div class="val">(B)　氬氣（Ar）</div>
+        <div class="note">導電靠可自由移動的離子；Ar 只以分子狀態溶解、不解離</div>
+      </div>
+    </div>
+  </div>
+  <div class="rule" data-k="rule">通則：<b>水溶液導電的關鍵是可自由移動的離子，不是溶於水就會導電</b></div>
+</section>
+<section class="qpage" id="pg2" data-no="2">
+  <div class="q" data-k="q">奈米銀噴霧呈均勻混濁，光線照射時有明顯散射，下列敘述何者正確？
+    <span class="ask">粒子尺度與廷得耳效應怎麼對應？</span></div>
+  <div class="main">
+    <div class="chain"><div class="ln" data-k="l0"><span class="v v1">均勻混濁 ＋ 明顯散射光線　⇒　膠體溶液的特徵</span></div><div class="ln" data-k="l1"><span class="v v1">膠體分散粒子直徑約 1 ~ 100 nm　⇒　不是真溶液</span></div><div class="ln" data-k="l2"><span class="v v1">真溶液澄清（&lt; 1 nm）；懸浮液 &gt; 100 nm</span></div><div class="ln" data-k="l3"><span class="v v1">光被分散粒子散射而可見光路　⇒　廷得耳效應</span></div><div class="ln" data-k="l4"><span class="v v1">⇒　答案 (D) 散射現象稱為廷得耳效應</span></div></div>
+    <div class="side">
+      <div class="fig" data-k="fig"><svg viewBox="0 0 420 330" class="svgp">
+  <text class="mk k0 tx" x="210" y="22" text-anchor="middle" style="fill:#ffd166;font-size:14px">奈米銀膠體・光的散射</text>
+  <rect class="mk k0" x="96" y="50" width="228" height="146" rx="10" fill="#16223f" stroke="#66d9ef" stroke-width="2"/>
+  <line class="mk k0" x1="34" y1="123" x2="96" y2="123" stroke="#ffd166" stroke-width="3"/>
+  <text class="mk k0 tx" x="26" y="108" style="fill:#ffd166;font-size:12px">入射光</text>
+  <circle class="mk k0" cx="150" cy="94" r="5" fill="#93a1c8"/><circle class="mk k0" cx="188" cy="130" r="5" fill="#93a1c8"/>
+  <circle class="mk k0" cx="232" cy="100" r="5" fill="#93a1c8"/><circle class="mk k0" cx="268" cy="144" r="5" fill="#93a1c8"/>
+  <circle class="mk k0" cx="166" cy="168" r="5" fill="#93a1c8"/><circle class="mk k0" cx="256" cy="172" r="5" fill="#93a1c8"/>
+  <circle class="mk k0" cx="204" cy="158" r="5" fill="#93a1c8"/><circle class="mk k0" cx="292" cy="104" r="5" fill="#93a1c8"/>
+  <line class="mk k1" x1="150" y1="94" x2="112" y2="56" stroke="#4ade80" stroke-width="1.4"/>
+  <line class="mk k1" x1="232" y1="100" x2="278" y2="60" stroke="#4ade80" stroke-width="1.4"/>
+  <line class="mk k1" x1="268" y1="144" x2="316" y2="164" stroke="#4ade80" stroke-width="1.4"/>
+  <line class="mk k1" x1="166" y1="168" x2="118" y2="186" stroke="#4ade80" stroke-width="1.4"/>
+  <text class="mk k1 tx" x="96" y="222" style="fill:#4ade80;font-size:14px">光被粒子散射　⇒　側面看得見光路</text>
+  <text class="mk k2 tx" x="96" y="252" style="fill:#66d9ef;font-size:13px">真溶液 &lt; 1 nm　｜　膠體 1 ~ 100 nm　｜　懸浮液 &gt; 100 nm</text>
+  <text class="mk k3 tx" x="96" y="284" style="fill:#ffd166;font-size:16px">散射 = 廷得耳效應　⇒　答案 (D)</text>
+</svg></div>
+      <div class="anscard" data-k="ans">
+        <div class="tag">答　案</div>
+        <div class="val">(D)　光線在膠體溶液中散射的現象稱為廷得耳效應</div>
+        <div class="note">粒子尺度：真溶液 &lt; 1 nm　膠體 1~100 nm　懸浮液 &gt; 100 nm</div>
+      </div>
+    </div>
+  </div>
+  <div class="rule" data-k="rule">通則：<b>看到均勻混濁加光散射，就是膠體；這個散射現象叫廷得耳效應</b></div>
+</section>
+<section class="qpage" id="pg3" data-no="3">
+  <div class="q" data-k="q">下列何者不是由醣類或醣類化合物為主所形成的物質？
+    <span class="ask">四個物質中，哪一個屬於蛋白質？</span></div>
+  <div class="main">
+    <div class="chain"><div class="ln" data-k="l0"><span class="v v1">先分類：是「醣類（多醣）」還是「蛋白質」</span></div><div class="ln" data-k="l1"><span class="v v1">澱粉、甲殼素、纖維素　⇒　皆為多醣</span></div><div class="ln" data-k="l2"><span class="v v1">澱粉、纖維素由葡萄糖聚合；甲殼素為葡萄糖衍生物</span></div><div class="ln" data-k="l3"><span class="v v1">膠原蛋白由胺基酸聚合　⇒　屬於蛋白質</span></div><div class="ln" data-k="l4"><span class="v v1">⇒　答案 (D) 膠原蛋白</span></div></div>
+    <div class="side">
+      <div class="fig" data-k="fig"><svg viewBox="0 0 420 330" class="svgp">
+  <text class="mk k0 tx" x="210" y="22" text-anchor="middle" style="fill:#ffd166;font-size:14px">多醣 vs 蛋白質</text>
+  <rect class="mk k0" x="34" y="52" width="164" height="88" rx="10" fill="#16223f" stroke="#4ade80" stroke-width="2"/>
+  <rect class="mk k0" x="222" y="52" width="164" height="88" rx="10" fill="#16223f" stroke="#ff8fa3" stroke-width="2"/>
+  <text class="mk k0 tx" x="116" y="74" text-anchor="middle" style="fill:#4ade80;font-size:13px">多醣（葡萄糖單元）</text>
+  <text class="mk k0 tx" x="304" y="74" text-anchor="middle" style="fill:#ff8fa3;font-size:13px">蛋白質（胺基酸單元）</text>
+  <circle class="mk k1" cx="58" cy="102" r="9" fill="#4ade80"/><circle class="mk k1" cx="82" cy="102" r="9" fill="#4ade80"/>
+  <circle class="mk k1" cx="106" cy="102" r="9" fill="#4ade80"/><circle class="mk k1" cx="130" cy="102" r="9" fill="#4ade80"/>
+  <circle class="mk k1" cx="154" cy="102" r="9" fill="#4ade80"/><circle class="mk k1" cx="178" cy="102" r="9" fill="#4ade80"/>
+  <circle class="mk k2" cx="246" cy="102" r="9" fill="#ff8fa3"/><circle class="mk k2" cx="270" cy="102" r="9" fill="#ff8fa3"/>
+  <circle class="mk k2" cx="294" cy="102" r="9" fill="#ff8fa3"/><circle class="mk k2" cx="318" cy="102" r="9" fill="#ff8fa3"/>
+  <circle class="mk k2" cx="342" cy="102" r="9" fill="#ff8fa3"/><circle class="mk k2" cx="366" cy="102" r="9" fill="#ff8fa3"/>
+  <text class="mk k1 tx" x="34" y="176" style="fill:#4ade80;font-size:14px">澱粉：植物儲能</text>
+  <text class="mk k1 tx" x="34" y="200" style="fill:#4ade80;font-size:14px">甲殼素：節肢動物外骨骼</text>
+  <text class="mk k1 tx" x="34" y="224" style="fill:#4ade80;font-size:14px">纖維素：植物細胞壁</text>
+  <text class="mk k2 tx" x="34" y="256" style="fill:#ff8fa3;font-size:14px">膠原蛋白：結締組織　⇒　不是醣類</text>
+  <text class="mk k3 tx" x="34" y="292" style="fill:#ffd166;font-size:16px">答案 (D) 膠原蛋白</text>
+</svg></div>
+      <div class="anscard" data-k="ans">
+        <div class="tag">答　案</div>
+        <div class="val">(D)　膠原蛋白：存在於人體的結締組織</div>
+        <div class="note">澱粉、甲殼素、纖維素為多醣；膠原蛋白為蛋白質</div>
+      </div>
+    </div>
+  </div>
+  <div class="rule" data-k="rule">通則：<b>先分辨單體：葡萄糖單元是多醣，胺基酸單元是蛋白質</b></div>
+</section>
+<section class="qpage" id="pg4" data-no="4">
+  <div class="q" data-k="q">下列何者不是奈米碳管的特性或主要應用？
+    <span class="ask">哪一項其實是奈米二氧化鈦的功能？</span></div>
+  <div class="main">
+    <div class="chain"><div class="ln" data-k="l0"><span class="v v1">碳管導電性極佳、機械強度高　⇒　奈米電子元件</span></div><div class="ln" data-k="l1"><span class="v v1">管徑小、表面積大且可修飾　⇒　藥物載體</span></div><div class="ln" data-k="l2"><span class="v v1">中空管狀具毛細吸附能力　⇒　儲氫、燃料電池</span></div><div class="ln" data-k="l3"><span class="v v1">吸收紫外光產生氧化還原滅菌　⇒　奈米二氧化鈦光觸媒</span></div><div class="ln" data-k="l4"><span class="v v1">⇒　答案 (A) 該功效不是碳管的特性</span></div></div>
+    <div class="side">
+      <div class="fig" data-k="fig"><svg viewBox="0 0 420 330" class="svgp">
+  <text class="mk k0 tx" x="210" y="22" text-anchor="middle" style="fill:#ffd166;font-size:14px">奈米碳管（石墨烯捲成）</text>
+  <path class="mk k0" d="M70 78 q40 -26 80 0 t80 0 t80 0 v58 q-40 26 -80 0 t-80 0 t-80 0 z" fill="#16223f" stroke="#66d9ef" stroke-width="2"/>
+  <path class="mk k0" d="M70 78 q40 -26 80 0 t80 0 t80 0" fill="none" stroke="#4ade80" stroke-width="1.2"/>
+  <path class="mk k0" d="M70 108 q40 -26 80 0 t80 0 t80 0" fill="none" stroke="#4ade80" stroke-width="1.2"/>
+  <circle class="mk k0" cx="110" cy="66" r="3.4" fill="#ffd166"/><circle class="mk k0" cx="190" cy="66" r="3.4" fill="#ffd166"/>
+  <circle class="mk k0" cx="270" cy="66" r="3.4" fill="#ffd166"/><circle class="mk k0" cx="350" cy="66" r="3.4" fill="#ffd166"/>
+  <text class="mk k1 tx" x="34" y="182" style="fill:#4ade80;font-size:13.5px">導電、高強度　⇒　電子元件</text>
+  <text class="mk k1 tx" x="34" y="206" style="fill:#4ade80;font-size:13.5px">表面積大　⇒　藥物載體</text>
+  <text class="mk k1 tx" x="34" y="230" style="fill:#4ade80;font-size:13.5px">中空毛細　⇒　儲氫裝置</text>
+  <circle class="mk k2" cx="300" cy="176" r="17" fill="#ff8fa3"/>
+  <text class="mk k2 tx" x="326" y="182" style="fill:#ff8fa3;font-size:13.5px">TiO2 光觸媒</text>
+  <text class="mk k2 tx" x="326" y="204" style="fill:#ff8fa3;font-size:12.5px">吸收紫外光滅菌</text>
+  <text class="mk k3 tx" x="34" y="274" style="fill:#ffd166;font-size:15.5px">紫外光滅菌 = TiO2 特性</text>
+  <text class="mk k3 tx" x="34" y="300" style="fill:#ffd166;font-size:15.5px">⇒　答案 (A)</text>
+</svg></div>
+      <div class="anscard" data-k="ans">
+        <div class="tag">答　案</div>
+        <div class="val">(A)　能吸收紫外光產生氧化還原反應，達成滅菌、消毒等效果</div>
+        <div class="note">此為奈米二氧化鈦（TiO<sub>2</sub>）光觸媒特性；碳管負責導電、載藥、儲氫</div>
+      </div>
+    </div>
+  </div>
+  <div class="rule" data-k="rule">通則：<b>碳管的本事是導電與中空吸附；紫外光滅菌是二氧化鈦光觸媒的專長</b></div>
+</section>
+<section class="qpage" id="pg5" data-no="5">
+  <div class="q" data-k="q">NaCl 固體不導電但熔融或溶於水可導電；HCl 氣體不導電但溶於水可導電；蔗糖水溶液不導電；銅固態可導電。何項推論正確？
+    <span class="ask">導電的關鍵是什麼？</span></div>
+  <div class="main">
+    <div class="chain"><div class="ln" data-k="l0"><span class="v v1">導電關鍵　⇒　帶電粒子能不能自由移動</span></div><div class="ln" data-k="l1"><span class="v v1">NaCl 固體：離子被鎖在晶格中　⇒　不導電</span></div><div class="ln" data-k="l2"><span class="v v1">熔融或溶於水　⇒　離子可自由移動　⇒　導電</span></div><div class="ln" data-k="l3"><span class="v v1">HCl 溶於水是解離出 H<sup>+</sup>、Cl<sup>-</sup>　⇒　不是放出自由電子</span></div><div class="ln" data-k="l4"><span class="v v1">蔗糖溶解仍為分子（非電解質）；銅靠自由電子（金屬鍵）</span></div><div class="ln" data-k="l5"><span class="v v1">⇒　答案 (B) NaCl 為離子化合物，熔融或溶於水可形成離子而導電</span></div></div>
+    <div class="side">
+      <div class="fig" data-k="fig"><svg viewBox="0 0 420 330" class="svgp">
+  <text class="mk k0 tx" x="210" y="22" text-anchor="middle" style="fill:#ffd166;font-size:14px">固態鎖住　vs　解離後自由移動</text>
+  <rect class="mk k0" x="30" y="50" width="170" height="122" rx="10" fill="#16223f" stroke="#66d9ef" stroke-width="2"/>
+  <rect class="mk k0" x="220" y="50" width="170" height="122" rx="10" fill="#16223f" stroke="#4ade80" stroke-width="2"/>
+  <text class="mk k0 tx" x="115" y="70" text-anchor="middle" style="fill:#66d9ef;font-size:12.5px">NaCl 固體（離子固定）</text>
+  <text class="mk k0 tx" x="305" y="70" text-anchor="middle" style="fill:#4ade80;font-size:12.5px">溶於水（離子游離）</text>
+  <circle class="mk k1" cx="66" cy="96" r="8" fill="#4ade80"/><circle class="mk k1" cx="106" cy="96" r="8" fill="#ff8fa3"/>
+  <circle class="mk k1" cx="146" cy="96" r="8" fill="#4ade80"/><circle class="mk k1" cx="66" cy="126" r="8" fill="#ff8fa3"/>
+  <circle class="mk k1" cx="106" cy="126" r="8" fill="#4ade80"/><circle class="mk k1" cx="146" cy="126" r="8" fill="#ff8fa3"/>
+  <circle class="mk k1" cx="66" cy="156" r="8" fill="#4ade80"/><circle class="mk k1" cx="106" cy="156" r="8" fill="#ff8fa3"/>
+  <circle class="mk k1" cx="146" cy="156" r="8" fill="#4ade80"/>
+  <circle class="mk k2" cx="252" cy="94" r="8" fill="#4ade80"/><circle class="mk k2" cx="300" cy="120" r="8" fill="#ff8fa3"/>
+  <circle class="mk k2" cx="348" cy="92" r="8" fill="#4ade80"/><circle class="mk k2" cx="332" cy="158" r="8" fill="#ff8fa3"/>
+  <circle class="mk k2" cx="272" cy="160" r="8" fill="#4ade80"/><circle class="mk k2" cx="370" cy="130" r="8" fill="#ff8fa3"/>
+  <text class="mk k1 tx" x="34" y="200" style="fill:#66d9ef;font-size:13.5px">固定不動　⇒　不導電</text>
+  <text class="mk k2 tx" x="34" y="228" style="fill:#4ade80;font-size:13.5px">自由移動　⇒　導電</text>
+  <text class="mk k2 tx" x="34" y="256" style="fill:#93a1c8;font-size:12.5px">蔗糖：分子溶解、非電解質　｜　銅：電子海導電</text>
+  <text class="mk k3 tx" x="34" y="292" style="fill:#ffd166;font-size:15.5px">電解質靠離子　｜　金屬靠自由電子　⇒　答案 (B)</text>
+</svg></div>
+      <div class="anscard" data-k="ans">
+        <div class="tag">答　案</div>
+        <div class="val">(B)　NaCl 為離子化合物，熔融或溶於水時，可形成離子而導電</div>
+        <div class="note">導電看「帶電粒子能否自由移動」；固態離子被鎖在晶格故不導電</div>
+      </div>
+    </div>
+  </div>
+  <div class="rule" data-k="rule">通則：<b>電解質水溶液或熔融態靠離子導電；金屬靠自由電子導電</b></div>
+</section>
+<section class="qpage" id="pg6" data-no="6">
+  <div class="q" data-k="q">下列化學反應中，何者為氧化還原反應？
+    <span class="ask">怎麼判斷一個反應是不是氧化還原？</span></div>
+  <div class="main">
+    <div class="chain"><div class="ln" data-k="l0"><span class="v v1">判斷法　⇒　檢查元素氧化數在反應前後有沒有改變</span></div><div class="ln" data-k="l1"><span class="v v1">Na：0 → +1（氧化）；水中的 H：+1 → 0（還原）</span></div><div class="ln" data-k="l2"><span class="v v1">酸鹼中和、化合、複分解　⇒　氧化數都不變</span></div><div class="ln" data-k="l3"><span class="v v1">⇒　答案 (B) 2 Na + 2 H<sub>2</sub>O → 2 NaOH + H<sub>2</sub></span></div></div>
+    <div class="side">
+      <div class="fig" data-k="fig"><svg viewBox="0 0 420 330" class="svgp">
+  <text class="mk k0 tx" x="210" y="22" text-anchor="middle" style="fill:#ffd166;font-size:14px">看氧化數有沒有改變</text>
+  <rect class="mk k0" x="30" y="48" width="176" height="70" rx="9" fill="#16223f" stroke="#ff8fa3" stroke-width="2"/>
+  <text class="mk k0 tx" x="118" y="74" text-anchor="middle" style="fill:#93a1c8;font-size:12.5px">HCl + NaOH → NaCl + H2O</text>
+  <text class="mk k0 tx" x="118" y="100" text-anchor="middle" style="fill:#ff8fa3;font-size:12.5px">酸鹼中和・氧化數不變</text>
+  <rect class="mk k0" x="214" y="48" width="176" height="70" rx="9" fill="#16223f" stroke="#4ade80" stroke-width="2"/>
+  <text class="mk k0 tx" x="302" y="74" text-anchor="middle" style="fill:#93a1c8;font-size:12.5px">2 Na + 2 H2O → 2 NaOH + H2</text>
+  <text class="mk k0 tx" x="302" y="100" text-anchor="middle" style="fill:#4ade80;font-size:12.5px">氧化數改變・氧化還原</text>
+  <rect class="mk k0" x="30" y="130" width="176" height="70" rx="9" fill="#16223f" stroke="#ff8fa3" stroke-width="2"/>
+  <text class="mk k0 tx" x="118" y="156" text-anchor="middle" style="fill:#93a1c8;font-size:12.5px">CaO + H2O → Ca(OH)2</text>
+  <text class="mk k0 tx" x="118" y="182" text-anchor="middle" style="fill:#ff8fa3;font-size:12.5px">化合・氧化數不變</text>
+  <rect class="mk k0" x="214" y="130" width="176" height="70" rx="9" fill="#16223f" stroke="#ff8fa3" stroke-width="2"/>
+  <text class="mk k0 tx" x="302" y="156" text-anchor="middle" style="fill:#93a1c8;font-size:12.5px">HClO4 + CaCO3 → …</text>
+  <text class="mk k0 tx" x="302" y="182" text-anchor="middle" style="fill:#ff8fa3;font-size:12.5px">複分解・氧化數不變</text>
+  <text class="mk k1 tx" x="30" y="238" style="fill:#4ade80;font-size:14.5px">鈉 0 → +1（氧化）</text>
+  <text class="mk k1 tx" x="30" y="262" style="fill:#4ade80;font-size:14.5px">水中的氫 +1 → 0（還原）</text>
+  <text class="mk k3 tx" x="238" y="248" style="fill:#ffd166;font-size:16px">⇒ 答案 (B)</text>
+  <text class="mk k3 tx" x="238" y="274" style="fill:#93a1c8;font-size:12px">氧化與還原同時發生</text>
+</svg></div>
+      <div class="anscard" data-k="ans">
+        <div class="tag">答　案</div>
+        <div class="val">(B)　2 Na(s) + 2 H<sub>2</sub>O(l) → 2 NaOH(aq) + H<sub>2</sub>(g)</div>
+        <div class="note">Na 0→+1（氧化）、H +1→0（還原）；其餘三式氧化數不變</div>
+      </div>
+    </div>
+  </div>
+  <div class="rule" data-k="rule">通則：<b>有元素氧化數改變才是氧化還原；中和、化合、複分解都不算</b></div>
+</section>
+<section class="qpage" id="pg7" data-no="7">
+  <div class="q" data-k="q">白色粉末溶於水後可導電，加入碳酸氫鈉水溶液會劇烈起泡。此物質最可能為何？
+    <span class="ask">起泡代表溶液中含有什麼？</span></div>
+  <div class="main">
+    <div class="chain"><div class="ln" data-k="l0"><span class="v v1">與 NaHCO<sub>3</sub> 劇烈起泡　⇒　放出 CO<sub>2</sub>　⇒　含 H<sup>+</sup>（酸性）</span></div><div class="ln" data-k="l1"><span class="v v1">H<sup>+</sup> ＋ HCO<sub>3</sub><sup>-</sup> → CO<sub>2</sub> ＋ H<sub>2</sub>O</span></div><div class="ln" data-k="l2"><span class="v v1">水溶液可導電　⇒　必須是電解質</span></div><div class="ln" data-k="l3"><span class="v v1">咖啡因不反應；NaOH 為強鹼不產氣；葡萄糖非電解質</span></div><div class="ln" data-k="l4"><span class="v v1">⇒　答案 (B) 檸檬酸（C<sub>6</sub>H<sub>8</sub>O<sub>7</sub>）</span></div></div>
+    <div class="side">
+      <div class="fig" data-k="fig"><svg viewBox="0 0 420 330" class="svgp">
+  <text class="mk k0 tx" x="210" y="22" text-anchor="middle" style="fill:#ffd166;font-size:14px">起泡檢驗：酸 ＋ 碳酸氫鈉</text>
+  <path class="mk k0" d="M150 60 h84 v150 a42 42 0 0 1 -84 0 z" fill="#16223f" stroke="#66d9ef" stroke-width="2"/>
+  <text class="mk k0 tx" x="192" y="86" text-anchor="middle" style="fill:#66d9ef;font-size:12px">白色粉末水溶液</text>
+  <circle class="mk k1" cx="176" cy="150" r="6" fill="#4ade80"/><circle class="mk k1" cx="204" cy="168" r="6" fill="#4ade80"/>
+  <circle class="mk k1" cx="186" cy="192" r="6" fill="#4ade80"/><circle class="mk k1" cx="214" cy="140" r="6" fill="#4ade80"/>
+  <circle class="mk k1" cx="196" cy="118" r="6" fill="#4ade80"/><circle class="mk k1" cx="168" cy="126" r="6" fill="#4ade80"/>
+  <line class="mk k1" x1="196" y1="110" x2="196" y2="70" stroke="#ffd166" stroke-width="2"/>
+  <text class="mk k1 tx" x="248" y="118" style="fill:#ffd166;font-size:13px">劇烈起泡 ⇒ CO2</text>
+  <text class="mk k2 tx" x="30" y="248" style="fill:#4ade80;font-size:13.5px">條件一：能提供氫離子（酸性）</text>
+  <text class="mk k2 tx" x="30" y="272" style="fill:#4ade80;font-size:13.5px">條件二：水溶液可導電（電解質）</text>
+  <text class="mk k3 tx" x="30" y="304" style="fill:#ffd166;font-size:15.5px">檸檬酸（弱酸）同時符合　⇒　答案 (B)</text>
+</svg></div>
+      <div class="anscard" data-k="ans">
+        <div class="tag">答　案</div>
+        <div class="val">(B)　檸檬酸（C<sub>6</sub>H<sub>8</sub>O<sub>7</sub>）</div>
+        <div class="note">起泡＝H<sup>+</sup> 與 HCO<sub>3</sub><sup>-</sup> 產生 CO<sub>2</sub>；檸檬酸為弱酸且為電解質</div>
+      </div>
+    </div>
+  </div>
+  <div class="rule" data-k="rule">通則：<b>遇碳酸氫鈉起泡代表酸性；水溶液能導電代表它是電解質</b></div>
+</section>
+<section class="qpage" id="pg8" data-no="8">
+  <div class="q" data-k="q">碳酸氫鈉受熱分解的反應式，下列何者正確？
+    <span class="ask">小蘇打加熱會變成什麼？</span></div>
+  <div class="main">
+    <div class="chain"><div class="ln" data-k="l0"><span class="v v1">2 NaHCO<sub>3</sub> <span class='arrow'>→</span> Na<sub>2</sub>CO<sub>3</sub> ＋ H<sub>2</sub>O ＋ CO<sub>2</sub></span></div><div class="ln" data-k="l1"><span class="v v1">係數檢查　⇒　Na 2＝2　C 2＝1＋1　H 2＝2　O 6＝3＋1＋2</span></div><div class="ln" data-k="l2"><span class="v v1">生成物　⇒　碳酸鈉 ＋ 水 ＋ 二氧化碳</span></div><div class="ln" data-k="l3"><span class="v v1">碳酸鈉（Na<sub>2</sub>CO<sub>3</sub>）俗稱蘇打</span></div><div class="ln" data-k="l4"><span class="v v1">⇒　答案 (D)</span></div></div>
+    <div class="side">
+      <div class="fig" data-k="fig"><svg viewBox="0 0 420 330" class="svgp">
+  <text class="mk k0 tx" x="210" y="22" text-anchor="middle" style="fill:#ffd166;font-size:14px">碳酸氫鈉受熱分解・係數平衡</text>
+  <rect class="mk k0" x="30" y="46" width="176" height="72" rx="9" fill="#16223f" stroke="#66d9ef" stroke-width="2"/>
+  <text class="mk k0 tx" x="118" y="74" text-anchor="middle" style="fill:#93a1c8;font-size:12.5px">2 NaHCO3</text>
+  <text class="mk k0 tx" x="118" y="98" text-anchor="middle" style="fill:#66d9ef;font-size:12px">碳酸氫鈉・小蘇打</text>
+  <rect class="mk k1" x="214" y="46" width="176" height="72" rx="9" fill="#16223f" stroke="#4ade80" stroke-width="2"/>
+  <text class="mk k1 tx" x="302" y="74" text-anchor="middle" style="fill:#93a1c8;font-size:12.5px">Na2CO3 + H2O + CO2</text>
+  <text class="mk k1 tx" x="302" y="98" text-anchor="middle" style="fill:#4ade80;font-size:12px">碳酸鈉＋水＋二氧化碳</text>
+  <text class="mk k2 tx" x="30" y="156" style="fill:#ffd166;font-size:13.5px">Na：左 2　右 2　✔</text>
+  <text class="mk k2 tx" x="30" y="180" style="fill:#ffd166;font-size:13.5px">C：左 2　右 1＋1　✔</text>
+  <text class="mk k2 tx" x="30" y="204" style="fill:#ffd166;font-size:13.5px">H：左 2　右 2　✔</text>
+  <text class="mk k2 tx" x="30" y="228" style="fill:#ffd166;font-size:13.5px">O：左 6　右 3＋1＋2　✔</text>
+  <text class="mk k3 tx" x="30" y="272" style="fill:#4ade80;font-size:14.5px">原子守恆成立 ⇒ 答案 (D)</text>
+  <text class="mk k3 tx" x="30" y="300" style="fill:#93a1c8;font-size:12.5px">（誤答多為漏水、係數未平衡）</text>
+</svg></div>
+      <div class="anscard" data-k="ans">
+        <div class="tag">答　案</div>
+        <div class="val">(D)　2 NaHCO<sub>3</sub>(s) → Na<sub>2</sub>CO<sub>3</sub>(s) ＋ H<sub>2</sub>O(g) ＋ CO<sub>2</sub>(g)</div>
+        <div class="note">碳酸鈉俗稱蘇打；原子守恆：Na 2=2、C 2=1+1、H 2=2、O 6=3+1+2</div>
+      </div>
+    </div>
+  </div>
+  <div class="rule" data-k="rule">通則：<b>碳酸氫鈉受熱 → 碳酸鈉 ＋ 水 ＋ 二氧化碳，係數為 2：1：1：1</b></div>
+</section>
+<section class="qpage" id="pg9" data-no="9">
+  <div class="q" data-k="q">胃藥（制酸劑）中常含碳酸鈣，其抗酸原理為何？
+    <span class="ask">碳酸鈣為什麼能中和胃酸？</span></div>
+  <div class="main">
+    <div class="chain"><div class="ln" data-k="l0"><span class="v v1">胃酸　⇒　主成分為鹽酸（HCl）</span></div><div class="ln" data-k="l1"><span class="v v1">CaCO<sub>3</sub> ＋ 2 HCl → CaCl<sub>2</sub> ＋ H<sub>2</sub>O ＋ CO<sub>2</sub></span></div><div class="ln" data-k="l2"><span class="v v1">碳酸鈣為鹼性　⇒　與酸反應將其中和</span></div><div class="ln" data-k="l3"><span class="v v1">⇒　答案 (D) 碳酸鈣為鹼性，可與胃酸（HCl）反應</span></div></div>
+    <div class="side">
+      <div class="fig" data-k="fig"><svg viewBox="0 0 420 330" class="svgp">
+  <text class="mk k0 tx" x="210" y="22" text-anchor="middle" style="fill:#ffd166;font-size:14px">制酸劑＝鹼性物質中和胃酸</text>
+  <rect class="mk k0" x="30" y="48" width="360" height="66" rx="9" fill="#16223f" stroke="#ff8fa3" stroke-width="2"/>
+  <text class="mk k0 tx" x="210" y="74" text-anchor="middle" style="fill:#ff8fa3;font-size:13px">胃酸主成分：鹽酸 HCl</text>
+  <text class="mk k0 tx" x="210" y="98" text-anchor="middle" style="fill:#93a1c8;font-size:12.5px">過多 ⇒ 胃壁灼熱、潰瘍</text>
+  <rect class="mk k1" x="30" y="130" width="360" height="60" rx="9" fill="#16223f" stroke="#4ade80" stroke-width="2"/>
+  <text class="mk k1 tx" x="210" y="156" text-anchor="middle" style="fill:#4ade80;font-size:13.5px">CaCO3 + 2 HCl → CaCl2 + H2O + CO2</text>
+  <text class="mk k1 tx" x="210" y="178" text-anchor="middle" style="fill:#93a1c8;font-size:12px">鹼性碳酸鹽　直接與酸反應中和</text>
+  <text class="mk k3 tx" x="30" y="242" style="fill:#ffd166;font-size:15px">⇒ 答案 (D)</text>
+  <text class="mk k3 tx" x="30" y="268" style="fill:#93a1c8;font-size:12.5px">碳酸鈣為鹼性，可與胃酸反應</text>
+  <text class="mk k3 tx" x="30" y="296" style="fill:#93a1c8;font-size:12.5px">（不是為補鈣，也不是改變酸鹼催化）</text>
+</svg></div>
+      <div class="anscard" data-k="ans">
+        <div class="tag">答　案</div>
+        <div class="val">(D)　碳酸鈣為鹼性，可與胃酸（HCl）反應</div>
+        <div class="note">CaCO<sub>3</sub> ＋ 2 HCl → CaCl<sub>2</sub> ＋ H<sub>2</sub>O ＋ CO<sub>2</sub>，酸被中和</div>
+      </div>
+    </div>
+  </div>
+  <div class="rule" data-k="rule">通則：<b>鹼性物質中和胃酸：碳酸鈣 ＋ 鹽酸 → 氯化鈣 ＋ 水 ＋ 二氧化碳</b></div>
+</section>
+<section class="qpage" id="pg10" data-no="10">
+  <div class="q" data-k="q">6.5 g 的疊氮化鈉完全分解，在 25 °C、1 atm 下至多約可產生多少升氮氣？
+    <span class="ask">質量要怎麼變成氣體的體積？</span></div>
+  <div class="main">
+    <div class="chain"><div class="ln" data-k="l0"><span class="v v1">steps　⇒　莫耳數 →（平衡係數）→ 氣體體積</span></div><div class="ln" data-k="l1"><span class="v v1">6.5 g ÷ 65 g/mol ＝ 0.10 mol NaN<sub>3</sub></span></div><div class="ln" data-k="l2"><span class="v v1">2 NaN<sub>3</sub> → 2 Na ＋ 3 N<sub>2</sub>　⇒　N<sub>2</sub> ＝ 0.10 × 3/2 ＝ 0.15 mol</span></div><div class="ln" data-k="l3"><span class="v v1">0.15 mol × 24.5 L/mol ＝ 3.675 L ≈ 3.67 L</span></div><div class="ln" data-k="l4"><span class="v v1">⇒　答案 (B) 3.67</span></div></div>
+    <div class="side">
+      <div class="fig" data-k="fig"><svg viewBox="0 0 420 330" class="svgp">
+  <text class="mk k0 tx" x="210" y="22" text-anchor="middle" style="fill:#ffd166;font-size:14px">安全氣囊・三步計量</text>
+  <rect class="mk k0" x="30" y="46" width="360" height="60" rx="9" fill="#16223f" stroke="#66d9ef" stroke-width="2"/>
+  <text class="mk k0 tx" x="210" y="72" text-anchor="middle" style="fill:#66d9ef;font-size:13px">NaN3 → Na + N2（未平衡！）</text>
+  <text class="mk k0 tx" x="210" y="94" text-anchor="middle" style="fill:#ff8fa3;font-size:12px">先平衡：2 NaN3 → 2 Na + 3 N2</text>
+  <rect class="mk k1" x="30" y="118" width="360" height="42" rx="8" fill="#16223f" stroke="#ffd166" stroke-width="2"/>
+  <text class="mk k1 tx" x="210" y="145" text-anchor="middle" style="fill:#ffd166;font-size:13px">6.5 g ÷ 65 g/mol ＝ 0.10 mol NaN3</text>
+  <rect class="mk k2" x="30" y="172" width="360" height="42" rx="8" fill="#16223f" stroke="#4ade80" stroke-width="2"/>
+  <text class="mk k2 tx" x="210" y="199" text-anchor="middle" style="fill:#4ade80;font-size:13px">0.10 × 3/2 ＝ 0.15 mol N2</text>
+  <rect class="mk k2" x="30" y="226" width="360" height="42" rx="8" fill="#16223f" stroke="#4ade80" stroke-width="2"/>
+  <text class="mk k2 tx" x="210" y="253" text-anchor="middle" style="fill:#4ade80;font-size:13px">0.15 × 24.5 L/mol ＝ 3.675 L</text>
+  <text class="mk k3 tx" x="210" y="300" text-anchor="middle" style="fill:#ffd166;font-size:16px">⇒ 答案 (B) 3.67 L</text>
+</svg></div>
+      <div class="anscard" data-k="ans">
+        <div class="tag">答　案</div>
+        <div class="val">(B)　3.67 L</div>
+        <div class="note">2 NaN<sub>3</sub> → 2 Na ＋ 3 N<sub>2</sub>；0.10 mol × 3/2 × 24.5 ≈ 3.675 L</div>
+      </div>
+    </div>
+  </div>
+  <div class="rule" data-k="rule">通則：<b>莫耳數 → 平衡係數換算 → 乘以莫耳體積，方程式必先平衡</b></div>
+</section>
+<section class="qpage" id="pg11" data-no="11">
+  <div class="q" data-k="q">含 C 40.92%、H 4.58%、O 54.50% 的物質，其實驗式為何？
+    <span class="ask">質量百分比要怎麼變成實驗式？</span></div>
+  <div class="main">
+    <div class="chain"><div class="ln" data-k="l0"><span class="v v1">取 100 g　⇒　換成莫耳數</span></div><div class="ln" data-k="l1"><span class="v v1">C 40.92/12.0 ＝ 3.41　H 4.58/1.0 ＝ 4.58　O 54.50/16.0 ＝ 3.41</span></div><div class="ln" data-k="l2"><span class="v v1">同除 3.41　⇒　C : H : O ≈ 1 : 1.34 : 1</span></div><div class="ln" data-k="l3"><span class="v v1">乘 3 化整　⇒　3 : 4 : 3　⇒　C<sub>3</sub>H<sub>4</sub>O<sub>3</sub></span></div><div class="ln" data-k="l4"><span class="v v1">⇒　答案 (C) C<sub>3</sub>H<sub>4</sub>O<sub>3</sub></span></div></div>
+    <div class="side">
+      <div class="fig" data-k="fig"><svg viewBox="0 0 420 330" class="svgp">
+  <text class="mk k0 tx" x="210" y="22" text-anchor="middle" style="fill:#ffd166;font-size:14px">百分比 → 莫耳數 → 最簡整數比</text>
+  <rect class="mk k0" x="30" y="46" width="360" height="58" rx="9" fill="#16223f" stroke="#66d9ef" stroke-width="2"/>
+  <text class="mk k0 tx" x="210" y="72" text-anchor="middle" style="fill:#66d9ef;font-size:13px">取 100 g：C 40.92 g　H 4.58 g　O 54.50 g</text>
+  <text class="mk k0 tx" x="210" y="94" text-anchor="middle" style="fill:#93a1c8;font-size:12px">原子量 C 12.0　H 1.0　O 16.0</text>
+  <rect class="mk k1" x="30" y="116" width="360" height="58" rx="9" fill="#16223f" stroke="#ffd166" stroke-width="2"/>
+  <text class="mk k1 tx" x="210" y="142" text-anchor="middle" style="fill:#ffd166;font-size:13px">3.41 mol　4.58 mol　3.41 mol</text>
+  <text class="mk k1 tx" x="210" y="164" text-anchor="middle" style="fill:#93a1c8;font-size:12px">同除 3.41 ⇒ 1 : 1.34 : 1</text>
+  <rect class="mk k2" x="30" y="186" width="360" height="48" rx="9" fill="#16223f" stroke="#4ade80" stroke-width="2"/>
+  <text class="mk k2 tx" x="210" y="216" text-anchor="middle" style="fill:#4ade80;font-size:14px">乘 3 ⇒ C : H : O ＝ 3 : 4 : 3</text>
+  <text class="mk k3 tx" x="210" y="268" text-anchor="middle" style="fill:#ffd166;font-size:16px">⇒ 答案 (C) C3H4O3</text>
+  <text class="mk k3 tx" x="210" y="296" text-anchor="middle" style="fill:#93a1c8;font-size:12px">維生素 C（C6H8O6）的最簡式</text>
+</svg></div>
+      <div class="anscard" data-k="ans">
+        <div class="tag">答　案</div>
+        <div class="val">(C)　C<sub>3</sub>H<sub>4</sub>O<sub>3</sub></div>
+        <div class="note">3.41 : 4.58 : 3.41 ≈ 1 : 1.34 : 1，乘 3 得 3 : 4 : 3；維生素 C（C<sub>6</sub>H<sub>8</sub>O<sub>6</sub>）的最簡式</div>
+      </div>
+    </div>
+  </div>
+  <div class="rule" data-k="rule">通則：<b>百分比除以原子量得莫耳數，再同除最小者、乘倍數化為最簡單整數比</b></div>
+</section>
+<section class="qpage" id="pg12" data-no="12">
+  <div class="q" data-k="q">關於矽與二氧化矽等電子材料，下列敘述何者正確？
+    <span class="ask">矽為什麼能當半導體？</span></div>
+  <div class="main">
+    <div class="chain"><div class="ln" data-k="l0"><span class="v v1">矽晶體　⇒　每顆原子與鄰近 4 顆原子以共價鍵結合成立體網狀</span></div><div class="ln" data-k="l1"><span class="v v1">鍵結電子不易自由移動　⇒　導電性介於導體與絕緣體之間</span></div><div class="ln" data-k="l2"><span class="v v1">⇒　半導體；升溫導電率明顯上升</span></div><div class="ln" data-k="l3"><span class="v v1">SiO<sub>2</sub> 亦為共價網狀固體　⇒　無大量自由電子，可作絕緣層</span></div><div class="ln" data-k="l4"><span class="v v1">CO<sub>2</sub> 為分子化合物　⇒　不具立體網狀結構</span></div><div class="ln" data-k="l5"><span class="v v1">⇒　答案 (B)</span></div></div>
+    <div class="side">
+      <div class="fig" data-k="fig"><svg viewBox="0 0 420 330" class="svgp">
+  <text class="mk k0 tx" x="210" y="22" text-anchor="middle" style="fill:#ffd166;font-size:14px">矽晶體・共價立體網狀</text>
+  <circle class="mk k0" cx="210" cy="110" r="13" fill="#66d9ef"/>
+  <circle class="mk k0" cx="210" cy="60" r="10" fill="#93a1c8"/><circle class="mk k0" cx="210" cy="160" r="10" fill="#93a1c8"/>
+  <circle class="mk k0" cx="160" cy="110" r="10" fill="#93a1c8"/><circle class="mk k0" cx="260" cy="110" r="10" fill="#93a1c8"/>
+  <line class="mk k0" x1="210" y1="97" x2="210" y2="70" stroke="#ffd166" stroke-width="2"/>
+  <line class="mk k0" x1="210" y1="123" x2="210" y2="150" stroke="#ffd166" stroke-width="2"/>
+  <line class="mk k0" x1="197" y1="110" x2="170" y2="110" stroke="#ffd166" stroke-width="2"/>
+  <line class="mk k0" x1="223" y1="110" x2="250" y2="110" stroke="#ffd166" stroke-width="2"/>
+  <text class="mk k0 tx" x="210" y="185" text-anchor="middle" style="fill:#ffd166;font-size:12.5px">每個 Si 與 4 個 Si 以共價鍵相連</text>
+  <rect class="mk k1" x="30" y="200" width="176" height="52" rx="9" fill="#16223f" stroke="#4ade80" stroke-width="2"/>
+  <text class="mk k1 tx" x="118" y="222" text-anchor="middle" style="fill:#4ade80;font-size:12px">矽：半導體</text>
+  <text class="mk k1 tx" x="118" y="242" text-anchor="middle" style="fill:#93a1c8;font-size:11.5px">升溫導電率↑</text>
+  <rect class="mk k2" x="214" y="200" width="176" height="52" rx="9" fill="#16223f" stroke="#ff8fa3" stroke-width="2"/>
+  <text class="mk k2 tx" x="302" y="222" text-anchor="middle" style="fill:#ff8fa3;font-size:12px">SiO2：共價網狀</text>
+  <text class="mk k2 tx" x="302" y="242" text-anchor="middle" style="fill:#93a1c8;font-size:11.5px">無自由電子・絕緣層</text>
+  <text class="mk k3 tx" x="210" y="288" text-anchor="middle" style="fill:#ffd166;font-size:15px">⇒ 答案 (B)</text>
+  <text class="mk k3 tx" x="210" y="312" text-anchor="middle" style="fill:#93a1c8;font-size:12px">CO2 是分子化合物，非網狀</text>
+</svg></div>
+      <div class="anscard" data-k="ans">
+        <div class="tag">答　案</div>
+        <div class="val">(B)　矽晶體具共價鍵，形成立體網狀結構，具半導體性質</div>
+        <div class="note">SiO<sub>2</sub> 為共價網狀固體非離子化合物；矽硬脆無延展性；CO<sub>2</sub> 為分子化合物</div>
+      </div>
+    </div>
+  </div>
+  <div class="rule" data-k="rule">通則：<b>矽＝共價立體網狀的半導體；二氧化矽＝共價網狀的絕緣體；二氧化碳＝分子化合物</b></div>
+</section>
+<section class="qpage" id="pg13" data-no="13">
+  <div class="q" data-k="q">每包藥粉含對乙酸氨基酚 0.500 g，其莫耳數為何？
+    <span class="ask">莫耳數怎麼算？</span></div>
+  <div class="main">
+    <div class="chain"><div class="ln" data-k="l0"><span class="v v1">莫耳數　⇒　質量 ÷ 莫耳質量</span></div><div class="ln" data-k="l1"><span class="v v1">0.500 g ÷ 151 g/mol ≈ 0.00331 mol</span></div><div class="ln" data-k="l2"><span class="v v1">「每包總質量 5.00 g」為干擾資訊</span></div><div class="ln" data-k="l3"><span class="v v1">⇒　答案 (B) 0.00331 mol</span></div></div>
+    <div class="side">
+      <div class="fig" data-k="fig"><svg viewBox="0 0 420 330" class="svgp">
+  <text class="mk k0 tx" x="210" y="22" text-anchor="middle" style="fill:#ffd166;font-size:14px">莫耳數 ＝ 質量 ÷ 莫耳質量</text>
+  <rect class="mk k0" x="30" y="46" width="360" height="70" rx="9" fill="#16223f" stroke="#66d9ef" stroke-width="2"/>
+  <text class="mk k0 tx" x="210" y="74" text-anchor="middle" style="fill:#66d9ef;font-size:13px">感冒藥粉每包總質量 5.00 g</text>
+  <text class="mk k0 tx" x="210" y="98" text-anchor="middle" style="fill:#ff8fa3;font-size:12.5px">其中 C8H9NO2 佔 0.500 g（M＝151）</text>
+  <text class="mk k1 tx" x="210" y="152" text-anchor="middle" style="fill:#ffd166;font-size:13.5px">n ＝ 0.500 ÷ 151</text>
+  <rect class="mk k2" x="30" y="172" width="360" height="50" rx="9" fill="#16223f" stroke="#4ade80" stroke-width="2"/>
+  <text class="mk k2 tx" x="210" y="203" text-anchor="middle" style="fill:#4ade80;font-size:14px">≈ 0.00331 mol</text>
+  <text class="mk k3 tx" x="210" y="256" text-anchor="middle" style="fill:#ffd166;font-size:15.5px">⇒ 答案 (B) 0.00331 mol</text>
+  <text class="mk k3 tx" x="210" y="286" text-anchor="middle" style="fill:#93a1c8;font-size:12px">總質量 5.00 g 是干擾資訊，勿用</text>
+</svg></div>
+      <div class="anscard" data-k="ans">
+        <div class="tag">答　案</div>
+        <div class="val">(B)　0.00331 mol</div>
+        <div class="note">n ＝ 0.500 g ÷ 151 g/mol ≈ 0.00331 mol；總質量 5.00 g 為干擾資訊</div>
+      </div>
+    </div>
+  </div>
+  <div class="rule" data-k="rule">通則：<b>莫耳數 ＝ 該成分質量 ÷ 該成分莫耳質量，不可用混合物總質量</b></div>
+</section>
+<section class="qpage" id="pg14" data-no="14">
+  <div class="q" data-k="q">2.00 g 苯甲醛與 0.80 g 甲胺反應，下列敘述何者正確？
+    <span class="ask">哪一個是限量試劑？</span></div>
+  <div class="main">
+    <div class="chain"><div class="ln" data-k="l0"><span class="v v1">莫耳數　⇒　苯甲醛 2.00/106 ≈ 0.0189　甲胺 0.80/31 ≈ 0.0258</span></div><div class="ln" data-k="l1"><span class="v v1">係數比 1 : 1　⇒　苯甲醛先耗盡　⇒　限量試劑</span></div><div class="ln" data-k="l2"><span class="v v1">苯甲醛 0.0189 mol　⇒　產物席夫鹼 0.0189 mol ≤</span></div><div class="ln" data-k="l3"><span class="v v1">甲胺過量　⇒　反應後剩餘甲胺，非苯甲醛</span></div><div class="ln" data-k="l4"><span class="v v1">脫水縮合　⇒　不是水解反應</span></div><div class="ln" data-k="l5"><span class="v v1">⇒　答案 (A) 苯甲醛為限量試劑</span></div></div>
+    <div class="side">
+      <div class="fig" data-k="fig"><svg viewBox="0 0 420 330" class="svgp">
+  <text class="mk k0 tx" x="210" y="22" text-anchor="middle" style="fill:#ffd166;font-size:14px">限量試劑：先比莫耳數</text>
+  <rect class="mk k0" x="30" y="46" width="176" height="66" rx="9" fill="#16223f" stroke="#66d9ef" stroke-width="2"/>
+  <text class="mk k0 tx" x="118" y="70" text-anchor="middle" style="fill:#66d9ef;font-size:12px">苯甲醛 2.00 g</text>
+  <text class="mk k0 tx" x="118" y="94" text-anchor="middle" style="fill:#93a1c8;font-size:12px">2.00 ÷ 106 ≈ 0.0189 mol</text>
+  <rect class="mk k0" x="214" y="46" width="176" height="66" rx="9" fill="#16223f" stroke="#66d9ef" stroke-width="2"/>
+  <text class="mk k0 tx" x="302" y="70" text-anchor="middle" style="fill:#66d9ef;font-size:12px">甲胺 0.80 g</text>
+  <text class="mk k0 tx" x="302" y="94" text-anchor="middle" style="fill:#93a1c8;font-size:12px">0.80 ÷ 31 ≈ 0.0258 mol</text>
+  <text class="mk k1 tx" x="210" y="140" text-anchor="middle" style="fill:#ffd166;font-size:13px">係數比 1 : 1 ⇒ 少量者先耗盡</text>
+  <rect class="mk k2" x="30" y="158" width="360" height="50" rx="9" fill="#16223f" stroke="#4ade80" stroke-width="2"/>
+  <text class="mk k2 tx" x="210" y="189" text-anchor="middle" style="fill:#4ade80;font-size:13px">苯甲醛先耗盡 ⇒ 限量試劑（0.0189 mol）</text>
+  <text class="mk k3 tx" x="210" y="242" text-anchor="middle" style="fill:#ffd166;font-size:15.5px">⇒ 答案 (A) 苯甲醛為限量試劑</text>
+  <text class="mk k3 tx" x="210" y="270" text-anchor="middle" style="fill:#93a1c8;font-size:12px">產物 ≤ 0.0189 mol（非 0.026）</text>
+  <text class="mk k3 tx" x="210" y="296" text-anchor="middle" style="fill:#93a1c8;font-size:12px">脫水縮合，非水解反應</text>
+</svg></div>
+      <div class="anscard" data-k="ans">
+        <div class="tag">答　案</div>
+        <div class="val">(A)　苯甲醛為限量試劑</div>
+        <div class="note">苯甲醛 0.0189 mol ＜ 甲胺 0.0258 mol，係數比 1:1 故苯甲醛先耗盡；產物 ≤ 0.0189 mol；屬縮合非水解</div>
+      </div>
+    </div>
+  </div>
+  <div class="rule" data-k="rule">通則：<b>係數比相同時，莫耳數少者為限量試劑；產物量由限量試劑決定</b></div>
+</section>
+<section class="qpage" id="pg15" data-no="15">
+  <div class="q" data-k="q">使 1000 g 水由 25.0 °C 升至 60.0 °C，約用去多少 mol 乙醇？
+    <span class="ask">燃燒放出的熱要怎麼算？</span></div>
+  <div class="main">
+    <div class="chain"><div class="ln" data-k="l0"><span class="v v1">水吸熱　⇒　q ＝ m·s·ΔT ＝ 1000 × 4.184 × 35.0</span></div><div class="ln" data-k="l1"><span class="v v1">q ≈ 146440 J ＝ 146.4 kJ</span></div><div class="ln" data-k="l2"><span class="v v1">1 mol 乙醇放熱 1367 kJ</span></div><div class="ln" data-k="l3"><span class="v v1">n ＝ 146.4 ÷ 1367 ≈ 0.107 →（選項最近）</span></div><div class="ln" data-k="l4"><span class="v v1">⇒　答案 (C) 0.100</span></div></div>
+    <div class="side">
+      <div class="fig" data-k="fig"><svg viewBox="0 0 420 330" class="svgp">
+  <text class="mk k0 tx" x="210" y="22" text-anchor="middle" style="fill:#ffd166;font-size:14px">燃燒放熱 ＝ 水吸熱</text>
+  <rect class="mk k0" x="30" y="46" width="360" height="66" rx="9" fill="#16223f" stroke="#ff8fa3" stroke-width="2"/>
+  <text class="mk k0 tx" x="210" y="70" text-anchor="middle" style="fill:#ff8fa3;font-size:13px">乙醇 C2H5OH：1 mol 放熱 1367 kJ</text>
+  <text class="mk k0 tx" x="210" y="94" text-anchor="middle" style="fill:#93a1c8;font-size:12px">1000 g 水　25.0 °C → 60.0 °C（ΔT＝35.0）</text>
+  <rect class="mk k1" x="30" y="124" width="360" height="46" rx="9" fill="#16223f" stroke="#66d9ef" stroke-width="2"/>
+  <text class="mk k1 tx" x="210" y="153" text-anchor="middle" style="fill:#66d9ef;font-size:13px">q ＝ 1000 × 4.184 × 35.0 ＝ 146440 J</text>
+  <rect class="mk k2" x="30" y="182" width="360" height="46" rx="9" fill="#16223f" stroke="#4ade80" stroke-width="2"/>
+  <text class="mk k2 tx" x="210" y="211" text-anchor="middle" style="fill:#4ade80;font-size:13px">n ＝ 146.4 kJ ÷ 1367 kJ/mol ≈ 0.107</text>
+  <text class="mk k3 tx" x="210" y="266" text-anchor="middle" style="fill:#ffd166;font-size:15.5px">⇒ 答案 (C) 0.100 mol</text>
+  <text class="mk k3 tx" x="210" y="294" text-anchor="middle" style="fill:#93a1c8;font-size:12px">取一位有效數字，最接近 0.100</text>
+</svg></div>
+      <div class="anscard" data-k="ans">
+        <div class="tag">答　案</div>
+        <div class="val">(C)　0.100 mol</div>
+        <div class="note">q ＝ 1000×4.184×35.0 ≈ 146.4 kJ；n ＝ 146.4 ÷ 1367 ≈ 0.107 → 取一位有效數字為 0.100</div>
+      </div>
+    </div>
+  </div>
+  <div class="rule" data-k="rule">通則：<b>水吸熱 q ＝ m·s·ΔT；乙醇莫耳數 ＝ q ÷ 每莫耳燃燒熱</b></div>
+</section>
+<section class="qpage" id="pg16" data-no="16">
+  <div class="q" data-k="q">關於蘋果汁的化學性質，下列敘述何者正確？
+    <span class="ask">果汁的酸味從哪來？</span></div>
+  <div class="main">
+    <div class="chain"><div class="ln" data-k="l0"><span class="v v1">蘋果酸（HOOCCH<sub>2</sub>CH(OH)COOH）　⇒　弱酸</span></div><div class="ln" data-k="l1"><span class="v v1">弱酸水溶液　⇒　可使藍色石蕊試紙變紅</span></div><div class="ln" data-k="l2"><span class="v v1">⇒　答案 (C)</span></div><div class="ln" data-k="l3"><span class="v v1">果汁呈酸性，不是鹼性　⇒　(A) 錯</span></div><div class="ln" data-k="l4"><span class="v v1">維生素 C 為還原劑　⇒　(B) 錯</span></div><div class="ln" data-k="l5"><span class="v v1">久置變酸＝氧化產生其他酸，不是還原成 CO<sub>2</sub>　⇒　(D) 錯</span></div></div>
+    <div class="side">
+      <div class="fig" data-k="fig"><svg viewBox="0 0 420 330" class="svgp">
+  <text class="mk k0 tx" x="210" y="22" text-anchor="middle" style="fill:#ffd166;font-size:14px">蘋果汁：弱酸 ＋ 抗氧化劑</text>
+  <rect class="mk k0" x="30" y="46" width="176" height="66" rx="9" fill="#16223f" stroke="#66d9ef" stroke-width="2"/>
+  <text class="mk k0 tx" x="118" y="70" text-anchor="middle" style="fill:#66d9ef;font-size:12px">蘋果酸（弱酸）</text>
+  <text class="mk k0 tx" x="118" y="94" text-anchor="middle" style="fill:#93a1c8;font-size:11.5px">HOOCCH2CH(OH)COOH</text>
+  <rect class="mk k0" x="214" y="46" width="176" height="66" rx="9" fill="#16223f" stroke="#4ade80" stroke-width="2"/>
+  <text class="mk k0 tx" x="302" y="70" text-anchor="middle" style="fill:#4ade80;font-size:12px">維生素 C（還原劑）</text>
+  <text class="mk k0 tx" x="302" y="94" text-anchor="middle" style="fill:#93a1c8;font-size:11.5px">抗氧化、清除自由基</text>
+  <text class="mk k1 tx" x="210" y="140" text-anchor="middle" style="fill:#ffd166;font-size:13px">酸性檢驗：藍色石蕊試紙 → 變紅</text>
+  <rect class="mk k2" x="30" y="158" width="360" height="46" rx="9" fill="#16223f" stroke="#4ade80" stroke-width="2"/>
+  <text class="mk k2 tx" x="210" y="187" text-anchor="middle" style="fill:#4ade80;font-size:13px">含弱酸 ⇒ 可使藍色石蕊試紙變紅　✔</text>
+  <text class="mk k3 tx" x="210" y="240" text-anchor="middle" style="fill:#ffd166;font-size:15.5px">⇒ 答案 (C)</text>
+  <text class="mk k3 tx" x="210" y="268" text-anchor="middle" style="fill:#93a1c8;font-size:12px">A 呈鹼性？錯　B 維生素 C 為氧化劑？錯</text>
+  <text class="mk k3 tx" x="210" y="294" text-anchor="middle" style="fill:#93a1c8;font-size:12px">D 還原成 CO2？錯（久置為氧化變酸）</text>
+</svg></div>
+      <div class="anscard" data-k="ans">
+        <div class="tag">答　案</div>
+        <div class="val">(C)　蘋果汁含有弱酸，因此可使藍色石蕊試紙變紅色</div>
+        <div class="note">蘋果酸為弱酸使果汁呈酸性；維生素 C 是還原劑而非氧化劑；久置變酸屬氧化而非還原成 CO<sub>2</sub></div>
+      </div>
+    </div>
+  </div>
+  <div class="rule" data-k="rule">通則：<b>弱酸水溶液呈酸性、可使藍色石蕊試紙變紅；抗氧化劑＝還原劑</b></div>
+</section>
+<section class="qpage" id="pg17" data-no="17">
+  <div class="q" data-k="q">下列分子的路易斯結構，何者不具有孤對電子對？
+    <span class="ask">孤對電子藏在哪裡？</span></div>
+  <div class="main">
+    <div class="chain"><div class="ln" data-k="l0"><span class="v v1">CO<sub>2</sub>　⇒　每個 O 兩對孤對　⇒　共 4 對</span></div><div class="ln" data-k="l1"><span class="v v1">N<sub>2</sub>　⇒　每個 N 一對孤對　⇒　共 2 對</span></div><div class="ln" data-k="l2"><span class="v v1">NH<sub>4</sub>Cl　⇒　Cl<sup>-</sup> 三對孤對</span></div><div class="ln" data-k="l3"><span class="v v1">BH<sub>3</sub>　⇒　B 只有 3 對鍵結電子　⇒　無孤對</span></div><div class="ln" data-k="l4"><span class="v v1">⇒　答案 (D) 甲硼烷（BH<sub>3</sub>）</span></div></div>
+    <div class="side">
+      <div class="fig" data-k="fig"><svg viewBox="0 0 420 330" class="svgp">
+  <text class="mk k0 tx" x="210" y="22" text-anchor="middle" style="fill:#ffd166;font-size:14px">數一數孤對電子對</text>
+  <rect class="mk k0" x="30" y="46" width="176" height="56" rx="9" fill="#16223f" stroke="#66d9ef" stroke-width="2"/>
+  <text class="mk k0 tx" x="118" y="70" text-anchor="middle" style="fill:#66d9ef;font-size:12.5px">CO2：O 各 2 對</text>
+  <text class="mk k0 tx" x="118" y="92" text-anchor="middle" style="fill:#93a1c8;font-size:12px">共 4 對孤對</text>
+  <rect class="mk k0" x="214" y="46" width="176" height="56" rx="9" fill="#16223f" stroke="#66d9ef" stroke-width="2"/>
+  <text class="mk k0 tx" x="302" y="70" text-anchor="middle" style="fill:#66d9ef;font-size:12.5px">N2：N 各 1 對</text>
+  <text class="mk k0 tx" x="302" y="92" text-anchor="middle" style="fill:#93a1c8;font-size:12px">共 2 對孤對</text>
+  <rect class="mk k0" x="30" y="112" width="176" height="56" rx="9" fill="#16223f" stroke="#ff8fa3" stroke-width="2"/>
+  <text class="mk k0 tx" x="118" y="136" text-anchor="middle" style="fill:#ff8fa3;font-size:12.5px">NH4Cl：Cl− 3 對</text>
+  <text class="mk k0 tx" x="118" y="158" text-anchor="middle" style="fill:#93a1c8;font-size:12px">共 3 對孤對</text>
+  <rect class="mk k2" x="214" y="112" width="176" height="56" rx="9" fill="#16223f" stroke="#4ade80" stroke-width="2"/>
+  <text class="mk k2 tx" x="302" y="136" text-anchor="middle" style="fill:#4ade80;font-size:12.5px">BH3：B 只有 3 鍵</text>
+  <text class="mk k2 tx" x="302" y="158" text-anchor="middle" style="fill:#4ade80;font-size:12px">0 對孤對</text>
+  <text class="mk k3 tx" x="210" y="216" text-anchor="middle" style="fill:#ffd166;font-size:15.5px">⇒ 答案 (D) 甲硼烷 BH3</text>
+  <text class="mk k3 tx" x="210" y="244" text-anchor="middle" style="fill:#93a1c8;font-size:12px">中心 B 的價電子全部用於鍵結</text>
+  <text class="mk k3 tx" x="210" y="272" text-anchor="middle" style="fill:#93a1c8;font-size:12px">（A、B、C 皆至少有一對孤對）</text>
+</svg></div>
+      <div class="anscard" data-k="ans">
+        <div class="tag">答　案</div>
+        <div class="val">(D)　甲硼烷（BH<sub>3</sub>）</div>
+        <div class="note">CO<sub>2</sub> 4 對、N<sub>2</sub> 2 對、NH<sub>4</sub>Cl 中 Cl<sup>-</sup> 3 對；BH<sub>3</sub> 的 B 價電子全用於鍵結</div>
+      </div>
+    </div>
+  </div>
+  <div class="rule" data-k="rule">通則：<b>孤對電子＝未參與鍵結的價電子對；BH<sub>3</sub> 中心硼沒有孤對電子</b></div>
+</section>
+<section class="qpage" id="pg18" data-no="18">
+  <div class="q" data-k="q">關於二氧化碳與碳酸的敘述，下列何者正確？
+    <span class="ask">它們的結構有什麼差別？</span></div>
+  <div class="main">
+    <div class="chain"><div class="ln" data-k="l0"><span class="v v1">CO<sub>2</sub>　⇒　分子化合物（O＝C＝O）</span></div><div class="ln" data-k="l1"><span class="v v1">H<sub>2</sub>CO<sub>3</sub>　⇒　分子化合物（含 C=O 與 C-O-H）</span></div><div class="ln" data-k="l2"><span class="v v1">⇒　兩者皆為分子化合物　⇒　(A) 正確</span></div><div class="ln" data-k="l3"><span class="v v1">CO<sub>2</sub> 只有雙鍵　⇒　(B) 錯</span></div><div class="ln" data-k="l4"><span class="v v1">鍵結電子對 4 對 vs 6 對　⇒　(C) 錯</span></div><div class="ln" data-k="l5"><span class="v v1">孤對電子對 4 對 vs 6 對　⇒　(D) 錯</span></div></div>
+    <div class="side">
+      <div class="fig" data-k="fig"><svg viewBox="0 0 420 330" class="svgp">
+  <text class="mk k0 tx" x="210" y="22" text-anchor="middle" style="fill:#ffd166;font-size:14px">CO2 與 H2CO3・結構比一比</text>
+  <rect class="mk k0" x="30" y="46" width="176" height="86" rx="9" fill="#16223f" stroke="#66d9ef" stroke-width="2"/>
+  <text class="mk k0 tx" x="118" y="72" text-anchor="middle" style="fill:#66d9ef;font-size:12.5px">O＝C＝O</text>
+  <text class="mk k0 tx" x="118" y="96" text-anchor="middle" style="fill:#93a1c8;font-size:11.5px">鍵結電子對 4</text>
+  <text class="mk k0 tx" x="118" y="118" text-anchor="middle" style="fill:#93a1c8;font-size:11.5px">孤對電子對 4</text>
+  <rect class="mk k1" x="214" y="46" width="176" height="86" rx="9" fill="#16223f" stroke="#4ade80" stroke-width="2"/>
+  <text class="mk k1 tx" x="302" y="72" text-anchor="middle" style="fill:#4ade80;font-size:12.5px">HO-C(=O)-OH</text>
+  <text class="mk k1 tx" x="302" y="96" text-anchor="middle" style="fill:#93a1c8;font-size:11.5px">鍵結電子對 6</text>
+  <text class="mk k1 tx" x="302" y="118" text-anchor="middle" style="fill:#93a1c8;font-size:11.5px">孤對電子對 6</text>
+  <text class="mk k2 tx" x="210" y="164" text-anchor="middle" style="fill:#4ade80;font-size:13px">共同點：皆為分子化合物　✔</text>
+  <text class="mk k3 tx" x="210" y="212" text-anchor="middle" style="fill:#ffd166;font-size:15.5px">⇒ 答案 (A)</text>
+  <text class="mk k3 tx" x="210" y="240" text-anchor="middle" style="fill:#93a1c8;font-size:12px">B 皆有單鍵與雙鍵？CO2 只有雙鍵</text>
+  <text class="mk k3 tx" x="210" y="266" text-anchor="middle" style="fill:#93a1c8;font-size:12px">C、D 鍵結與孤對數目都不同</text>
+</svg></div>
+      <div class="anscard" data-k="ans">
+        <div class="tag">答　案</div>
+        <div class="val">(A)　兩者皆屬於分子化合物</div>
+        <div class="note">CO<sub>2</sub> 僅有雙鍵；CO<sub>2</sub> 值 4 對鍵結／4 對孤對，H<sub>2</sub>CO<sub>3</sub> 為 6 對／6 對，皆不同</div>
+      </div>
+    </div>
+  </div>
+  <div class="rule" data-k="rule">通則：<b>分子化合物由分子構成；比較路易斯結構須逐一數鍵結電子對與孤對電子對</b></div>
+</section>
+<section class="qpage" id="pg19" data-no="19">
+  <div class="q" data-k="q">下列分子的路易斯結構，何者不具有參鍵？
+    <span class="ask">三鍵要怎麼看？</span></div>
+  <div class="main">
+    <div class="chain"><div class="ln" data-k="l0"><span class="v v1">N<sub>2</sub>　⇒　N≡N　⇒　有參鍵</span></div><div class="ln" data-k="l1"><span class="v v1">CO　⇒　C≡O　⇒　有參鍵</span></div><div class="ln" data-k="l2"><span class="v v1">C<sub>2</sub>H<sub>2</sub>　⇒　H-C≡C-H　⇒　有參鍵</span></div><div class="ln" data-k="l3"><span class="v v1">O<sub>2</sub>　⇒　O＝O　⇒　只有雙鍵</span></div><div class="ln" data-k="l4"><span class="v v1">⇒　答案 (D) 氧氣（O<sub>2</sub>）</span></div></div>
+    <div class="side">
+      <div class="fig" data-k="fig"><svg viewBox="0 0 420 330" class="svgp">
+  <text class="mk k0 tx" x="210" y="22" text-anchor="middle" style="fill:#ffd166;font-size:14px">數鍵數：單鍵／雙鍵／參鍵</text>
+  <rect class="mk k0" x="30" y="46" width="176" height="52" rx="9" fill="#16223f" stroke="#66d9ef" stroke-width="2"/>
+  <text class="mk k0 tx" x="118" y="78" text-anchor="middle" style="fill:#66d9ef;font-size:13px">N ≡ N　參鍵 ✔</text>
+  <rect class="mk k0" x="214" y="46" width="176" height="52" rx="9" fill="#16223f" stroke="#66d9ef" stroke-width="2"/>
+  <text class="mk k0 tx" x="302" y="78" text-anchor="middle" style="fill:#66d9ef;font-size:13px">C ≡ O　參鍵 ✔</text>
+  <rect class="mk k1" x="30" y="106" width="176" height="52" rx="9" fill="#16223f" stroke="#66d9ef" stroke-width="2"/>
+  <text class="mk k1 tx" x="118" y="138" text-anchor="middle" style="fill:#66d9ef;font-size:13px">H-C ≡ C-H　參鍵 ✔</text>
+  <rect class="mk k2" x="214" y="106" width="176" height="52" rx="9" fill="#16223f" stroke="#4ade80" stroke-width="2"/>
+  <text class="mk k2 tx" x="302" y="138" text-anchor="middle" style="fill:#4ade80;font-size:13px">O ＝ O　僅雙鍵 ✘</text>
+  <text class="mk k3 tx" x="210" y="196" text-anchor="middle" style="fill:#ffd166;font-size:15.5px">⇒ 答案 (D) 氧氣 O2</text>
+  <text class="mk k3 tx" x="210" y="224" text-anchor="middle" style="fill:#93a1c8;font-size:12px">氧原子間只形成一個雙鍵</text>
+  <text class="mk k3 tx" x="210" y="250" text-anchor="middle" style="fill:#93a1c8;font-size:12px">參鍵＝三對電子共用</text>
+</svg></div>
+      <div class="anscard" data-k="ans">
+        <div class="tag">答　案</div>
+        <div class="val">(D)　氧氣（O<sub>2</sub>）</div>
+        <div class="note">N<sub>2</sub>（N≡N）、CO（C≡O）、C<sub>2</sub>H<sub>2</sub>（H-C≡C-H）皆有參鍵；O<sub>2</sub> 僅為 O＝O</div>
+      </div>
+    </div>
+  </div>
+  <div class="rule" data-k="rule">通則：<b>參鍵＝共用三對電子；氧氣分子僅有雙鍵</b></div>
+</section>
+<section class="qpage" id="pg20" data-no="20">
+  <div class="q" data-k="q">關於脂肪的敘述，下列何者正確？
+    <span class="ask">脂肪酸為什麼叫「酸」？</span></div>
+  <div class="main">
+    <div class="chain"><div class="ln" data-k="l0"><span class="v v1">脂肪酸含 -COOH 羧基　⇒　能解離出 H<sup>+</sup>　⇒　具酸性</span></div><div class="ln" data-k="l1"><span class="v v1">⇒　(A) 正確</span></div><div class="ln" data-k="l2"><span class="v v1">飽和脂肪酸無雙鍵　⇒　室溫多為固體　⇒　(B) 錯</span></div><div class="ln" data-k="l3"><span class="v v1">不飽和脂肪酸亦見於動物性油脂（如魚油）　⇒　(C) 錯</span></div><div class="ln" data-k="l4"><span class="v v1">脂肪為甘油＋脂肪酸的酯類（三酸甘油酯）　⇒　非聚合物　⇒　(D) 錯</span></div></div>
+    <div class="side">
+      <div class="fig" data-k="fig"><svg viewBox="0 0 420 330" class="svgp">
+  <text class="mk k0 tx" x="210" y="22" text-anchor="middle" style="fill:#ffd166;font-size:14px">脂肪＝甘油 ＋ 脂肪酸（酯類）</text>
+  <rect class="mk k0" x="30" y="46" width="360" height="60" rx="9" fill="#16223f" stroke="#66d9ef" stroke-width="2"/>
+  <text class="mk k0 tx" x="210" y="72" text-anchor="middle" style="fill:#66d9ef;font-size:13px">脂肪酸：R-COOH（羧基 -COOH）</text>
+  <text class="mk k0 tx" x="210" y="94" text-anchor="middle" style="fill:#93a1c8;font-size:12px">解離出 H+ ⇒ 具酸性</text>
+  <rect class="mk k1" x="30" y="116" width="176" height="70" rx="9" fill="#16223f" stroke="#4ade80" stroke-width="2"/>
+  <text class="mk k1 tx" x="118" y="142" text-anchor="middle" style="fill:#4ade80;font-size:12px">飽和：無雙鍵</text>
+  <text class="mk k1 tx" x="118" y="164" text-anchor="middle" style="fill:#93a1c8;font-size:11.5px">室溫多為固體</text>
+  <rect class="mk k1" x="214" y="116" width="176" height="70" rx="9" fill="#16223f" stroke="#ff8fa3" stroke-width="2"/>
+  <text class="mk k1 tx" x="302" y="142" text-anchor="middle" style="fill:#ff8fa3;font-size:12px">不飽和：含雙鍵</text>
+  <text class="mk k1 tx" x="302" y="164" text-anchor="middle" style="fill:#93a1c8;font-size:11.5px">植物油／魚油皆有</text>
+  <text class="mk k3 tx" x="210" y="224" text-anchor="middle" style="fill:#ffd166;font-size:15.5px">⇒ 答案 (A) 脂肪酸為酸性物質</text>
+  <text class="mk k3 tx" x="210" y="252" text-anchor="middle" style="fill:#93a1c8;font-size:12px">B 飽和含雙鍵？錯　C 僅植物有？錯</text>
+  <text class="mk k3 tx" x="210" y="278" text-anchor="middle" style="fill:#93a1c8;font-size:12px">D 聚合物？脂肪是酯類不是聚合物</text>
+</svg></div>
+      <div class="anscard" data-k="ans">
+        <div class="tag">答　案</div>
+        <div class="val">(A)　脂肪酸為酸性的物質</div>
+        <div class="note">脂肪酸含 -COOH 羧基故呈酸性；飽和脂肪酸無雙鍵、室溫多為固體；脂肪為酯類（三酸甘油酯）而非聚合物</div>
+      </div>
+    </div>
+  </div>
+  <div class="rule" data-k="rule">通則：<b>脂肪酸含羧基 ⇒ 酸性；飽和＝無雙鍵（固體）、不飽和＝有雙鍵（液體）</b></div>
+</section>
+<section class="qpage" id="pg21" data-no="21">
+  <div class="q" data-k="q">關於夏日午後的光化學煙霧，下列敘述何者正確？
+    <span class="ask">是什麼光引發了這些反應？</span></div>
+  <div class="main">
+    <div class="chain"><div class="ln" data-k="l0"><span class="v v1">光化學煙霧　⇒　NO<sub>x</sub> ＋ 碳氫化合物 ＋ 陽光</span></div><div class="ln" data-k="l1"><span class="v v1">引發者　⇒　紫外線（能量高，可分解分子）</span></div><div class="ln" data-k="l2"><span class="v v1">⇒　(C) 正確</span></div><div class="ln" data-k="l3"><span class="v v1">紫外線能量高於紅外線　⇒　(A)(B) 錯</span></div><div class="ln" data-k="l4"><span class="v v1">涉及化學鍵改變　⇒　(D) 錯</span></div></div>
+    <div class="side">
+      <div class="fig" data-k="fig"><svg viewBox="0 0 420 330" class="svgp">
+  <text class="mk k0 tx" x="210" y="22" text-anchor="middle" style="fill:#ffd166;font-size:14px">光化學煙霧＝紫外線引發的反應</text>
+  <circle class="mk k0" cx="360" cy="70" r="26" fill="#ffd166" opacity="0.85"/>
+  <text class="mk k0 tx" x="360" y="76" text-anchor="middle" style="fill:#16223f;font-size:12px">陽光</text>
+  <line class="mk k0" x1="330" y1="86" x2="260" y2="110" stroke="#ffd166" stroke-width="2"/>
+  <rect class="mk k0" x="30" y="60" width="220" height="70" rx="9" fill="#16223f" stroke="#66d9ef" stroke-width="2"/>
+  <text class="mk k0 tx" x="140" y="86" text-anchor="middle" style="fill:#66d9ef;font-size:12.5px">NOx ＋ 碳氫化合物</text>
+  <text class="mk k0 tx" x="140" y="110" text-anchor="middle" style="fill:#93a1c8;font-size:12px">受紫外線照射 ⇒ 一連串反應</text>
+  <rect class="mk k1" x="30" y="146" width="360" height="46" rx="9" fill="#16223f" stroke="#4ade80" stroke-width="2"/>
+  <text class="mk k1 tx" x="210" y="175" text-anchor="middle" style="fill:#4ade80;font-size:13px">紫外線能量高 ⇒ 可分解分子、促成臭氧</text>
+  <rect class="mk k2" x="30" y="204" width="360" height="46" rx="9" fill="#16223f" stroke="#ff8fa3" stroke-width="2"/>
+  <text class="mk k2 tx" x="210" y="233" text-anchor="middle" style="fill:#ff8fa3;font-size:13px">紅外線能量低於紫外線 ⇒ 主為熱效應</text>
+  <text class="mk k3 tx" x="210" y="286" text-anchor="middle" style="fill:#ffd166;font-size:15px">⇒ 答案 (C)</text>
+</svg></div>
+      <div class="anscard" data-k="ans">
+        <div class="tag">答　案</div>
+        <div class="val">(C)　光化學煙霧的形成主要由紫外線引發化學反應</div>
+        <div class="note">紫外線能量高於紅外線，可分解分子並促成臭氧；光化學煙霧屬化學變化（涉及化學鍵改變）</div>
+      </div>
+    </div>
+  </div>
+  <div class="rule" data-k="rule">通則：<b>光化學反應由紫外線等高能量光引發；紅外線主要產生熱效應</b></div>
+</section>
+<section class="qpage" id="pg22" data-no="22">
+  <div class="q" data-k="q">下列哪一個選項是屬於放熱過程？
+    <span class="ask">溫度升還是降？</span></div>
+  <div class="main">
+    <div class="chain"><div class="ln" data-k="l0"><span class="v v1">冰塊融化　⇒　吸熱</span></div><div class="ln" data-k="l1"><span class="v v1">生米煮成熟飯　⇒　吸熱</span></div><div class="ln" data-k="l2"><span class="v v1">食醋 ＋ 小蘇打　⇒　酸鹼反應　⇒　放熱</span></div><div class="ln" data-k="l3"><span class="v v1">蛋液變荷包蛋　⇒　吸熱（蛋白質變性）</span></div><div class="ln" data-k="l4"><span class="v v1">⇒　答案 (C)</span></div></div>
+    <div class="side">
+      <div class="fig" data-k="fig"><svg viewBox="0 0 420 330" class="svgp">
+  <text class="mk k0 tx" x="210" y="22" text-anchor="middle" style="fill:#ffd166;font-size:14px">放熱＝系統把熱放出來、溫度上升</text>
+  <rect class="mk k0" x="30" y="46" width="176" height="62" rx="9" fill="#16223f" stroke="#66d9ef" stroke-width="2"/>
+  <text class="mk k0 tx" x="118" y="74" text-anchor="middle" style="fill:#66d9ef;font-size:12px">A 冰塊融化</text>
+  <text class="mk k0 tx" x="118" y="96" text-anchor="middle" style="fill:#93a1c8;font-size:11.5px">吸熱</text>
+  <rect class="mk k0" x="214" y="46" width="176" height="62" rx="9" fill="#16223f" stroke="#66d9ef" stroke-width="2"/>
+  <text class="mk k0 tx" x="302" y="74" text-anchor="middle" style="fill:#66d9ef;font-size:12px">B 生米煮成熟飯</text>
+  <text class="mk k0 tx" x="302" y="96" text-anchor="middle" style="fill:#93a1c8;font-size:11.5px">吸熱</text>
+  <rect class="mk k2" x="30" y="118" width="176" height="62" rx="9" fill="#16223f" stroke="#4ade80" stroke-width="2"/>
+  <text class="mk k2 tx" x="118" y="146" text-anchor="middle" style="fill:#4ade80;font-size:12px">C 食醋 ＋ 小蘇打</text>
+  <text class="mk k2 tx" x="118" y="168" text-anchor="middle" style="fill:#4ade80;font-size:11.5px">放熱 ✔</text>
+  <rect class="mk k0" x="214" y="118" width="176" height="62" rx="9" fill="#16223f" stroke="#66d9ef" stroke-width="2"/>
+  <text class="mk k0 tx" x="302" y="146" text-anchor="middle" style="fill:#66d9ef;font-size:12px">D 蛋液→荷包蛋</text>
+  <text class="mk k0 tx" x="302" y="168" text-anchor="middle" style="fill:#93a1c8;font-size:11.5px">吸熱</text>
+  <text class="mk k3 tx" x="210" y="226" text-anchor="middle" style="fill:#ffd166;font-size:15.5px">⇒ 答案 (C)</text>
+  <text class="mk k3 tx" x="210" y="254" text-anchor="middle" style="fill:#93a1c8;font-size:12px">酸鹼中和為放熱反應</text>
+  <text class="mk k3 tx" x="210" y="280" text-anchor="middle" style="fill:#93a1c8;font-size:12px">融化、加熱熟成、變性皆為吸熱</text>
+</svg></div>
+      <div class="anscard" data-k="ans">
+        <div class="tag">答　案</div>
+        <div class="val">(C)　清潔時，將食醋與小蘇打粉混合</div>
+        <div class="note">酸鹼中和為放熱反應；冰融化、煮飯、煎蛋（蛋白質變性）皆需吸熱</div>
+      </div>
+    </div>
+  </div>
+  <div class="rule" data-k="rule">通則：<b>判斷吸放熱：過程中系統放出熱、溫度上升為放熱，反之為吸熱</b></div>
+</section>
+<section class="qpage" id="pg23" data-no="23">
+  <div class="q" data-k="q">平衡 Al(NO<sub>3</sub>)<sub>3</sub> ＋ Na<sub>2</sub>S 反應式後，a＋b＋c＋d 為何？
+    <span class="ask">係數要怎麼配？</span></div>
+  <div class="main">
+    <div class="chain"><div class="ln" data-k="l0"><span class="v v1">先設　⇒　a Al(NO<sub>3</sub>)<sub>3</sub> ＋ b Na<sub>2</sub>S → c Al<sub>2</sub>S<sub>3</sub> ＋ d NaNO<sub>3</sub></span></div><div class="ln" data-k="l1"><span class="v v1">Al 平衡　⇒　a ＝ 2c　；S 平衡　⇒　b ＝ 3c</span></div><div class="ln" data-k="l2"><span class="v v1">Na 平衡　⇒　2b ＝ d　；NO<sub>3</sub> 平衡　⇒　3a ＝ d</span></div><div class="ln" data-k="l3"><span class="v v1">取 c ＝ 1　⇒　a ＝ 2　b ＝ 3　d ＝ 6</span></div><div class="ln" data-k="l4"><span class="v v1">a＋b＋c＋d ＝ 2＋3＋1＋6 ＝ 12</span></div><div class="ln" data-k="l5"><span class="v v1">⇒　答案 (C) 12</span></div></div>
+    <div class="side">
+      <div class="fig" data-k="fig"><svg viewBox="0 0 420 330" class="svgp">
+  <text class="mk k0 tx" x="210" y="22" text-anchor="middle" style="fill:#ffd166;font-size:14px">逐元素平衡・原子守恆</text>
+  <rect class="mk k0" x="30" y="46" width="360" height="52" rx="9" fill="#16223f" stroke="#66d9ef" stroke-width="2"/>
+  <text class="mk k0 tx" x="210" y="78" text-anchor="middle" style="fill:#66d9ef;font-size:12.5px">a Al(NO3)3 + b Na2S → c Al2S3 + d NaNO3</text>
+  <text class="mk k1 tx" x="30" y="126" style="fill:#93a1c8;font-size:12.5px">Al：a ＝ 2c　　S：b ＝ 3c</text>
+  <text class="mk k1 tx" x="30" y="150" style="fill:#93a1c8;font-size:12.5px">Na：2b ＝ d　　NO3：3a ＝ d</text>
+  <rect class="mk k2" x="30" y="170" width="360" height="52" rx="9" fill="#16223f" stroke="#4ade80" stroke-width="2"/>
+  <text class="mk k2 tx" x="210" y="202" text-anchor="middle" style="fill:#4ade80;font-size:13.5px">取 c＝1 ⇒ a＝2　b＝3　d＝6</text>
+  <text class="mk k3 tx" x="210" y="254" text-anchor="middle" style="fill:#ffd166;font-size:15.5px">2＋3＋1＋6 ＝ 12　⇒ 答案 (C)</text>
+  <text class="mk k3 tx" x="210" y="282" text-anchor="middle" style="fill:#93a1c8;font-size:12px">2 Al(NO3)3 + 3 Na2S → Al2S3 + 6 NaNO3</text>
+</svg></div>
+      <div class="anscard" data-k="ans">
+        <div class="tag">答　案</div>
+        <div class="val">(C)　12</div>
+        <div class="note">2 Al(NO<sub>3</sub>)<sub>3</sub> ＋ 3 Na<sub>2</sub>S → Al<sub>2</sub>S<sub>3</sub> ＋ 6 NaNO<sub>3</sub>；2＋3＋1＋6 ＝ 12</div>
+      </div>
+    </div>
+  </div>
+  <div class="rule" data-k="rule">通則：<b>平衡方程式：先配原子數較複雜的元素，再逐一檢查原子守恆</b></div>
+</section>
+<section class="qpage" id="pg24" data-no="24">
+  <div class="q" data-k="q">將鎂帶置入鹽酸產生氣泡，下列敘述何者正確？
+    <span class="ask">氣泡是什麼氣體？</span></div>
+  <div class="main">
+    <div class="chain"><div class="ln" data-k="l0"><span class="v v1">Mg ＋ 2 HCl → MgCl<sub>2</sub> ＋ H<sub>2</sub>↑</span></div><div class="ln" data-k="l1"><span class="v v1">鎂被氧化（0 → +2）　H<sup>+</sup> 被還原（+1 → 0）</span></div><div class="ln" data-k="l2"><span class="v v1">⇒　涉及電子轉移　⇒　為氧化還原反應</span></div><div class="ln" data-k="l3"><span class="v v1">氣體為 H<sub>2</sub>（氫氣），不是 O<sub>2</sub></span></div><div class="ln" data-k="l4"><span class="v v1">⇒　答案 (A) 鎂帶會漸漸消失</span></div></div>
+    <div class="side">
+      <div class="fig" data-k="fig"><svg viewBox="0 0 420 330" class="svgp">
+  <text class="mk k0 tx" x="210" y="22" text-anchor="middle" style="fill:#ffd166;font-size:14px">Mg ＋ 2 HCl → MgCl2 ＋ H2↑</text>
+  <path class="mk k0" d="M150 56 h84 v150 a42 42 0 0 1 -84 0 z" fill="#16223f" stroke="#66d9ef" stroke-width="2"/>
+  <text class="mk k0 tx" x="192" y="80" text-anchor="middle" style="fill:#66d9ef;font-size:12px">鹽酸 HCl</text>
+  <rect class="mk k0" x="176" y="150" width="32" height="52" rx="5" fill="#93a1c8"/>
+  <text class="mk k0 tx" x="192" y="182" text-anchor="middle" style="fill:#16223f;font-size:11px">Mg</text>
+  <circle class="mk k1" cx="176" cy="130" r="6" fill="#4ade80"/><circle class="mk k1" cx="204" cy="146" r="6" fill="#4ade80"/>
+  <circle class="mk k1" cx="186" cy="112" r="6" fill="#4ade80"/><circle class="mk k1" cx="212" cy="120" r="6" fill="#4ade80"/>
+  <text class="mk k1 tx" x="248" y="130" style="fill:#4ade80;font-size:12.5px">氣泡＝H2</text>
+  <text class="mk k2 tx" x="30" y="248" style="fill:#ffd166;font-size:13px">Mg：0 → +2（氧化）　H+：+1 → 0（還原）</text>
+  <text class="mk k2 tx" x="30" y="272" style="fill:#93a1c8;font-size:12.5px">涉及電子轉移 ⇒ 氧化還原反應</text>
+  <text class="mk k3 tx" x="30" y="304" style="fill:#ffd166;font-size:15.5px">⇒ 答案 (A) 鎂帶會漸漸消失</text>
+</svg></div>
+      <div class="anscard" data-k="ans">
+        <div class="tag">答　案</div>
+        <div class="val">(A)　鎂帶會漸漸消失</div>
+        <div class="note">Mg ＋ 2 HCl → MgCl<sub>2</sub> ＋ H<sub>2</sub>↑；鎂被氧化、氫離子被還原，屬氧化還原反應</div>
+      </div>
+    </div>
+  </div>
+  <div class="rule" data-k="rule">通則：<b>金屬＋酸 → 鹽＋氫氣，屬氧化還原（電子轉移）而非酸鹼中和</b></div>
+</section>
+<section class="qpage" id="pg25" data-no="25">
+  <div class="q" data-k="q"><sup>63</sup><sub>29</sub>Cu 的質子、中子、電子數目為何？
+    <span class="ask">左上和左下數字各代表什麼？</span></div>
+  <div class="main">
+    <div class="chain"><div class="ln" data-k="l0"><span class="v v1">左下 29　⇒　原子序 ＝ 質子數 ＝ 29</span></div><div class="ln" data-k="l1"><span class="v v1">中性原子　⇒　電子數 ＝ 質子數 ＝ 29</span></div><div class="ln" data-k="l2"><span class="v v1">左上 63　⇒　質量數 ＝ 63</span></div><div class="ln" data-k="l3"><span class="v v1">中子 ＝ 63 − 29 ＝ 34</span></div><div class="ln" data-k="l4"><span class="v v1">⇒　答案 (A) 29 質子、34 中子、29 電子</span></div></div>
+    <div class="side">
+      <div class="fig" data-k="fig"><svg viewBox="0 0 420 330" class="svgp">
+  <text class="mk k0 tx" x="210" y="22" text-anchor="middle" style="fill:#ffd166;font-size:14px">同位素記號的讀法</text>
+  <text class="mk k0 tx" x="300" y="120" text-anchor="middle" style="fill:#66d9ef;font-size:40px">63</text>
+  <text class="mk k0 tx" x="300" y="176" text-anchor="middle" style="fill:#4ade80;font-size:40px">29</text>
+  <text class="mk k0 tx" x="352" y="164" text-anchor="middle" style="fill:#ffd166;font-size:34px">Cu</text>
+  <text class="mk k0 tx" x="30" y="106" style="fill:#93a1c8;font-size:12.5px">左上＝質量數 63</text>
+  <text class="mk k0 tx" x="30" y="132" style="fill:#93a1c8;font-size:12.5px">左下＝原子序 29</text>
+  <rect class="mk k1" x="30" y="200" width="360" height="46" rx="9" fill="#16223f" stroke="#4ade80" stroke-width="2"/>
+  <text class="mk k1 tx" x="210" y="229" text-anchor="middle" style="fill:#4ade80;font-size:13.5px">質子 29＝電子 29　中子 63−29＝34</text>
+  <text class="mk k3 tx" x="210" y="284" text-anchor="middle" style="fill:#ffd166;font-size:15px">⇒ 答案 (A)</text>
+</svg></div>
+      <div class="anscard" data-k="ans">
+        <div class="tag">答　案</div>
+        <div class="val">(A)　29 個質子，34 個中子，29 個電子</div>
+        <div class="note">原子序 29＝質子數＝電子數（中性）；中子 ＝ 質量數 63 − 質子數 29 ＝ 34</div>
+      </div>
+    </div>
+  </div>
+  <div class="rule" data-k="rule">通則：<b>同位素記號：左上質量數、左下原子序；中子 ＝ 質量數 − 質子數</b></div>
+</section>
+  <div class="cap" id="CAPG" data-k="cap"><span></span></div>
+  <div class="bar">
+    <button class="btn" id="BT">▶</button>
+    <button class="btn" id="RP" title="重播">↺</button>
+    <div class="track" id="TK"><div class="fill" id="FL"></div></div>
+    <div class="tm" id="TM">0:00 / 0:00</div>
+    <div class="vo">旁白・<b>曉曉</b>　第 <span id="CN">1</span> 題</div>
+  </div>
+</div>
+<script>
+const PAGES = [{"no": 1, "has": 1, "dur": 50.76, "audio": "audio/q1.mp3", "steps": [["q", "on", 1.2], ["fig", "on", 8.97], ["l0", "on", 11.97], ["l1", "on", 19.4], ["l2", "on", 29.6], ["l3", "on", 37.09], ["l4", "on", 41.94], ["fig", "m0", 42.19], ["fig", "m1", 42.44], ["fig", "m2", 42.69], ["fig", "m3", 42.94], ["ans", "on", 43.19], ["rule", "on", 43.54]], "caps": [["下列物質溶於水後，何者的水溶液無法導電", 1.49], ["選項 A 鹽酸　B 氬氣　C 硫酸鈉　D 氫氧化鉀", 6.32], ["第一步：水溶液要導電，水中必須有可以自由移動的離子", 11.97], ["第二步：鹽酸是強酸，硫酸鈉和氫氧化鉀是離子化合物，溶於水都解離出離子", 19.4], ["第三步：氬氣是惰性氣體，幾乎不溶於水，也不解離出任何離子", 29.6], ["第四步：溶液中沒有可移動的離子，所以無法導電", 37.09], ["答案 <b>(B)</b>　氬氣（Ar）", 41.94], ["通則：水溶液導電的關鍵是可自由移動的離子，不是溶於水就會導電", 44.14]]}, {"no": 2, "has": 1, "dur": 79.23, "audio": "audio/q2.mp3", "steps": [["q", "on", 1.2], ["fig", "on", 31.59], ["l0", "on", 34.59], ["l1", "on", 41.62], ["l2", "on", 53.46], ["l3", "on", 61.16], ["l4", "on", 70.11], ["fig", "m0", 70.36], ["fig", "m1", 70.61], ["fig", "m2", 70.86], ["fig", "m3", 71.11], ["ans", "on", 71.36], ["rule", "on", 71.68]], "caps": [["奈米銀抗菌噴霧呈均勻混濁，光線照射有明顯散射", 1.48], ["選項 A 真溶液　B 小於 1 奈米　C 一價正電荷　D 廷得耳效應", 14.72], ["第一步：均勻混濁加上明顯散射光線，正是膠體溶液的標準特徵", 34.59], ["第二步：真溶液粒子小於 1 奈米、外觀澄清；奈米銀粒子約 1 到 100 奈米", 41.62], ["第三步：膠體分散粒子的直徑通常大於 1 奈米，大約在 1 到 100 奈米之間", 53.46], ["第四步：光被分散粒子散射而顯出光路，這個現象就叫廷得耳效應", 61.16], ["答案 <b>(D)</b>　光線在膠體溶液中散射的現象稱為廷得耳效應", 70.11], ["通則：真溶液小於 1 奈米、膠體 1 到 100 奈米、懸浮液大於 100 奈米", 72.27]]}, {"no": 3, "has": 1, "dur": 57.85, "audio": "audio/q3.mp3", "steps": [["q", "on", 1.2], ["fig", "on", 23.24], ["l0", "on", 26.24], ["l1", "on", 30.93], ["l2", "on", 41.18], ["l3", "on", 46.77], ["l4", "on", 50.55], ["fig", "m0", 50.8], ["fig", "m1", 51.05], ["fig", "m2", 51.3], ["fig", "m3", 51.55], ["ans", "on", 51.8], ["rule", "on", 52.05]], "caps": [["下列何者不是由醣類或醣類化合物為主所形成的物質", 5.16], ["選項 A 澱粉　B 甲殼素　C 纖維素　D 膠原蛋白", 10.82], ["第一步：先判斷每個物質是醣類還是蛋白質", 26.24], ["第二步：澱粉、甲殼素、纖維素都是多醣，由葡萄糖或葡萄糖衍生物聚合而成", 30.93], ["第三步：膠原蛋白由胺基酸聚合而成，屬於蛋白質", 41.18], ["第四步：所以不是醣類的是膠原蛋白", 46.77], ["答案 <b>(D)</b>　膠原蛋白：存在於人體的結締組織", 50.55], ["通則：看到胺基酸聚合成鏈，就是蛋白質，不是醣類", 52.61]]}, {"no": 4, "has": 1, "dur": 98.1, "audio": "audio/q4.mp3", "steps": [["q", "on", 1.2], ["fig", "on", 47.49], ["l0", "on", 50.49], ["l1", "on", 57.37], ["l2", "on", 65.55], ["l3", "on", 77.43], ["l4", "on", 88.08], ["fig", "m0", 88.33], ["fig", "m1", 88.58], ["fig", "m2", 88.83], ["fig", "m3", 89.08], ["ans", "on", 89.33], ["rule", "on", 89.58]], "caps": [["下列何者不是奈米碳管的特性或主要應用", 24.02], ["選項 A 紫外光滅菌　B 導電電子元件　C 藥物載體　D 儲氫裝置", 28.68], ["第一步：題目問的不是，把奈米材料的常見功能一個一個對回去", 50.49], ["第二步：奈米碳管導電性極佳、機械強度高，是製作奈米電子元件的熱門材料", 57.37], ["第三步：管徑小、表面積大且可修飾，常被研究作為藥物載體；中空管狀結構可吸附氫，用於儲氫", 65.55], ["第四步：吸收紫外光產生氧化還原反應來滅菌消毒，是奈米二氧化鈦光觸媒的特性", 77.43], ["答案 <b>(A)</b>　能吸收紫外光產生氧化還原反應，達成滅菌、消毒等效果", 88.08], ["通則：碳管靠導電與中空結構；光觸媒滅菌靠二氧化鈦", 90.16]]}, {"no": 5, "has": 1, "dur": 96.34, "audio": "audio/q5.mp3", "steps": [["q", "on", 1.2], ["fig", "on", 50.46], ["l0", "on", 53.46], ["l1", "on", 58.74], ["l2", "on", 68.83], ["l3", "on", 75.13], ["l4", "on", 87.27], ["l5", "on", 87.52], ["fig", "m0", 87.77], ["fig", "m1", 88.02], ["fig", "m2", 88.27], ["fig", "m3", 88.52], ["ans", "on", 88.77], ["rule", "on", 89.02]], "caps": [["NaCl 固體不導電，熔融或溶於水可導電；蔗糖水溶液不導電；銅固態可導電", 10.66], ["選項 A 蔗糖為電解質　B NaCl 為離子化合物　C HCl 釋放自由電子　D 銅為共價固體", 28.64], ["第一步：導電的關鍵是帶電粒子能不能自由移動", 53.46], ["第二步：NaCl 是離子化合物，固態時鈉離子、氯離子被固定在晶格中無法移動，所以不導電", 58.74], ["第三步：熔融或溶於水後離子可以自由移動，就能導電", 68.83], ["第四步：HCl 溶於水是解離出氫離子與氯離子而導電，不是釋放自由電子；蔗糖溶解後仍是分子，不是電解質", 75.13], ["答案 <b>(B)</b>　NaCl 為離子化合物，熔融或溶於水時，可形成離子而導電", 87.27], ["通則：電解質水溶液或熔融態靠離子導電，金屬靠自由電子導電", 89.44]]}, {"no": 6, "has": 1, "dur": 57.43, "audio": "audio/q6.mp3", "steps": [["q", "on", 1.2], ["fig", "on", 16.4], ["l0", "on", 19.4], ["l1", "on", 27.0], ["l2", "on", 38.1], ["l3", "on", 48.35], ["fig", "m0", 48.6], ["fig", "m1", 48.85], ["fig", "m2", 49.1], ["fig", "m3", 49.35], ["ans", "on", 49.63], ["rule", "on", 51.21]], "caps": [["下列化學反應中，何者為氧化還原反應", 1.57], ["選項 A 酸鹼中和　B 鈉與水　C 氧化鈣與水　D 酸與碳酸鈣", 6.01], ["第一步：檢查有沒有元素的氧化數在反應前後改變，有改變才是氧化還原", 19.4], ["第二步：鈉由 0 變成正一，被氧化；水中的氫由正一變成 0，被還原", 27.0], ["第三步：酸鹼中和、氧化鈣與水化合、酸與碳酸鹽的複分解，各元素氧化數都不變", 38.1], ["第四步：所以鈉與水的反應才是氧化還原", 48.35], ["答案 <b>(B)</b>　2 Na + 2 H<sub>2</sub>O → 2 NaOH + H<sub>2</sub>", 49.63], ["通則：氧化與還原必定同時發生，只看氧化數有沒有變", 51.82]]}, {"no": 7, "has": 1, "dur": 81.17, "audio": "audio/q7.mp3", "steps": [["q", "on", 1.2], ["fig", "on", 29.39], ["l0", "on", 32.39], ["l1", "on", 42.18], ["l2", "on", 50.28], ["l3", "on", 56.56], ["l4", "on", 69.24], ["fig", "m0", 69.49], ["fig", "m1", 69.74], ["fig", "m2", 69.99], ["fig", "m3", 70.24], ["ans", "on", 70.49], ["rule", "on", 71.61]], "caps": [["白色粉末溶於水後可導電，加入碳酸氫鈉水溶液會有劇烈起泡現象", 4.36], ["選項 A 咖啡因　B 檸檬酸　C 氫氧化鈉　D 葡萄糖", 26.25], ["第一步：能與碳酸氫鈉劇烈起泡，代表能放出二氧化碳，溶液中含有氫離子、也就是酸性", 32.39], ["第二步：氫離子與碳酸氫根反應生成二氧化碳和水", 42.18], ["第三步：水溶液又要能導電，所以這個物質必須是電解質", 50.28], ["第四步：咖啡因不與碳酸氫鈉產生氣泡；氫氧化鈉是強鹼，加入不生成氣體；葡萄糖是非電解質、水溶液不導電", 56.56], ["答案 <b>(B)</b>　檸檬酸（C<sub>6</sub>H<sub>8</sub>O<sub>7</sub>）", 69.24], ["通則：遇碳酸氫鈉起泡＝酸性；水溶液導電＝電解質，兩條件要同時滿足", 72.21]]}, {"no": 8, "has": 1, "dur": 66.83, "audio": "audio/q8.mp3", "steps": [["q", "on", 1.2], ["fig", "on", 15.68], ["l0", "on", 18.68], ["l1", "on", 26.05], ["l2", "on", 35.64], ["l3", "on", 49.69], ["l4", "on", 57.43], ["fig", "m0", 57.68], ["fig", "m1", 57.93], ["fig", "m2", 58.18], ["fig", "m3", 58.43], ["ans", "on", 58.68], ["rule", "on", 58.93]], "caps": [["碳酸氫鈉受熱分解的反應式，下列何者正確", 1.56], ["選項 A 生成氫氧化鈉與二氧化碳　B 生成氧化鈉與二氧化碳　C 生成碳酸鈉與水　D 碳酸鈉、水與二氧化碳", 6.44], ["第一步：碳酸氫鈉受熱會分解成碳酸鈉、水和二氧化碳", 18.68], ["第二步：寫出反應式並平衡係數，2 個碳酸氫鈉生成 1 個碳酸鈉、1 個水和 1 個二氧化碳", 26.05], ["第三步：逐一檢查原子守恆：鈉左 2 右 2、碳左 2 右 1 加 1、氫左 2 右 2、氧左 6 右 3 加 1 加 2", 35.64], ["第四步：常見誤答是漏掉水，或生成物寫成氧化鈉，那都不符事實", 49.69], ["答案 <b>(D)</b>　2 NaHCO<sub>3</sub> → Na<sub>2</sub>CO<sub>3</sub> ＋ H<sub>2</sub>O ＋ CO<sub>2</sub>", 57.43], ["記住：小蘇打加熱生成蘇打、水、二氧化碳，原子守恆是檢查反應式的鐵律", 58.92]]}, {"no": 9, "has": 1, "dur": 45.78, "audio": "audio/q9.mp3", "steps": [["q", "on", 1.2], ["fig", "on", 13.97], ["l0", "on", 16.97], ["l1", "on", 20.49], ["l2", "on", 29.91], ["l3", "on", 38.09], ["fig", "m0", 38.34], ["fig", "m1", 38.59], ["fig", "m2", 38.84], ["fig", "m3", 39.09], ["ans", "on", 39.36], ["rule", "on", 40.84]], "caps": [["胃藥中常含碳酸鈣，其抗酸原理為何", 1.54], ["選項 A 補充鈣質　B 產生氣體　C 改變胃中酵素　D 碳酸鈣為鹼性，可與胃酸反應", 7.51], ["第一步：胃酸的主要成分是鹽酸", 16.97], ["第二步：碳酸鈣是鹼性物質，能與鹽酸反應生成氯化鈣、水和二氧化碳，把胃酸中和掉", 20.49], ["第三步：補充鈣質或產生氣體都不是抗酸的目的，改變酵素也不是它的作用", 29.91], ["第四步：所以答案選 D", 38.09], ["答案 <b>(D)</b>　碳酸鈣為鹼性，可與胃酸（HCl）反應", 39.36], ["通則：制酸劑就是靠鹼性物質中和胃中過多的酸", 42.36]]}, {"no": 10, "has": 1, "dur": 78.1, "audio": "audio/q10.mp3", "steps": [["q", "on", 1.2], ["fig", "on", 37.94], ["l0", "on", 40.94], ["l1", "on", 48.1], ["l2", "on", 55.09], ["l3", "on", 62.65], ["l4", "on", 70.9], ["fig", "m0", 71.15], ["fig", "m1", 71.4], ["fig", "m2", 71.65], ["fig", "m3", 71.9], ["ans", "on", 72.15], ["rule", "on", 73.9]], "caps": [["汽車安全氣囊的主要成分是疊氮化鈉，發生碰撞時迅速分解產生大量氮氣", 1.62], ["在 25 度 C、1 atm 時，將 6.5 克的疊氮化鈉完全反應，至多約可產生多少升的氮氣", 17.31], ["已知莫耳質量 65、理想氣體莫耳體積 24.5 升", 26.49], ["第一步：先算莫耳數，6.5 除以 65 等於 0.10 莫耳疊氮化鈉", 40.94], ["第二步：反應式要先平衡，2 個疊氮化鈉生成 2 個鈉和 3 個氮氣", 48.1], ["第三步：所以氮氣是 0.10 乘以二分之三，等於 0.15 莫耳", 55.09], ["第四步：體積等於 0.15 乘以 24.5，約為 3.675 升，接近 3.67 升", 62.65], ["答案 <b>(B)</b>　3.67 L", 70.9], ["提醒：別忘了先平衡方程式，直接寫會少算一半的氮氣量", 72.57]]}, {"no": 11, "has": 1, "dur": 80.47, "audio": "audio/q11.mp3", "steps": [["q", "on", 1.2], ["fig", "on", 32.61], ["l0", "on", 35.61], ["l1", "on", 52.77], ["l2", "on", 58.91], ["l3", "on", 70.91], ["l4", "on", 71.91], ["fig", "m0", 72.16], ["fig", "m1", 72.41], ["fig", "m2", 72.66], ["fig", "m3", 72.91], ["ans", "on", 73.16], ["rule", "on", 73.41]], "caps": [["某物質可使食物避免氧化且可溶於水，元素分析後發現含有碳 40.92%、氫 4.58%、氧 54.50%", 2.69], ["試問該物質的實驗式為何？原子量碳 12、氫 1、氧 16", 18.34], ["第一步：取 100 克，把質量百分比換成莫耳數", 35.61], ["第二步：碳 3.41、氫 4.58、氧 3.41 莫耳", 52.77], ["第三步：三者同時除以 3.41，得到 1 比 1.34 比 1", 58.91], ["第四步：乘 3 化為最簡單整數比 3 比 4 比 3，實驗式為 C3H4O3", 62.96], ["答案 <b>(C)</b>　C<sub>3</sub>H<sub>4</sub>O<sub>3</sub>", 67.01], ["補充：維生素 C 分子式為 C6H8O6，最簡式正是 C3H4O3，符合可抗氧化的敘述", 68.47]]}, {"no": 12, "has": 1, "dur": 86.69, "audio": "audio/q12.mp3", "steps": [["q", "on", 1.2], ["fig", "on", 39.45], ["l0", "on", 42.45], ["l1", "on", 50.9], ["l2", "on", 61.06], ["l3", "on", 70.05], ["l4", "on", 84.19], ["l5", "on", 84.44], ["fig", "m0", 84.69], ["fig", "m1", 84.94], ["fig", "m2", 85.19], ["fig", "m3", 85.44], ["ans", "on", 85.69], ["rule", "on", 86.29]], "caps": [["臺灣電子產業以晶片製造聞名，晶圓材料主要由矽構成，矽與氧反應可生成二氧化矽，形成晶片的絕緣層", 1.73], ["下列關於這些電子材料的敘述，何者正確", 14.81], ["選項 A 二氧化矽為離子化合物，含大量自由電子", 19.24], ["選項 B 矽晶體具共價鍵，形成立體網狀結構，具半導體性質", 19.54], ["選項 C 矽具延性與展性，是良導體，導電率不受溫度影響", 19.84], ["選項 D 碳與矽同屬第 14 族，故二氧化碳也具有立體網狀結構", 20.14], ["第一步：矽晶體中每個原子與鄰近 4 個原子以共價鍵結合，形成立體網狀結構", 42.45], ["第二步：因鍵結電子不易自由移動，導電性介於導體與絕緣體之間，屬於半導體", 50.9], ["第三步：二氧化矽也是共價網狀固體，沒有大量自由電子，否則就不能當絕緣層", 61.06], ["第四步：矽硬而脆，不具延性與展性；二氧化碳是分子化合物，不具立體網狀結構", 70.05], ["答案 <b>(B)</b>　矽晶體具共價鍵，形成立體網狀結構，具半導體性質", 85.75]]}, {"no": 13, "has": 1, "dur": 55.95, "audio": "audio/q13.mp3", "steps": [["q", "on", 1.2], ["fig", "on", 31.16], ["l0", "on", 34.16], ["l1", "on", 38.47], ["l2", "on", 50.47], ["l3", "on", 54.15], ["fig", "m0", 54.4], ["fig", "m1", 54.65], ["fig", "m2", 54.9], ["fig", "m3", 55.15], ["ans", "on", 55.4], ["rule", "on", 55.65]], "caps": [["感冒藥粉中標示，每包藥粉總質量為 5.00 克", 1.79], ["其中含有對乙酸氨基酚 0.500 克，莫耳質量 151", 8.1], ["另含有咖啡因、維生素 C、香料等輔助成分", 13.76], ["試問每包感冒藥粉中所含對乙酸氨基酚的莫耳數為何", 19.54], ["第一步：莫耳數等於質量除以莫耳質量", 34.16], ["第二步：0.500 除以 151，約等於 0.00331 莫耳", 38.47], ["第三步：要注意每包藥粉總質量 5.00 克是干擾資訊，計算時只能用該成分本身的質量 0.500 克", 41.55], ["答案 <b>(B)</b>　0.00331 mol", 44.64]]}, {"no": 14, "has": 1, "dur": 83.95, "audio": "audio/q14.mp3", "steps": [["q", "on", 1.2], ["fig", "on", 39.65], ["l0", "on", 42.65], ["l1", "on", 55.47], ["l2", "on", 64.35], ["l3", "on", 70.86], ["l4", "on", 81.45], ["l5", "on", 81.7], ["fig", "m0", 81.95], ["fig", "m1", 82.2], ["fig", "m2", 82.45], ["fig", "m3", 82.7], ["ans", "on", 82.95], ["rule", "on", 83.55]], "caps": [["小芸進行香料合成實驗，利用苯甲醛與甲胺反應，生成具有特殊氣味的席夫鹼與水", 1.79], ["反應式為苯甲醛加上甲胺，生成席夫鹼和水，係數比 1 比 1", 11.16], ["若加入 2.00 克苯甲醛、莫耳質量 106，與 0.80 克甲胺、莫耳質量 31", 19.04], ["若反應完全時，下列敘述何者正確", 26.91], ["選項 A 苯甲醛為限量試劑　B 反應後苯甲醛有殘留　C 約可產生 0.026 莫耳席夫鹼　D 此反應為水解反應", 30.68], ["第一步：分別算莫耳數，苯甲醛 2.00 除以 106 約為 0.0189 莫耳；甲胺 0.80 除以 31 約為 0.0258 莫耳", 42.65], ["第二步：係數比是 1 比 1，所以莫耳數少的苯甲醛會先耗盡，苯甲醛是限量試劑", 55.47], ["第三步：甲胺過量，反應後殘留的是甲胺而不是苯甲醛", 64.35], ["第四步：產物席夫鹼最多 0.0189 莫耳，不是 0.026；此反應為脫水縮合，不是水解", 70.86], ["答案 <b>(A)</b>　苯甲醛為限量試劑", 83.08]]}, {"no": 15, "has": 1, "dur": 73.0, "audio": "audio/q15.mp3", "steps": [["q", "on", 1.2], ["fig", "on", 34.25], ["l0", "on", 37.25], ["l1", "on", 43.42], ["l2", "on", 54.59], ["l3", "on", 66.53], ["l4", "on", 70.5], ["fig", "m0", 70.75], ["fig", "m1", 71.0], ["fig", "m2", 71.25], ["fig", "m3", 71.5], ["ans", "on", 71.75], ["rule", "on", 72.6]], "caps": [["乙醇是一種常見的生質燃料，已知完全燃燒 1.00 莫耳的乙醇可放出 1367 千焦的熱能", 1.73], ["在某次反應熱測量實驗中，乙醇完全燃燒後，可使 1000 克的水由 25.0 度 C 升高至 60.0 度 C", 11.26], ["試問此次反應中，所使用的乙醇約為多少莫耳？已知水的比熱為 4.184", 21.44], ["第一步：先算水吸收的熱量，等於質量乘以比熱乘以溫差", 37.25], ["第二步：1000 乘以 4.184 再乘 35.0，約為 146440 焦耳，也就是 146.4 千焦", 43.42], ["第三步：每莫耳乙醇放熱 1367 千焦，所以莫耳數等於 146.4 除以 1367，約為 0.107", 54.59], ["第四步：取一位有效數字，最接近的選項是 0.100", 66.53], ["答案 <b>(C)</b>　0.100 mol", 72.13]]}, {"no": 16, "has": 1, "dur": 76.34, "audio": "audio/q16.mp3", "steps": [["q", "on", 1.2], ["fig", "on", 39.35], ["l0", "on", 42.35], ["l1", "on", 50.8], ["l2", "on", 56.86], ["l3", "on", 65.13], ["l4", "on", 73.84], ["l5", "on", 74.09], ["fig", "m0", 74.34], ["fig", "m1", 74.59], ["fig", "m2", 74.84], ["fig", "m3", 75.09], ["ans", "on", 75.34], ["rule", "on", 75.94]], "caps": [["蘋果汁略帶酸味，是因其中含有蘋果酸，此外蘋果汁中也含有維生素 C 可作為抗氧化劑", 1.81], ["下列有關蘋果汁化學性質的敘述，何者正確", 13.66], ["選項 A 蘋果汁呈鹼性，因其中的蘋果酸可中和胃酸", 18.48], ["選項 B 維生素 C 為氧化劑，能氧化自由基使其穩定", 18.78], ["選項 C 蘋果汁含有弱酸，因此可使藍色石蕊試紙變紅色", 19.08], ["選項 D 蘋果汁若放置過久，酸味會變強，是因維生素 C 不斷還原成二氧化碳", 19.38], ["第一步：蘋果汁裡的蘋果酸是弱酸，所以果汁本身呈酸性，不是鹼性，A 錯", 42.35], ["第二步：弱酸水溶液能使藍色石蕊試紙變紅，C 正確", 50.8], ["第三步：維生素 C 是還原劑，能還原自由基使它穩定，不是氧化劑，B 錯", 56.86], ["第四步：果汁放久酸味變強是氧化產生其他酸，不是維生素 C 還原成二氧化碳，D 錯", 65.13], ["答案 <b>(C)</b>　蘋果汁含有弱酸，因此可使藍色石蕊試紙變紅色", 75.49]]}, {"no": 17, "has": 1, "dur": 45.5, "audio": "audio/q17.mp3", "steps": [["q", "on", 1.2], ["fig", "on", 9.67], ["l0", "on", 12.67], ["l1", "on", 18.66], ["l2", "on", 24.11], ["l3", "on", 30.75], ["l4", "on", 38.48], ["fig", "m0", 38.73], ["fig", "m1", 38.98], ["fig", "m2", 39.23], ["fig", "m3", 39.48], ["ans", "on", 39.73], ["rule", "on", 39.98]], "caps": [["下列分子的路易斯結構，何者不具有孤對電子對", 1.79], ["選項 A 二氧化碳　B 氮氣　C 氯化銨　D 甲硼烷", 6.69], ["第一步：二氧化碳中每個氧各有兩對孤對電子，共 4 對", 12.67], ["第二步：氮氣中每個氮各有一對孤對電子，共 2 對", 18.66], ["第三步：氯化銨是離子化合物，氯離子外層有 3 對孤對電子", 24.11], ["第四步：甲硼烷中，硼的 3 個價電子全部用來與氫鍵結，沒有孤對電子", 30.75], ["答案 <b>(D)</b>　甲硼烷（BH<sub>3</sub>）", 38.48], ["判準：中心原子的價電子是否還有未鍵結的電子對", 39.96]]}, {"no": 18, "has": 1, "dur": 65.32, "audio": "audio/q18.mp3", "steps": [["q", "on", 1.2], ["fig", "on", 27.28], ["l0", "on", 30.28], ["l1", "on", 39.35], ["l2", "on", 44.79], ["l3", "on", 50.35], ["l4", "on", 62.82], ["l5", "on", 63.07], ["fig", "m0", 63.32], ["fig", "m1", 63.57], ["fig", "m2", 63.82], ["fig", "m3", 64.07], ["ans", "on", 64.32], ["rule", "on", 64.92]], "caps": [["二氧化碳溶於水可形成碳酸，這個反應與海洋酸化有關係", 1.75], ["下列關於二氧化碳與碳酸的敘述，何者正確", 8.21], ["選項 A 兩者皆屬於分子化合物", 12.94], ["選項 B 兩者的路易斯結構，皆具有單鍵與雙鍵", 13.24], ["選項 C 兩者的路易斯結構，具有相同數目的鍵結電子對", 13.54], ["選項 D 兩者的路易斯結構，具有相同數目的孤對電子對", 13.84], ["第一步：二氧化碳是 O 等於 C 等於 O，碳酸是含一個碳氧雙鍵與兩個氧氫單鍵的分子", 30.28], ["第二步：兩者都是由分子構成的分子化合物，A 正確", 39.35], ["第三步：二氧化碳只有雙鍵，沒有單鍵，所以 B 錯", 44.79], ["第四步：二氧化碳鍵結電子對 4 對、孤對 4 對；碳酸鍵結電子對 6 對、孤對 6 對，所以 C、D 都錯", 50.35], ["答案 <b>(A)</b>　兩者皆屬於分子化合物", 64.35]]}, {"no": 19, "has": 1, "dur": 38.06, "audio": "audio/q19.mp3", "steps": [["q", "on", 1.2], ["fig", "on", 8.89], ["l0", "on", 11.89], ["l1", "on", 16.38], ["l2", "on", 21.37], ["l3", "on", 25.96], ["l4", "on", 31.88], ["fig", "m0", 32.13], ["fig", "m1", 32.38], ["fig", "m2", 32.63], ["fig", "m3", 32.88], ["ans", "on", 33.13], ["rule", "on", 33.38]], "caps": [["下列哪一個分子的路易斯結構，不具有參鍵的鍵結", 1.78], ["選項 A 氮氣　B 一氧化碳　C 乙炔　D 氧氣", 6.57], ["第一步：氮氣是氮原子之間以參鍵結合", 11.89], ["第二步：一氧化碳是碳與氧之間以參鍵結合", 16.38], ["第三步：乙炔中兩個碳原子之間也是參鍵", 21.37], ["第四步：氧氣中兩個氧原子之間只有一個雙鍵，沒有參鍵", 25.96], ["答案 <b>(D)</b>　氧氣（O<sub>2</sub>）", 31.88], ["判準：參鍵是三對電子共用，也就是三條鍵線", 33.34]]}, {"no": 20, "has": 1, "dur": 62.85, "audio": "audio/q20.mp3", "steps": [["q", "on", 1.2], ["fig", "on", 30.56], ["l0", "on", 33.56], ["l1", "on", 40.88], ["l2", "on", 46.7], ["l3", "on", 54.64], ["l4", "on", 60.35], ["fig", "m0", 60.6], ["fig", "m1", 60.85], ["fig", "m2", 61.1], ["fig", "m3", 61.35], ["ans", "on", 61.6], ["rule", "on", 62.45]], "caps": [["脂肪是由長鏈的脂肪酸與甘油反應而得，亦稱為三酸甘油酯", 1.68], ["脂肪酸可分為飽和脂肪酸與不飽和脂肪酸", 8.8], ["下列關於脂肪的敘述，何者正確", 13.63], ["選項 A 脂肪酸為酸性的物質　B 飽和脂肪酸含有雙鍵，因此在室溫下多為液體", 17.29], ["選項 C 不飽和脂肪酸只存在於植物性油脂中　D 脂肪是由脂肪酸所形成的聚合物", 17.59], ["第一步：脂肪酸含有羧基，能解離出氫離子，所以是酸性物質，A 正確", 33.56], ["第二步：飽和脂肪酸沒有雙鍵，室溫下多為固體，B 錯", 40.88], ["第三步：不飽和脂肪酸不只存在植物性油脂，魚油等動物性油脂也有，C 錯", 46.7], ["第四步：脂肪是甘油與脂肪酸形成的酯類，不是聚合物，D 錯", 54.64], ["答案 <b>(A)</b>　脂肪酸為酸性的物質", 61.98]]}, {"no": 21, "has": 1, "dur": 73.9, "audio": "audio/q21.mp3", "steps": [["q", "on", 1.2], ["fig", "on", 38.06], ["l0", "on", 41.06], ["l1", "on", 49.68], ["l2", "on", 57.39], ["l3", "on", 65.92], ["l4", "on", 71.4], ["fig", "m0", 71.65], ["fig", "m1", 71.9], ["fig", "m2", 72.15], ["fig", "m3", 72.4], ["ans", "on", 72.65], ["rule", "on", 73.5]], "caps": [["炎熱的夏日午後，城市上空常出現淡褐色的光化學煙霧", 1.85], ["這是因汽車排放的氮氧化物與碳氫化合物，在太陽光的照射下發生一連串反應所形成的", 7.82], ["下列敘述何者正確", 16.68], ["選項 A 紫外線能量較低，主要造成熱效應，無法使氮氧化物分解", 19.19], ["選項 B 紅外線能量高於紫外線，因此能促進臭氧生成", 19.49], ["選項 C 光化學煙霧的形成主要由紫外線引發化學反應", 19.79], ["選項 D 光化學煙霧屬物理變化，未涉及化學鍵的改變", 20.09], ["第一步：光化學煙霧是氮氧化物與碳氫化合物在陽光照射下發生一連串反應形成的", 41.06], ["第二步：其中能量較高的紫外線能分解分子、引發反應，所以 C 正確", 49.68], ["第三步：紫外線能量高於紅外線，紅外線主要造成熱效應，A、B 的敘述都錯", 57.39], ["第四步：這個過程涉及化學鍵的改變，屬於化學變化，D 錯", 65.92], ["答案 <b>(C)</b>　光化學煙霧的形成主要由紫外線引發化學反應", 73.05]]}, {"no": 22, "has": 1, "dur": 45.49, "audio": "audio/q22.mp3", "steps": [["q", "on", 1.2], ["fig", "on", 17.89], ["l0", "on", 20.89], ["l1", "on", 25.37], ["l2", "on", 33.32], ["l3", "on", 40.78], ["l4", "on", 42.99], ["fig", "m0", 43.24], ["fig", "m1", 43.49], ["fig", "m2", 43.74], ["fig", "m3", 43.99], ["ans", "on", 44.24], ["rule", "on", 45.09]], "caps": [["下列哪一個選項是屬於放熱過程", 1.85], ["選項 A 喝奶茶時，冰奶中的冰塊融化", 5.33], ["選項 B 煮飯時，米由生米煮成熟飯", 5.63], ["選項 C 清潔時，將食醋與小蘇打粉混合", 42.43], ["選項 D 煎蛋時，蛋由蛋液變成荷包蛋", 42.73], ["第一步：冰塊融化需要吸熱，是吸熱過程", 43.03], ["第二步：生米煮成熟飯、蛋液變成荷包蛋，都需要加熱才能進行，都是吸熱", 43.33], ["第三步：食醋與小蘇打混合是酸鹼反應，過程中會放熱，溫度上升", 43.63], ["第四步：所以只有選項 C 是放熱過程", 43.93], ["答案 <b>(C)</b>　清潔時，將食醋與小蘇打粉混合", 44.63]]}, {"no": 23, "has": 1, "dur": 56.34, "audio": "audio/q23.mp3", "steps": [["q", "on", 1.2], ["fig", "on", 27.79], ["l0", "on", 30.79], ["l1", "on", 37.5], ["l2", "on", 44.59], ["l3", "on", 51.57], ["l4", "on", 53.84], ["l5", "on", 54.09], ["fig", "m0", 54.34], ["fig", "m1", 54.59], ["fig", "m2", 54.84], ["fig", "m3", 55.09], ["ans", "on", 55.34], ["rule", "on", 55.94]], "caps": [["將硝酸鋁溶液與硫化鈉溶液混合，可生成硫化鋁與硝酸鈉", 1.9], ["其平衡化學反應式為 a 硝酸鋁加 b 硫化鈉，生成 c 硫化鋁加 d 硝酸鈉", 8.07], ["其中 a、b、c、d 為平衡係數，若為最小整數比時，試問 a 加 b 加 c 加 d 的數值為何", 16.53], ["第一步：先看鋁的平衡，a 等於 2c；硫的平衡，b 等於 3c", 30.79], ["第二步：再看鈉的平衡，2b 等於 d；硝酸根的平衡，3a 等於 d", 37.5], ["第三步：取最小的 c 等於 1，得到 a 等於 2、b 等於 3、d 等於 6", 44.59], ["第四步：所以 2 加 3 加 1 加 6 等於 12", 51.57], ["答案 <b>(C)</b>　12", 55.49]]}, {"no": 24, "has": 1, "dur": 53.01, "audio": "audio/q24.mp3", "steps": [["q", "on", 1.2], ["fig", "on", 17.98], ["l0", "on", 20.98], ["l1", "on", 30.39], ["l2", "on", 39.64], ["l3", "on", 46.38], ["l4", "on", 50.51], ["fig", "m0", 50.76], ["fig", "m1", 51.01], ["fig", "m2", 51.26], ["fig", "m3", 51.51], ["ans", "on", 51.76], ["rule", "on", 52.61]], "caps": [["將鎂帶置入鹽酸時，會有氣泡產生，下列關於此反應的敘述，何者正確", 1.89], ["選項 A 鎂帶會漸漸消失　B 此反應不涉及電子轉移", 9.76], ["選項 C 此反應屬於酸鹼中和反應　D 產生的氣體是氧氣", 10.06], ["第一步：鎂與鹽酸反應生成氯化鎂與氫氣，所以鎂帶會隨著反應漸漸溶解消失，A 正確", 20.98], ["第二步：鎂由 0 變成正二被氧化，氫離子由正一變成 0 被還原，涉及電子轉移，B 錯", 30.39], ["第三步：這是金屬與酸的氧化還原反應，不是酸鹼中和，C 錯", 39.64], ["第四步：產生的氣體是氫氣，不是氧氣，D 錯", 46.38], ["答案 <b>(A)</b>　鎂帶會漸漸消失", 52.14]]}, {"no": 25, "has": 1, "dur": 55.04, "audio": "audio/q25.mp3", "steps": [["q", "on", 1.2], ["fig", "on", 25.95], ["l0", "on", 28.95], ["l1", "on", 36.4], ["l2", "on", 42.7], ["l3", "on", 48.79], ["l4", "on", 52.54], ["fig", "m0", 52.79], ["fig", "m1", 53.04], ["fig", "m2", 53.29], ["fig", "m3", 53.54], ["ans", "on", 53.79], ["rule", "on", 54.64]], "caps": [["下列有關銅-63 同位素中，其質子、中子與電子的數目，何者正確", 1.85], ["選項 A 29 個質子，34 個中子，29 個電子", 9.19], ["選項 B 29 個質子，29 個中子，63 個電子", 9.49], ["選項 C 63 個質子，29 個中子，63 個電子", 9.79], ["選項 D 34 個質子，29 個中子，34 個電子", 10.09], ["第一步：左下角的 29 是原子序，等於質子數，所以質子有 29 個", 28.95], ["第二步：這是中性原子，電子數等於質子數，也是 29 個", 36.4], ["第三步：左上角的 63 是質量數，等於質子數加中子數", 42.7], ["第四步：所以中子數等於 63 減 29，等於 34", 48.79], ["答案 <b>(A)</b>　29 個質子，34 個中子，29 個電子", 54.15]]}], VOICE = "Xiaoxiao";
+const $ = id => document.getElementById(id);
+const dbg = m => { try { $("DBG").textContent = m; } catch (e) { } };
+window.onerror = (m, s, l) => { dbg("ERR@" + l + ":" + m); return false; };
+
+let curNo = 0, curPage = null, ci = 0, capIdx = -1;
+const RESET_CLS = ["on", "s2", "s3", "pw", "balanced", "m0", "m1", "m2", "m3"];
+const audio = new Audio();
+audio.preload = "auto";
+const pg = n => $("pg" + n);
+const el = (page, k) => page.querySelector('[data-k="' + k + '"]');
+const dur = n => (PAGES[n - 1] && PAGES[n - 1].dur) || 0;
+
+function reset(page) {
+  page.querySelectorAll("*").forEach(e => RESET_CLS.forEach(c => e.classList.remove(c)));
+  $("CAPG").innerHTML = "";   /* 字幕為全卷共用元素 */
+  capIdx = -1;
+}
+function addStep(s) {
+  const e = el(curPage, s[0]);
+  if (!e) return;
+  s[1].split(" ").forEach(c => e.classList.add(c));
+}
+function paint(page) {  /* 靜態：一次畫到 t 秒 */
+  const cs = $("CAPG");
+  page.querySelectorAll("*").forEach(e => RESET_CLS.forEach(c => e.classList.remove(c)));
+  capIdx = -1;
+  const st = PAGES[curNo - 1].steps;
+  for (let i = 0; i < st.length; i++) if (st[i][2] <= paint.t) { const e = el(page, st[i][0]); if (e) st[i][1].split(" ").forEach(c => e.classList.add(c)); }
+  const cp = PAGES[curNo - 1].caps;
+  let k = -1; for (let i = 0; i < cp.length; i++) if (cp[i][1] <= paint.t) k = i;
+  if (k >= 0 && cs) { cs.innerHTML = "<span>" + cp[k][0] + "</span>"; capIdx = k; }
+  $("FL").style.width = (dur(curNo) ? (100 * paint.t / dur(curNo)) : 0) + "%";
+  $("TM").textContent = fmt(paint.t) + " / " + fmt(dur(curNo));
+}
+function updateCap(t) {
+  const cp = PAGES[curNo - 1].caps;
+  let k = -1; for (let i = 0; i < cp.length; i++) if (cp[i][1] <= t) k = i;
+  if (k === capIdx) return;
+  capIdx = k;
+  const box = $("CAPG");
+  if (k < 0) { box.innerHTML = ""; return; }
+  box.innerHTML = "<span>" + cp[k][0] + "</span>";
+  requestAnimationFrame(() => box.firstChild && box.firstChild.classList.add("on"));
+}
+function fmt(s) { s = Math.max(0, s | 0); return (s / 60 | 0) + ":" + String(s % 60).padStart(2, "0"); }
+
+function tick() {
+  if (!audio.paused && curPage) {
+    const t = audio.currentTime, st = PAGES[curNo - 1].steps;
+    while (ci < st.length && st[ci][2] <= t) { addStep(st[ci]); ci++; }
+    updateCap(t);
+    const D = audio.duration || dur(curNo);
+    $("FL").style.width = (D ? (100 * t / D) : 0) + "%";
+    $("TM").textContent = fmt(t) + " / " + fmt(D);
+  }
+  requestAnimationFrame(tick);
+}
+requestAnimationFrame(tick);
+
+function goto(n, t) {
+  if (!PAGES[n - 1]) return;
+  audio.pause(); audio.removeAttribute("src"); audio.load();
+  $("BT").textContent = "▶";
+  document.querySelectorAll(".qpage").forEach(p => p.classList.remove("cur"));
+  const page = pg(n); page.classList.add("cur");
+  document.querySelectorAll(".qno").forEach(b => b.classList.toggle("act", +b.dataset.n === n));
+  curNo = n; curPage = page; ci = 0;
+  reset(page);
+  $("CN").textContent = n;
+  const P = PAGES[n - 1];
+  if (!P.has) { $("TM").textContent = "— / —"; $("FL").style.width = "0%"; $("CAPG").innerHTML = ""; return; }
+  audio.src = P.audio;
+  if (t != null) { paint.t = t; paint(page); }
+  else {
+    $("FL").style.width = "0%"; $("TM").textContent = "0:00 / " + fmt(P.dur);
+    ci = 0;
+    audio.play().then(() => $("BT").textContent = "❚❚").catch(() => { });
+  }
+}
+
+document.querySelectorAll(".qno").forEach(b => b.onclick = () => goto(+b.dataset.n));
+$("BT").onclick = () => {
+  if (!PAGES[curNo - 1].has) return;
+  if (audio.paused) audio.play().then(() => $("BT").textContent = "❚❚").catch(() => { });
+  else { audio.pause(); $("BT").textContent = "▶"; }
+};
+$("RP").onclick = () => { if (PAGES[curNo - 1].has) { reset(curPage); ci = 0; audio.currentTime = 0; audio.play().catch(() => { }); $("BT").textContent = "❚❚"; } };
+audio.onpause = () => $("BT").textContent = "▶";
+audio.onended = () => $("BT").textContent = "▶";
+audio.onplay = () => $("BT").textContent = "❚❚";
+$("TK").onclick = e => {
+  if (!PAGES[curNo - 1].has) return;
+  const r = $("TK").getBoundingClientRect();
+  const p = Math.min(1, Math.max(0, (e.clientX - r.left) / r.width));
+  const D = audio.duration || dur(curNo);
+  audio.currentTime = p * D;
+  if (audio.paused) { paint.t = audio.currentTime; paint(curPage); } else { ci = 0; }
+};
+function audit() {  /* 版面自檢：越界 / 文字溢出 / 元素重疊 */
+  const WR = $("wrap").getBoundingClientRect(), L = [], items = [];
+  const nm = e => e.dataset.k || (e.className.split(" ")[0] || "el");
+  const all = curPage.querySelectorAll(".q,.ln,.fig,.anscard,.rule"), capEl2 = $("CAPG");
+  const list = Array.prototype.slice.call(all);
+  if (capEl2) list.push(capEl2);
+  list.forEach(e => {
+    const r = e.getBoundingClientRect(), k = nm(e);
+    items.push({ k: k, r: r });
+    if (r.bottom > WR.bottom + 1 || r.top < WR.top - 1 || r.left < WR.left - 1 || r.right > WR.right + 1)
+      L.push("OUT:" + k + "[t" + Math.round(r.top - WR.top) + ",b" + Math.round(r.bottom - WR.top) + ",l" + Math.round(r.left - WR.left) + ",r" + Math.round(r.right - WR.left) + "]");
+    if (e.classList.contains("ln")) {
+      const v = e.firstElementChild;
+      if (v && v.scrollHeight > e.clientHeight + 1) L.push("CLIP:" + k + "[" + v.scrollHeight + ">" + e.clientHeight + "]");
+    }
+    if (e.classList.contains("fig") && e.scrollHeight > e.clientHeight + 1) L.push("CLIPF[" + e.scrollHeight + ">" + e.clientHeight + "]");
+  });
+  for (let i = 0; i < items.length; i++) for (let j = i + 1; j < items.length; j++) {
+    const a = items[i].r, b = items[j].r;
+    const ov = Math.min(a.bottom, b.bottom) - Math.max(a.top, b.top);
+    const oh = Math.min(a.right, b.right) - Math.max(a.left, b.left);
+    if (ov > 1.5 && oh > 1.5) L.push("OVL:" + items[i].k + "~" + items[j].k + "[" + Math.round(ov) + "x" + Math.round(oh) + "]");
+  }
+  return "AUDIT|" + (L.length ? L.join(" ; ") : "clean");
+}
+function fit() {
+  const k = Math.min(window.innerWidth / 1320, window.innerHeight / 830);
+  document.documentElement.style.setProperty("--k", Math.max(.45, Math.min(1.25, k)));
+}
+window.addEventListener("resize", fit); fit();
+
+const qs = new URLSearchParams(location.search);
+const qn = parseInt(qs.get("q") || "1", 10);
+if (qs.has("at")) {
+  document.body.classList.add("st");
+  goto(qn, parseFloat(qs.get("at")) || 0);
+  dbg("st|q=" + qn + "|at=" + qs.get("at") + "|cap=" + ($("CAPG").textContent || "").slice(0, 12)
+    + "|" + (qs.has("audit") ? audit() : ""));
+} else {
+  goto(qn, null);
+  dbg("ok|ready|q=" + qn + "|dur=" + dur(qn));
+}
+</script>
+</body></html>

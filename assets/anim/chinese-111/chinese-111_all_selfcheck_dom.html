@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="zh-Hant" style="--k: 0.5650602409638554;"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>111 國文（111） 3B1B 動態講解（整卷）</title>
+<style>
+:root{--fg:#e9eefc;--dim:#93a1c8;--gold:#ffd166;--cy:#66d9ef;--pk:#ff8fa3;}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;overflow:hidden;background:#070a14;color:var(--fg);
+  font-family:"PingFang TC","Helvetica Neue",system-ui,sans-serif;
+  background-image:radial-gradient(1100px 620px at 50% -10%,#16203c,#070a14 72%)}
+#wrap{position:fixed;left:50%;top:50%;width:1280px;height:790px;
+  transform:translate(-50%,-50%) scale(var(--k,1));transform-origin:center center}
+.nav{position:absolute;left:36px;right:36px;top:10px;height:46px;display:flex;align-items:center;gap:6px}
+.nav .ttl{font-size:15px;color:var(--dim);margin-right:10px;white-space:nowrap}
+.nav .ttl b{color:var(--cy);font-weight:600}
+.qno{width:34px;height:34px;border-radius:9px;border:1px solid #25315a;background:#111a33;color:#8fa0cc;
+  font-size:14px;cursor:pointer;font-variant-numeric:tabular-nums;transition:.2s;flex:0 0 auto}
+.qno:hover{border-color:#41558c;color:var(--fg)}
+.qno.act{background:linear-gradient(180deg,#2a3a68,#1b2748);border-color:var(--cy);color:#fff;
+  box-shadow:0 0 14px rgba(102,217,239,.35)}
+.qno.todo{opacity:.38}
+.qno.todo:hover{border-color:#31406e;color:#8fa0cc}
+.qpage{position:absolute;inset:0;display:none}
+.qpage.cur{display:block}
+.q{position:absolute;left:60px;right:60px;top:62px;text-align:center;
+  font-family:"Times New Roman",Georgia,serif;font-size:30px;letter-spacing:.5px;
+  opacity:0;transform:translateY(-14px);transition:opacity .9s ease,transform .9s ease}
+.q.on{opacity:1;transform:none}
+.q .ask{display:block;margin-top:8px;font-size:22px;color:var(--gold);font-family:inherit}
+.main{position:absolute;left:48px;right:48px;top:178px;height:462px;display:flex;gap:24px}
+.chain{flex:0 0 726px;display:flex;flex-direction:column;justify-content:center;gap:4px}
+.ln{position:relative;min-height:46px;font-family:"Times New Roman",Georgia,serif;font-size:22px}
+.ln .v{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;text-align:center;
+  padding:0 6px;line-height:1.25;
+  opacity:0;transform:translateY(14px);transition:opacity .55s ease,transform .55s ease,color .5s ease}
+.ln.on .v{transform:none}
+.ln.on .v1{opacity:1}
+.ln.on.s2 .v1{opacity:0}
+.ln.on.s2 .v2{opacity:1}
+.ln.on.s3 .v2{opacity:0}
+.ln.on.s3 .v3{opacity:1}
+.tint1{color:var(--pk)}.tint2{color:var(--cy)}
+.side{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px}
+.fig{width:100%;height:300px;display:flex;align-items:center;justify-content:center;
+  opacity:0;transform:translateY(18px) scale(.96);transition:opacity .9s ease,transform .9s ease}
+.fig.on{opacity:1;transform:none}
+.anscard{width:100%;max-width:430px;padding:16px 22px;border:2px solid var(--gold);border-radius:16px;
+  background:linear-gradient(180deg,rgba(255,209,102,.14),rgba(255,209,102,.05));
+  box-shadow:0 0 34px rgba(255,209,102,.22);text-align:center;opacity:0;transform:translateY(20px) scale(.95);
+  transition:opacity .8s ease,transform .8s ease}
+.anscard.on{opacity:1;transform:none}
+.anscard .tag{font-size:14px;letter-spacing:3px;color:var(--dim)}
+.anscard .val{margin-top:4px;font-family:"Times New Roman",Georgia,serif;font-size:30px;color:var(--gold)}
+.anscard .note{margin-top:4px;font-size:13px;color:#8b9ac6;font-family:"Menlo",monospace}
+.rule{position:absolute;left:48px;right:48px;top:656px;text-align:center;font-size:16px;color:var(--dim);
+  opacity:0;transform:translateY(10px);transition:opacity .8s ease,transform .8s ease}
+.rule.on{opacity:1;transform:none}
+.rule b{color:var(--cy);font-weight:600}
+.cap{position:absolute;left:60px;right:60px;bottom:56px;min-height:30px;text-align:center;font-size:17px;
+  color:var(--fg);font-family:"Times New Roman","PingFang TC",serif}
+.cap span{opacity:0;transition:opacity .3s ease}
+.cap span.on{opacity:.92}
+.bar{position:absolute;left:48px;right:48px;bottom:12px;height:42px;display:flex;align-items:center;gap:14px}
+.btn{width:42px;height:42px;border-radius:50%;border:1px solid #2b3a63;background:#131c33;color:var(--fg);
+  font-size:15px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:.2s;flex:0 0 auto}
+.btn:hover{background:#1c2745;border-color:#41558c}
+.track{flex:1;height:6px;border-radius:3px;background:#1a2340;position:relative;cursor:pointer}
+.track .fill{position:absolute;left:0;top:0;bottom:0;width:0;border-radius:3px;
+  background:linear-gradient(90deg,#66d9ef,#ffd166)}
+.tm{font-size:13px;color:var(--dim);font-variant-numeric:tabular-nums;flex:0 0 auto}
+.vo{font-size:13px;color:var(--dim);white-space:nowrap;flex:0 0 auto}
+.vo b{color:var(--cy);font-weight:600}
+.empty{position:absolute;left:0;right:0;top:320px;text-align:center;color:var(--dim);font-size:20px}
+.empty b{color:var(--gold)}
+/* ---- 天平（Q1） ---- */
+.beam{transform-box:fill-box;transform-origin:50% 12%;transform:rotate(-8deg);
+  transition:transform 1.1s cubic-bezier(.34,1.4,.5,1)}
+.fig.balanced .beam{transform:rotate(0deg)}
+.scale{width:100%;height:300px}
+.scale text{font-family:"Times New Roman",Georgia,serif;font-size:23px;fill:var(--fg);opacity:0;
+  transition:opacity .6s ease}
+.fig.pw .scale text{opacity:1}
+/* ---- 圖元通用（Q2–Q4） ---- */
+.fig svg.svgp{width:100%;height:auto;max-height:300px}
+.tx{fill:#8b9ac6;font-size:14px;font-family:"Menlo",monospace}
+.mk{opacity:0;transition:.6s}
+.fig.m0 .k0,.fig.m1 .k1,.fig.m2 .k2,.fig.m3 .k3{opacity:1}
+.q3fig{display:flex;flex-direction:column;gap:10px;font-family:"Menlo",monospace}
+.q3fig .ct{color:#7f8db8;font-size:13px}
+.q3fig .row{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.bx{background:#16223f;border:1px solid #2c3d6b;border-radius:8px;padding:7px 13px;font-size:17px;transition:.5s}
+.bx.hi{border-color:var(--gold);color:var(--gold)}
+.plus{color:#7f8db8}
+.ar{color:var(--cy);font-size:13px}
+.tip{margin-top:8px;color:var(--gold);font-size:14px}
+.mtx{display:flex;flex-direction:column;gap:8px;margin-left:6px}
+.mrow{display:flex;align-items:center;gap:7px;padding:6px 8px;border-radius:9px;transition:.5s}
+.mrow .vl{color:#7f8db8;font-size:13px;width:34px}
+.mrow .m,.mrow .cst{width:56px;text-align:center;background:#16223f;border:1px solid #2c3d6b;border-radius:7px;
+  padding:7px 0;font-family:"Menlo",monospace;font-size:16px}
+.mrow .cst{border-color:#3a5a9a}
+.vbar{color:#3d4a76}
+.fig.m0 .mrow:nth-child(1),.fig.m1 .mrow:nth-child(2),.fig.m2 .mrow:nth-child(3){background:#1b2b52}
+.fig.m3 .mrow:nth-child(3){border:1px dashed var(--gold)}
+body.st *{transition:none!important;animation:none!important}
+
+/* ================= 題庫型科目版面 ================= */
+.q{font-size:23px;line-height:1.3;font-family:"PingFang TC","Songti TC",serif}
+.q .ask{font-size:19px;margin-top:8px;color:var(--gold)}
+.main{top:190px;height:452px}
+.chain{flex:0 0 800px;gap:5px}
+.ln{min-height:46px;font-family:"PingFang TC","Songti TC",serif;font-size:17px}
+.ln .v{line-height:1.28}
+.opt{text-align:left}
+.opt b{margin-right:8px}
+.opt.ok{background:rgba(255,209,102,.12);border:1px solid rgba(255,209,102,.5);border-radius:10px}
+.opt.bad{opacity:.55}
+.ln.src{font-size:16px;color:#cfe0ff}
+.side{flex:1}
+.anscard{max-width:none}
+.anscard .val{font-size:22px;line-height:1.3}
+.cap{font-family:"PingFang TC","Songti TC",serif;font-size:17px}
+.rule{top:652px;font-size:15px;font-family:"PingFang TC","Songti TC",serif}
+</style></head>
+<body class="st"><div id="DBG" hidden="">Q1 AUDIT|clean
+Q1 AUDIT|clean
+Q1 AUDIT|clean
+Q2 AUDIT|clean
+Q2 AUDIT|clean
+Q2 AUDIT|clean
+Q3 AUDIT|clean
+Q3 AUDIT|clean
+Q3 AUDIT|clean
+Q4 AUDIT|clean
+Q4 AUDIT|clean
+Q4 AUDIT|clean
+Q5 AUDIT|clean
+Q5 AUDIT|clean
+Q5 AUDIT|clean
+Q6 AUDIT|clean
+Q6 AUDIT|clean
+Q6 AUDIT|clean
+Q7 AUDIT|clean
+Q7 AUDIT|clean
+Q7 AUDIT|clean
+Q8 AUDIT|clean
+Q8 AUDIT|clean
+Q8 AUDIT|clean
+Q9 AUDIT|clean
+Q9 AUDIT|clean
+Q9 AUDIT|clean
+Q10 AUDIT|clean
+Q10 AUDIT|clean
+Q10 AUDIT|clean
+Q11 AUDIT|clean
+Q11 AUDIT|clean
+Q11 AUDIT|clean
+Q12 AUDIT|clean
+Q12 AUDIT|clean
+Q12 AUDIT|clean
+Q13 AUDIT|clean
+Q13 AUDIT|clean
+Q13 AUDIT|clean
+Q14 AUDIT|clean
+Q14 AUDIT|clean
+Q14 AUDIT|clean
+Q15 AUDIT|clean
+Q15 AUDIT|clean
+Q15 AUDIT|clean
+Q16 AUDIT|clean
+Q16 AUDIT|clean
+Q16 AUDIT|clean
+Q17 AUDIT|clean
+Q17 AUDIT|clean
+Q17 AUDIT|clean
+Q18 AUDIT|clean
+Q18 AUDIT|clean
+Q18 AUDIT|clean
+Q19 AUDIT|clean
+Q19 AUDIT|clean
+Q19 AUDIT|clean
+Q20 AUDIT|clean
+Q20 AUDIT|clean
+Q20 AUDIT|clean</div>
+<div id="wrap">
+  <div class="nav" id="NAV"><span class="ttl">111 學年度　<b>國文（111）</b>　3B1B 動態講解</span><button class="qno" data-n="1" type="button">1</button><button class="qno" data-n="2" type="button">2</button><button class="qno" data-n="3" type="button">3</button><button class="qno" data-n="4" type="button">4</button><button class="qno" data-n="5" type="button">5</button><button class="qno" data-n="6" type="button">6</button><button class="qno" data-n="7" type="button">7</button><button class="qno" data-n="8" type="button">8</button><button class="qno" data-n="9" type="button">9</button><button class="qno" data-n="10" type="button">10</button><button class="qno" data-n="11" type="button">11</button><button class="qno" data-n="12" type="button">12</button><button class="qno" data-n="13" type="button">13</button><button class="qno" data-n="14" type="button">14</button><button class="qno" data-n="15" type="button">15</button><button class="qno" data-n="16" type="button">16</button><button class="qno" data-n="17" type="button">17</button><button class="qno" data-n="18" type="button">18</button><button class="qno" data-n="19" type="button">19</button><button class="qno act" data-n="20" type="button">20</button></div>
+<section class="qpage" id="pg1" data-no="1"><div class="q on" data-k="q">第 1 題・國文<span class="ask">下列文句中的「一」，與「海水浮天如笠，一白萬里如銀」中的 「一」，意義相同的是：</span></div><div class="main"><div class="chain"><div class="ln opt bad on" data-k="o0"><span class="v v1"><b>A</b><span class="oe">(A)室西連於中閨，先妣嘗「一」至</span></span></div><div class="ln opt ok on" data-k="o1"><span class="v v1"><b>B</b><span class="oe">(B)既親其所親，亦親其所疏，「一」體同仁</span></span></div><div class="ln opt bad on" data-k="o2"><span class="v v1"><b>C</b><span class="oe">(C)此數寶者，秦不生「一」焉，而陛下說之，何也</span></span></div><div class="ln opt bad on" data-k="o3"><span class="v v1"><b>D</b><span class="oe">(D)由斷橋至蘇堤「一」帶，綠煙紅霧，彌漫二十…</span></span></div><div class="ln src on" data-k="l0"><span class="v v1">要點：「一」有數目、一旦、全部、同一等義。此句「一白萬里」作「全、滿」解，須逐項代回語境比對，勿只看字面。</span></div></div><div class="side"><div class="anscard on" data-k="ans"><div class="tag">ANSWER</div><div class="val">(B)</div><div class="note">國文</div></div></div></div><div class="rule on" data-k="rule"></div></section>
+<section class="qpage" id="pg2" data-no="2"><div class="q on" data-k="q">第 2 題・國文<span class="ask">下列文句畫底線處的詞語，運用最適當的是：</span></div><div class="main"><div class="chain"><div class="ln opt bad on" data-k="o0"><span class="v v1"><b>A</b><span class="oe">(A)除非天色太暗，否則不可能把柿子李代桃僵誤…</span></span></div><div class="ln opt bad on" data-k="o1"><span class="v v1"><b>B</b><span class="oe">(B)他決定的事情，即使旁人再怎麼苦心孤詣勸說…</span></span></div><div class="ln opt bad on" data-k="o2"><span class="v v1"><b>C</b><span class="oe">(C)大家的見解聽起來都很有道理，讓我頓時感到…</span></span></div><div class="ln opt ok on" data-k="o3"><span class="v v1"><b>D</b><span class="oe">(D)作者善於窮形盡相地細膩描寫，鄉村美好景致…</span></span></div><div class="ln src on" data-k="l0"><span class="v v1">要點：先辨詞語本義再驗語境。「李代桃僵」喻代人受過，不能當作「看錯」；能窮形盡相地描寫，才是恰當用法。</span></div></div><div class="side"><div class="anscard on" data-k="ans"><div class="tag">ANSWER</div><div class="val">(D)</div><div class="note">國文</div></div></div></div><div class="rule on" data-k="rule"></div></section>
+<section class="qpage" id="pg3" data-no="3"><div class="q on" data-k="q">第 3 題・國文<span class="ask">「香港已成了巴比倫島」一句中，「巴比倫」由名詞變成形容詞， 用來表達「奢華、邪惡」的意思。下列文句「」中的詞語，同樣 由「名詞」變成「形容詞」的是：</span></div><div class="main"><div class="chain"><div class="ln opt bad on" data-k="o0"><span class="v v1"><b>A</b><span class="oe">(A)滿載一船星輝，在星輝「斑斕」裡放歌</span></span></div><div class="ln opt bad on" data-k="o1"><span class="v v1"><b>B</b><span class="oe">(B)（太陽）像橘紅「淋漓」的一團烙鐵漿，蹦跳…</span></span></div><div class="ln opt bad on" data-k="o2"><span class="v v1"><b>C</b><span class="oe">(C)僅剩的那一點餘光照在他佝僂的身上，竟意外…</span></span></div><div class="ln opt ok on" data-k="o3"><span class="v v1"><b>D</b><span class="oe">(D)（髻）常常換樣子，襯托著姨娘細潔的肌膚，…</span></span></div><div class="ln src on" data-k="l0"><span class="v v1">要點：判斷名詞是否被借作形容語（如「巴比倫」式）。斑斕、淋漓、單薄本身即形容詞；「水蛇」腰才是以名詞喻形。</span></div></div><div class="side"><div class="anscard on" data-k="ans"><div class="tag">ANSWER</div><div class="val">(D)</div><div class="note">國文</div></div></div></div><div class="rule on" data-k="rule"></div></section>
+<section class="qpage" id="pg4" data-no="4"><div class="q on" data-k="q">第 4 題・國文<span class="ask">「看見敵人的哨兵」一句在解讀時，會出現歧義：可理解為「看 見-敵人的哨兵」（某人看到了敵人的哨兵），也可理解為「看見敵 人的-哨兵」（一名或數名哨兵看到了敵人）。下列語句，也出現此 種歧義的…</span></div><div class="main"><div class="chain"><div class="ln opt ok on" data-k="o0"><span class="v v1"><b>A</b><span class="oe">(A)喜歡鄰居的媽媽</span></span></div><div class="ln opt bad on" data-k="o1"><span class="v v1"><b>B</b><span class="oe">(B)住在臺北的老師</span></span></div><div class="ln opt bad on" data-k="o2"><span class="v v1"><b>C</b><span class="oe">(C)肯定球員的實力</span></span></div><div class="ln opt bad on" data-k="o3"><span class="v v1"><b>D</b><span class="oe">(D)花掉歷年的積蓄</span></span></div><div class="ln src on" data-k="l0"><span class="v v1">要點：歧義來自「動詞＋的＋名詞」可作動賓或偏正兩種切分。「喜歡鄰居的媽媽」同樣兩解，其餘三句結構固定。</span></div></div><div class="side"><div class="anscard on" data-k="ans"><div class="tag">ANSWER</div><div class="val">(A)</div><div class="note">國文</div></div></div></div><div class="rule on" data-k="rule"></div></section>
+<section class="qpage" id="pg5" data-no="5"><div class="q on" data-k="q">第 5 題・國文<span class="ask">依據文意，下文所敘述的古代詩人「他」，應該是： 他的大志難伸，我們都看在眼裡。而我覺得更真的是他那些 生活實錄，如「親朋無一字，老病有孤舟」，都不會是酸諷或反 串，而是真實的自怨、自憐、自厭…</span></div><div class="main"><div class="chain"><div class="ln opt bad on" data-k="o0"><span class="v v1"><b>A</b><span class="oe">(A)陶淵明</span></span></div><div class="ln opt ok on" data-k="o1"><span class="v v1"><b>B</b><span class="oe">(B)杜甫</span></span></div><div class="ln opt bad on" data-k="o2"><span class="v v1"><b>C</b><span class="oe">(C)蘇軾</span></span></div><div class="ln opt bad on" data-k="o3"><span class="v v1"><b>D</b><span class="oe">(D)黃庭堅</span></span></div><div class="ln src on" data-k="l0"><span class="v v1">要點：關鍵在引詩「親朋無一字，老病有孤舟」，哀身世之艱、憂國憂民，正是杜甫沉鬱寫實的風格標記。</span></div></div><div class="side"><div class="anscard on" data-k="ans"><div class="tag">ANSWER</div><div class="val">(B)</div><div class="note">國文</div></div></div></div><div class="rule on" data-k="rule"></div></section>
+<section class="qpage" id="pg6" data-no="6"><div class="q on" data-k="q">第 6 題・國文<span class="ask">依據下文，關於「我」在時間淘洗下的體悟，敘述最適當的是： 回想自己年少時，任何的善意、規勸，在我眼中，都成了平淡 無味的拘束。年輕的心所渴望的，不是撫慰，而是對自己的深信不 疑，所有荒唐、激…</span></div><div class="main"><div class="chain"><div class="ln opt bad on" data-k="o0"><span class="v v1"><b>A</b><span class="oe">(A)堅持衝撞體制，長懷熱情</span></span></div><div class="ln opt ok on" data-k="o1"><span class="v v1"><b>B</b><span class="oe">(B)理解前輩提醒，感念善意</span></span></div><div class="ln opt bad on" data-k="o2"><span class="v v1"><b>C</b><span class="oe">(C)借鑑眾人經驗，成功在望</span></span></div><div class="ln opt bad on" data-k="o3"><span class="v v1"><b>D</b><span class="oe">(D)不畏歷險涉奇，人生無憾</span></span></div><div class="ln src on" data-k="l0"><span class="v v1">要點：文脈由年少輕狂、抗拒規勸，轉為體悟那些叮囑是過來人素直的善意，故選理解與感念。</span></div></div><div class="side"><div class="anscard on" data-k="ans"><div class="tag">ANSWER</div><div class="val">(B)</div><div class="note">國文</div></div></div></div><div class="rule on" data-k="rule"></div></section>
+<section class="qpage" id="pg7" data-no="7"><div class="q on" data-k="q">第 7 題・國文<span class="ask">關於文中所表達的想法，敘述最適當的是： 簡媜談到自己寫作歷程時曾說道：「當年不像現在學校可以 邀請作家跟同學互動，完全必須要靠自己摸索。當你獨自踽踽而 行、摸黑前進時，有時反而會得到最大的收…</span></div><div class="main"><div class="chain"><div class="ln opt bad on" data-k="o0"><span class="v v1"><b>A</b><span class="oe">(A)凡事做中學，在嘗試錯誤中逐漸成長</span></span></div><div class="ln opt bad on" data-k="o1"><span class="v v1"><b>B</b><span class="oe">(B)光明與黑暗均有局限，不宜比較優劣</span></span></div><div class="ln opt ok on" data-k="o2"><span class="v v1"><b>C</b><span class="oe">(C)自主探索學習，可能會有意外的成果</span></span></div><div class="ln opt bad on" data-k="o3"><span class="v v1"><b>D</b><span class="oe">(D)前人的指引有如明燈，可以照亮黑暗</span></span></div><div class="ln src on" data-k="l0"><span class="v v1">要點：簡媜強調無人引導、獨自摸黑摸索，反能看見明眼人所未見，重點在自主探索帶來的意外收穫。</span></div></div><div class="side"><div class="anscard on" data-k="ans"><div class="tag">ANSWER</div><div class="val">(C)</div><div class="note">國文</div></div></div></div><div class="rule on" data-k="rule"></div></section>
+<section class="qpage" id="pg8" data-no="8"><div class="q on" data-k="q">第 8 題・國文<span class="ask">依據下文，關於詩或詩人的敘述，最符合文意的是： 詩是特權，詩人是一種完全不一樣的存在。 詩之所以存在，這個世界之所以需要詩，正因為我們不能甘 於只活在熟悉的世界裡。出發去冒險，去遙遠陌生、不…</span></div><div class="main"><div class="chain"><div class="ln opt bad on" data-k="o0"><span class="v v1"><b>A</b><span class="oe">(A)詩人因題材熟悉而激發熱情，提升詩藝</span></span></div><div class="ln opt bad on" data-k="o1"><span class="v v1"><b>B</b><span class="oe">(B)描寫美好事物的詩，能給人真實的感動</span></span></div><div class="ln opt bad on" data-k="o2"><span class="v v1"><b>C</b><span class="oe">(C)直言無諱而不含蓄的詩，為詩人所不屑</span></span></div><div class="ln opt ok on" data-k="o3"><span class="v v1"><b>D</b><span class="oe">(D)為了探求真實，詩可能呈現生命的惶惑</span></span></div><div class="ln src on" data-k="l0"><span class="v v1">要點：末段指出只寫美好而無怒懣恐慌的詩最難寫、也為詩人所不屑，可知詩為求真而呈顯生命惶惑。</span></div></div><div class="side"><div class="anscard on" data-k="ans"><div class="tag">ANSWER</div><div class="val">(D)</div><div class="note">國文</div></div></div></div><div class="rule on" data-k="rule"></div></section>
+<section class="qpage" id="pg9" data-no="9"><div class="q on" data-k="q">第 9 題・國文<span class="ask">文章在敘事時，往往藉由言行來呈現人物的性格。以下對人物言 行的分析，最適切的是：</span></div><div class="main"><div class="chain"><div class="ln opt ok on" data-k="o0"><span class="v v1"><b>A</b><span class="oe">(A)沛公至軍，立誅殺曹無傷— 劉邦當機立斷，…</span></span></div><div class="ln opt bad on" data-k="o1"><span class="v v1"><b>B</b><span class="oe">(B)靖不自意獲之，愈喜愈懼，瞬息萬慮不安，而…</span></span></div><div class="ln opt bad on" data-k="o2"><span class="v v1"><b>C</b><span class="oe">(C)孔乙己睜大眼睛說：「你怎麼這樣憑空污人清…</span></span></div><div class="ln opt bad on" data-k="o3"><span class="v v1"><b>D</b><span class="oe">(D)「什麼？做官的就可任意凌辱人民嗎？」參（…</span></span></div><div class="ln src on" data-k="l0"><span class="v v1">要點：劉邦回營即誅曹無傷，見其當機立斷、絕不寬貸；其餘選項或誤讀情緒，或把狡辯、憤慨當成請教。</span></div></div><div class="side"><div class="anscard on" data-k="ans"><div class="tag">ANSWER</div><div class="val">(A)</div><div class="note">國文</div></div></div></div><div class="rule on" data-k="rule"></div></section>
+<section class="qpage" id="pg10" data-no="10"><div class="q on" data-k="q">第 10 題・國文<span class="ask">張李德和〈畫菊自序〉：「竊慕管夫人之墨竹，紙上生風；敢藉陶 彭澤之黃花，圖中寫影。庶幾秋姿不老，四座流芬；得比勁節長 垂，千人共仰」，文中提及二位古人，目的在說明：</span></div><div class="main"><div class="chain"><div class="ln opt bad on" data-k="o0"><span class="v v1"><b>A</b><span class="oe">(A)仰慕昔人風姿，故廣植墨竹與黃花，以供千人…</span></span></div><div class="ln opt bad on" data-k="o1"><span class="v v1"><b>B</b><span class="oe">(B)品賞管夫人之畫竹、陶彭澤之詠菊，頓覺滿室…</span></span></div><div class="ln opt ok on" data-k="o2"><span class="v v1"><b>C</b><span class="oe">(C)以菊花為題材，以水墨為技法，期許繪畫能有…</span></span></div><div class="ln opt bad on" data-k="o3"><span class="v v1"><b>D</b><span class="oe">(D)管夫人、陶彭澤的畫像，因有墨竹黃花襯托而…</span></span></div><div class="ln src on" data-k="l0"><span class="v v1">要點：作者以管夫人墨竹、陶潛黃花自期，說明自己藉水墨寫菊，盼畫藝精進、聲名可傳。</span></div></div><div class="side"><div class="anscard on" data-k="ans"><div class="tag">ANSWER</div><div class="val">(C)</div><div class="note">國文</div></div></div></div><div class="rule on" data-k="rule"></div></section>
+<section class="qpage" id="pg11" data-no="11"><div class="q on" data-k="q">第 11 題・國文<span class="ask">〈勞山道士〉：「見一美人，自光中出。初不盈尺，至地，遂與人 等。纖腰秀項，翩翩作〈霓裳舞〉」中，畫底線處的文句，意在描 述、解說前句「自光中出的美人」。 下列畫底線的文句，同樣用 來「描述、…</span></div><div class="main"><div class="chain"><div class="ln opt bad on" data-k="o0"><span class="v v1"><b>A</b><span class="oe">(A)越國以鄙遠，君知其難也</span></span></div><div class="ln opt ok on" data-k="o1"><span class="v v1"><b>B</b><span class="oe">(B)傅金吾園中梅，張功甫玉照堂故物也</span></span></div><div class="ln opt bad on" data-k="o2"><span class="v v1"><b>C</b><span class="oe">(C)侍衛之臣，不懈於內；忠志之士，忘身於外者</span></span></div><div class="ln opt bad on" data-k="o3"><span class="v v1"><b>D</b><span class="oe">(D)大行不顧細謹，大禮不辭小讓。如今人方為刀…</span></span></div><div class="ln src on" data-k="l0"><span class="v v1">要點：「傅金吾園中梅，張功甫玉照堂故物也」正是解說前句之梅的來歷，與例句解說「美人」的功能相同。</span></div></div><div class="side"><div class="anscard on" data-k="ans"><div class="tag">ANSWER</div><div class="val">(B)</div><div class="note">國文</div></div></div></div><div class="rule on" data-k="rule"></div></section>
+<section class="qpage" id="pg12" data-no="12"><div class="q on" data-k="q">第 12 題・國文<span class="ask">依據下文，關於項脊軒修繕的敘述，最適當的是： 余稍為修葺，使不上漏。前闢四窗，垣牆周庭，以當南日。 日影反照，室始洞然。又雜植蘭、桂、竹、木於庭，舊時欄楯， 亦遂增勝。借書滿架，偃仰嘯歌，冥…</span></div><div class="main"><div class="chain"><div class="ln opt bad on" data-k="o0"><span class="v v1"><b>A</b><span class="oe">(A)修繕前屋頂漏水，門前有牆遮擋</span></span></div><div class="ln opt ok on" data-k="o1"><span class="v v1"><b>B</b><span class="oe">(B)修繕時增開窗戶，調整室內採光</span></span></div><div class="ln opt bad on" data-k="o2"><span class="v v1"><b>C</b><span class="oe">(C)修繕後簷下養鳥，庭院廣植花草</span></span></div><div class="ln opt bad on" data-k="o3"><span class="v v1"><b>D</b><span class="oe">(D)修繕後降低圍牆，便於讀書賞月</span></span></div><div class="ln src on" data-k="l0"><span class="v v1">要點：「前闢四窗……室始洞然」，重點在增開窗戶、改善室內採光，其餘敘述與原文不符。</span></div></div><div class="side"><div class="anscard on" data-k="ans"><div class="tag">ANSWER</div><div class="val">(B)</div><div class="note">國文</div></div></div></div><div class="rule on" data-k="rule"></div></section>
+<section class="qpage" id="pg13" data-no="13"><div class="q on" data-k="q">第 13 題・國文<span class="ask">古人言談，時有可相互印證或闡發者。下列關於前人論述關連的 說明，最適當的是：</span></div><div class="main"><div class="chain"><div class="ln opt bad on" data-k="o0"><span class="v v1"><b>A</b><span class="oe">(A)〈勞山道士〉中，道士認為王生「恐嬌惰不能…</span></span></div><div class="ln opt ok on" data-k="o1"><span class="v v1"><b>B</b><span class="oe">(B)〈師說〉中韓愈認為「聖人無常師」，與《老…</span></span></div><div class="ln opt bad on" data-k="o2"><span class="v v1"><b>C</b><span class="oe">(C)〈赤壁賦〉中，蘇軾由「逝者如斯，而未嘗往…</span></span></div><div class="ln opt bad on" data-k="o3"><span class="v v1"><b>D</b><span class="oe">(D)〈燭之武退秦師〉中，燭之武以「臣之壯也，…</span></span></div><div class="ln src on" data-k="l0"><span class="v v1">要點：韓愈「聖人無常師」與老子「善人者，不善人之師」皆強調可向不同人學習，義理相通。</span></div></div><div class="side"><div class="anscard on" data-k="ans"><div class="tag">ANSWER</div><div class="val">(B)</div><div class="note">國文</div></div></div></div><div class="rule on" data-k="rule"></div></section>
+<section class="qpage" id="pg14" data-no="14"><div class="q on" data-k="q">第 14 題・國文<span class="ask">下文對「盜」的敘述，旨在強調： 夫民不遽為盜必有迫使之為盜者，然後甘於為盜，非其性生 好為盜也。邇來強盜紛起，大抵因水旱凶荒，家不足用，衣食無 門，故各處僥悍之徒群起而為盜，雖其性之桀驁，亦…</span></div><div class="main"><div class="chain"><div class="ln opt bad on" data-k="o0"><span class="v v1"><b>A</b><span class="oe">(A)強盜治生無術，僥悍必勝以往</span></span></div><div class="ln opt bad on" data-k="o1"><span class="v v1"><b>B</b><span class="oe">(B)性情桀驁者，日後為盜者甚多</span></span></div><div class="ln opt ok on" data-k="o2"><span class="v v1"><b>C</b><span class="oe">(C)地方多盜，常肇因於民不聊生</span></span></div><div class="ln opt bad on" data-k="o3"><span class="v v1"><b>D</b><span class="oe">(D)水旱凶荒，將使群盜徙地劫掠</span></span></div><div class="ln src on" data-k="l0"><span class="v v1">要點：文中指盜非本性，實因水旱凶荒、衣食無門而聚為盜，故強調民不聊生為盜源。</span></div></div><div class="side"><div class="anscard on" data-k="ans"><div class="tag">ANSWER</div><div class="val">(C)</div><div class="note">國文</div></div></div></div><div class="rule on" data-k="rule"></div></section>
+<section class="qpage" id="pg15" data-no="15"><div class="q on" data-k="q">第 15 題・國文<span class="ask">下文藉「金受礪」所說明的道理，最接近於： 君與臣兮相符，金與礪兮相須。離之而道斯遠，全之而德不 孤。故為金也光乎九牧，為君也配彼三無。是以工必利其器，君 先擇其佐。佐明則有融，器銳則不挫。光…</span></div><div class="main"><div class="chain"><div class="ln opt bad on" data-k="o0"><span class="v v1"><b>A</b><span class="oe">(A)失之東隅，收之桑榆</span></span></div><div class="ln opt bad on" data-k="o1"><span class="v v1"><b>B</b><span class="oe">(B)精誠所至，金石為開</span></span></div><div class="ln opt ok on" data-k="o2"><span class="v v1"><b>C</b><span class="oe">(C)以人為鏡，可以明得失</span></span></div><div class="ln opt bad on" data-k="o3"><span class="v v1"><b>D</b><span class="oe">(D)路遙知馬力，日久見人心</span></span></div><div class="ln src on" data-k="l0"><span class="v v1">要點：「金受礪」喻君須擇賢佐，賢佐如磨石能正己成德，與「以人為鏡，可以明得失」最相近。</span></div></div><div class="side"><div class="anscard on" data-k="ans"><div class="tag">ANSWER</div><div class="val">(C)</div><div class="note">國文</div></div></div></div><div class="rule on" data-k="rule"></div></section>
+<section class="qpage" id="pg16" data-no="16"><div class="q on" data-k="q">第 16 題・國文<span class="ask">關於溫庭筠詞的敘述，符合下文觀點的是： 王國維《人間詞話》曾駁斥張惠言之說：「固哉皐文之為詞 也。飛卿〈菩薩蠻〉… … 有何命意？皆被皐文深文羅織。」私意 以為，張惠言以溫庭筠詞上擬楚《騷》…</span></div><div class="main"><div class="chain"><div class="ln opt ok on" data-k="o0"><span class="v v1"><b>A</b><span class="oe">(A)王國維認為張惠言過度讚美溫庭筠詞</span></span></div><div class="ln opt bad on" data-k="o1"><span class="v v1"><b>B</b><span class="oe">(B)王國維因溫庭筠雕琢藻飾而貶抑其詞</span></span></div><div class="ln opt bad on" data-k="o2"><span class="v v1"><b>C</b><span class="oe">(C)溫庭筠自比其詞如楚《騷》以尊詞體</span></span></div><div class="ln opt bad on" data-k="o3"><span class="v v1"><b>D</b><span class="oe">(D)溫庭筠詞因張惠言的解說而深奧難懂</span></span></div><div class="ln src on" data-k="l0"><span class="v v1">要點：王國維斥張惠言「深文羅織」，即批評他把溫詞牽附上比《騷》，過度讚美。</span></div></div><div class="side"><div class="anscard on" data-k="ans"><div class="tag">ANSWER</div><div class="val">(A)</div><div class="note">國文</div></div></div></div><div class="rule on" data-k="rule"></div></section>
+<section class="qpage" id="pg17" data-no="17"><div class="q on" data-k="q">第 17 題・國文<span class="ask">鄭愁予詩風多變，早期情懷浪漫，流露古典情韻；後期則多體悟 深沉，隱含生命哲思。下列詩句，最能體現後期詩風的是：</span></div><div class="main"><div class="chain"><div class="ln opt ok on" data-k="o0"><span class="v v1"><b>A</b><span class="oe">(A)煉自己成為容器／不再是自己而是／大實若虛…</span></span></div><div class="ln opt bad on" data-k="o1"><span class="v v1"><b>B</b><span class="oe">(B)雲在我底路上，在我底衣上，／我在一個隱隱…</span></span></div><div class="ln opt bad on" data-k="o2"><span class="v v1"><b>C</b><span class="oe">(C)遠處的錨響如斷續的鐘聲／雲像小魚浮進那柔…</span></span></div><div class="ln opt bad on" data-k="o3"><span class="v v1"><b>D</b><span class="oe">(D)念此際你已回到濱河的家居，／想你在梳理長…</span></span></div><div class="ln src on" data-k="l0"><span class="v v1">要點：後期詩風多深沉哲思，「煉自己成為容器……過癮而不焚身」最具生命體悟，其餘偏早期浪漫情韻。</span></div></div><div class="side"><div class="anscard on" data-k="ans"><div class="tag">ANSWER</div><div class="val">(A)</div><div class="note">國文</div></div></div></div><div class="rule on" data-k="rule"></div></section>
+<section class="qpage" id="pg18" data-no="18"><div class="q on" data-k="q">第 18 題・國文<span class="ask">關於○1 、○2 二詩所敘寫的古代思想，最適當的研判是： ○1 孩提親長根天性，堯舜由來共一初。情欲既趨天者滅，反疑性 惡復何如。 ○2 利出私情害萬端，義循天理樂而安。是非得失分霄壤，相去…</span></div><div class="main"><div class="chain"><div class="ln opt ok on" data-k="o0"><span class="v v1"><b>A</b><span class="oe">(A)○1 、○2 皆是儒家</span></span></div><div class="ln opt bad on" data-k="o1"><span class="v v1"><b>B</b><span class="oe">(B)○1 、○2 皆是道家</span></span></div><div class="ln opt bad on" data-k="o2"><span class="v v1"><b>C</b><span class="oe">(C)○1 是儒家，○2 是道家</span></span></div><div class="ln opt bad on" data-k="o3"><span class="v v1"><b>D</b><span class="oe">(D)○1 是道家，○2 是儒家 19-20為…</span></span></div><div class="ln src on" data-k="l0"><span class="v v1">要點：○1 論性善與情欲，○2 言循天理而樂，皆屬儒家義理，非道家自然無為之說。</span></div></div><div class="side"><div class="anscard on" data-k="ans"><div class="tag">ANSWER</div><div class="val">(A)</div><div class="note">國文</div></div></div></div><div class="rule on" data-k="rule"></div></section>
+<section class="qpage" id="pg19" data-no="19"><div class="q on" data-k="q">第 19 題・國文<span class="ask">上文對隋煬帝的描述，側重的面向是：</span></div><div class="main"><div class="chain"><div class="ln opt bad on" data-k="o0"><span class="v v1"><b>A</b><span class="oe">(A)空有抱負卻無力實現</span></span></div><div class="ln opt bad on" data-k="o1"><span class="v v1"><b>B</b><span class="oe">(B)武力開國又武力治國</span></span></div><div class="ln opt bad on" data-k="o2"><span class="v v1"><b>C</b><span class="oe">(C)積極建設並深察民瘼</span></span></div><div class="ln opt ok on" data-k="o3"><span class="v v1"><b>D</b><span class="oe">(D)衝勁十足且規劃宏觀</span></span></div><div class="ln src on" data-k="l0"><span class="v v1">要點：文中強調煬帝不停出巡、營建東都與大運河，著眼於其幹勁十足與宏觀規劃。</span></div></div><div class="side"><div class="anscard on" data-k="ans"><div class="tag">ANSWER</div><div class="val">(D)</div><div class="note">國文</div></div></div></div><div class="rule on" data-k="rule"></div></section>
+<section class="qpage cur" id="pg20" data-no="20"><div class="q on" data-k="q">第 20 題・國文<span class="ask">上文結尾引用皮日休〈汴河懷古〉，目的在強調隋煬帝：</span></div><div class="main"><div class="chain"><div class="ln opt ok on" data-k="o0"><span class="v v1"><b>A</b><span class="oe">(A)開鑿運河之功，不宜被其荒於嬉遊所掩</span></span></div><div class="ln opt bad on" data-k="o1"><span class="v v1"><b>B</b><span class="oe">(B)因開鑿運河而亡國，從結果論實非明智</span></span></div><div class="ln opt bad on" data-k="o2"><span class="v v1"><b>C</b><span class="oe">(C)開鑿運河畢竟耗損國力，難與大禹相比</span></span></div><div class="ln opt bad on" data-k="o3"><span class="v v1"><b>D</b><span class="oe">(D)開鑿運河必有浮誇炫富之舉，無須苛責</span></span></div><div class="ln src on" data-k="l0"><span class="v v1">要點：引皮日休詩意在替煬帝平反：開河之功不應被水殿龍舟的荒嬉所掩蓋。</span></div></div><div class="side"><div class="anscard on" data-k="ans"><div class="tag">ANSWER</div><div class="val">(A)</div><div class="note">國文</div></div></div></div><div class="rule on" data-k="rule"></div></section>
+  <div class="cap" id="CAPG" data-k="cap"><span>答案：(A)</span></div>
+  <div class="bar">
+    <button class="btn" id="BT">▶</button>
+    <button class="btn" id="RP" title="重播">↺</button>
+    <div class="track" id="TK"><div class="fill" id="FL" style="width: 99.2323%;"></div></div>
+    <div class="tm" id="TM">0:38 / 0:39</div>
+    <div class="vo">旁白・<b>曉曉</b>　第 <span id="CN">20</span> 題</div>
+  </div>
+</div>
+<script>
+const PAGES = [{"no": 1, "has": 1, "dur": 43.71, "audio": "audio/q1.mp3", "steps": [["q", "on", 1.15], ["o0", "on bad", 10.28], ["o1", "on ok", 14.38], ["o2", "on bad", 19.27], ["o3", "on bad", 25.23], ["l0", "on", 30.93], ["ans", "on", 42.28], ["rule", "on", 43.08]], "caps": [["第 1 題，下列文句中的「一」，與「海水浮天如笠，一白萬里如銀」中的 「一」，意義相同的是：", 0.1], ["四個選項：A，(A)室西連於中閨，先妣嘗「一」至；B，(B)既親其所親，亦親其所疏，「一」體同仁；C，(C)此數寶者，秦不…", 8.48], ["解題要點：「一」有數目、一旦、全部、同一等義。此句「一白萬里」作「全、滿」解，須逐項代回語境比對，勿只看字面。", 30.57], ["答案：(B)", 42.58]]}, {"no": 2, "has": 1, "dur": 43.6, "audio": "audio/q2.mp3", "steps": [["q", "on", 1.11], ["o0", "on bad", 7.31], ["o1", "on bad", 13.3], ["o2", "on bad", 19.36], ["o3", "on ok", 24.97], ["l0", "on", 31.14], ["ans", "on", 42.16], ["rule", "on", 42.96]], "caps": [["第 2 題，下列文句畫底線處的詞語，運用最適當的是：", 0.0], ["四個選項：A，(A)除非天色太暗，否則不可能把柿子李代桃僵誤認為…；B，(B)他決定的事情，即使旁人再怎麼苦心孤詣勸說都改…", 5.44], ["解題要點：先辨詞語本義再驗語境。「李代桃僵」喻代人受過，不能當作「看錯」；能窮形盡相地描寫，才是恰當用法。", 30.79], ["答案：(D)", 42.46]]}, {"no": 3, "has": 1, "dur": 52.71, "audio": "audio/q3.mp3", "steps": [["q", "on", 1.21], ["o0", "on bad", 17.29], ["o1", "on bad", 21.97], ["o2", "on bad", 27.43], ["o3", "on ok", 33.22], ["l0", "on", 39.44], ["ans", "on", 51.27], ["rule", "on", 52.07]], "caps": [["第 3 題，「香港已成了巴比倫島」一句中，「巴比倫」由名詞變成形容詞， 用來表達「奢華、邪惡」的意思。下列文句「」中的詞語…", 0.1], ["四個選項：A，(A)滿載一船星輝，在星輝「斑斕」裡放歌；B，(B)（太陽）像橘紅「淋漓」的一團烙鐵漿，蹦跳而出；C，(C)…", 15.43], ["解題要點：判斷名詞是否被借作形容語（如「巴比倫」式）。斑斕、淋漓、單薄本身即形容詞；「水蛇」腰才是以名詞喻形。", 39.07], ["答案：(D)", 51.57]]}, {"no": 4, "has": 1, "dur": 44.51, "audio": "audio/q4.mp3", "steps": [["q", "on", 1.18], ["o0", "on ok", 20.98], ["o1", "on bad", 23.67], ["o2", "on bad", 26.49], ["o3", "on bad", 29.23], ["l0", "on", 32.13], ["ans", "on", 43.05], ["rule", "on", 43.85]], "caps": [["第 4 題，「看見敵人的哨兵」一句在解讀時，會出現歧義：可理解為「看 見-敵人的哨兵」（某人看到了敵人的哨兵），也可理解為…", 0.1], ["四個選項：A，(A)喜歡鄰居的媽媽；B，(B)住在臺北的老師；C，(C)肯定球員的實力；D，(D)花掉歷年的積蓄", 19.16], ["解題要點：歧義來自「動詞＋的＋名詞」可作動賓或偏正兩種切分。「喜歡鄰居的媽媽」同樣兩解，其餘三句結構固定。", 31.75], ["答案：(A)", 43.35]]}, {"no": 5, "has": 1, "dur": 41.98, "audio": "audio/q5.mp3", "steps": [["q", "on", 1.07], ["o0", "on bad", 22.1], ["o1", "on ok", 24.08], ["o2", "on bad", 26.02], ["o3", "on bad", 27.9], ["l0", "on", 30.0], ["ans", "on", 40.55], ["rule", "on", 41.35]], "caps": [["第 5 題，依據文意，下文所敘述的古代詩人「他」，應該是： 他的大志難伸，我們都看在眼裡。而我覺得更真的是他那些 生活實錄…", 0.1], ["四個選項：A，(A)陶淵明；B，(B)杜甫；C，(C)蘇軾；D，(D)黃庭堅", 20.36], ["解題要點：關鍵在引詩「親朋無一字，老病有孤舟」，哀身世之艱、憂國憂民，正是杜甫沉鬱寫實的風格標記。", 29.64], ["答案：(B)", 40.85]]}, {"no": 6, "has": 1, "dur": 49.83, "audio": "audio/q6.mp3", "steps": [["q", "on", 1.09], ["o0", "on bad", 22.78], ["o1", "on ok", 26.77], ["o2", "on bad", 30.6], ["o3", "on bad", 34.6], ["l0", "on", 38.47], ["ans", "on", 48.4], ["rule", "on", 49.2]], "caps": [["第 6 題，依據下文，關於「我」在時間淘洗下的體悟，敘述最適當的是： 回想自己年少時，任何的善意、規勸，在我眼中，都成了平…", 0.1], ["四個選項：A，(A)堅持衝撞體制，長懷熱情；B，(B)理解前輩提醒，感念善意；C，(C)借鑑眾人經驗，成功在望；D，(D)…", 20.98], ["解題要點：文脈由年少輕狂、抗拒規勸，轉為體悟那些叮囑是過來人素直的善意，故選理解與感念。", 38.11], ["答案：(B)", 48.7]]}, {"no": 7, "has": 1, "dur": 53.46, "audio": "audio/q7.mp3", "steps": [["q", "on", 1.19], ["o0", "on bad", 22.69], ["o1", "on bad", 27.62], ["o2", "on ok", 32.47], ["o3", "on bad", 37.23], ["l0", "on", 41.91], ["ans", "on", 51.99], ["rule", "on", 52.79]], "caps": [["第 7 題，關於文中所表達的想法，敘述最適當的是： 簡媜談到自己寫作歷程時曾說道：「當年不像現在學校可以 邀請作家跟同學互…", 0.1], ["四個選項：A，(A)凡事做中學，在嘗試錯誤中逐漸成長；B，(B)光明與黑暗均有局限，不宜比較優劣；C，(C)自主探索學習，…", 20.85], ["解題要點：簡媜強調無人引導、獨自摸黑摸索，反能看見明眼人所未見，重點在自主探索帶來的意外收穫。", 41.56], ["答案：(C)", 52.29]]}, {"no": 8, "has": 1, "dur": 55.29, "audio": "audio/q8.mp3", "steps": [["q", "on", 1.09], ["o0", "on bad", 22.93], ["o1", "on bad", 28.29], ["o2", "on bad", 33.03], ["o3", "on ok", 37.99], ["l0", "on", 43.3], ["ans", "on", 53.85], ["rule", "on", 54.65]], "caps": [["第 8 題，依據下文，關於詩或詩人的敘述，最符合文意的是： 詩是特權，詩人是一種完全不一樣的存在。 詩之所以存在，這個世界…", 0.1], ["四個選項：A，(A)詩人因題材熟悉而激發熱情，提升詩藝；B，(B)描寫美好事物的詩，能給人真實的感動；C，(C)直言無諱而…", 21.09], ["解題要點：末段指出只寫美好而無怒懣恐慌的詩最難寫、也為詩人所不屑，可知詩為求真而呈顯生命惶惑。", 42.94], ["答案：(D)", 54.15]]}, {"no": 9, "has": 1, "dur": 49.11, "audio": "audio/q9.mp3", "steps": [["q", "on", 1.21], ["o0", "on ok", 12.58], ["o1", "on bad", 18.44], ["o2", "on bad", 24.83], ["o3", "on bad", 30.0], ["l0", "on", 36.37], ["ans", "on", 47.65], ["rule", "on", 48.45]], "caps": [["第 9 題，文章在敘事時，往往藉由言行來呈現人物的性格。以下對人物言 行的分析，最適切的是：", 0.1], ["四個選項：A，(A)沛公至軍，立誅殺曹無傷— 劉邦當機立斷，對出…；B，(B)靖不自意獲之，愈喜愈懼，瞬息萬慮不安，而窺戶…", 10.77], ["解題要點：劉邦回營即誅曹無傷，見其當機立斷、絕不寬貸；其餘選項或誤讀情緒，或把狡辯、憤慨當成請教。", 36.01], ["答案：(A)", 47.95]]}, {"no": 10, "has": 1, "dur": 59.12, "audio": "audio/q10.mp3", "steps": [["q", "on", 1.21], ["o0", "on bad", 22.46], ["o1", "on bad", 28.52], ["o2", "on ok", 35.03], ["o3", "on bad", 41.37], ["l0", "on", 47.82], ["ans", "on", 57.65], ["rule", "on", 58.45]], "caps": [["第 10 題，張李德和〈畫菊自序〉：「竊慕管夫人之墨竹，紙上生風；敢藉陶 彭澤之黃花，圖中寫影。庶幾秋姿不老，四座流芬；得…", 0.1], ["四個選項：A，(A)仰慕昔人風姿，故廣植墨竹與黃花，以供千人同賞；B，(B)品賞管夫人之畫竹、陶彭澤之詠菊，頓覺滿室生香；…", 20.61], ["解題要點：作者以管夫人墨竹、陶潛黃花自期，說明自己藉水墨寫菊，盼畫藝精進、聲名可傳。", 47.46], ["答案：(C)", 57.95]]}, {"no": 11, "has": 1, "dur": 55.52, "audio": "audio/q11.mp3", "steps": [["q", "on", 1.33], ["o0", "on bad", 23.12], ["o1", "on ok", 26.88], ["o2", "on bad", 31.54], ["o3", "on bad", 37.89], ["l0", "on", 44.3], ["ans", "on", 54.09], ["rule", "on", 54.89]], "caps": [["第 11 題，〈勞山道士〉：「見一美人，自光中出。初不盈尺，至地，遂與人 等。纖腰秀項，翩翩作〈霓裳舞〉」中，畫底線處的文…", 0.1], ["四個選項：A，(A)越國以鄙遠，君知其難也；B，(B)傅金吾園中梅，張功甫玉照堂故物也；C，(C)侍衛之臣，不懈於內；忠志…", 21.34], ["解題要點：「傅金吾園中梅，張功甫玉照堂故物也」正是解說前句之梅的來歷，與例句解說「美人」的功能相同。", 43.94], ["答案：(B)", 54.39]]}, {"no": 12, "has": 1, "dur": 54.32, "audio": "audio/q12.mp3", "steps": [["q", "on", 1.3], ["o0", "on bad", 25.31], ["o1", "on ok", 29.92], ["o2", "on bad", 34.57], ["o3", "on bad", 39.32], ["l0", "on", 43.87], ["ans", "on", 52.89], ["rule", "on", 53.69]], "caps": [["第 12 題，依據下文，關於項脊軒修繕的敘述，最適當的是： 余稍為修葺，使不上漏。前闢四窗，垣牆周庭，以當南日。 日影反照…", 0.1], ["四個選項：A，(A)修繕前屋頂漏水，門前有牆遮擋；B，(B)修繕時增開窗戶，調整室內採光；C，(C)修繕後簷下養鳥，庭院廣…", 23.46], ["解題要點：「前闢四窗……室始洞然」，重點在增開窗戶、改善室內採光，其餘敘述與原文不符。", 43.51], ["答案：(B)", 53.19]]}, {"no": 13, "has": 1, "dur": 44.14, "audio": "audio/q13.mp3", "steps": [["q", "on", 1.3], ["o0", "on bad", 12.49], ["o1", "on ok", 17.63], ["o2", "on bad", 22.45], ["o3", "on bad", 27.95], ["l0", "on", 33.92], ["ans", "on", 42.71], ["rule", "on", 43.51]], "caps": [["第 13 題，古人言談，時有可相互印證或闡發者。下列關於前人論述關連的 說明，最適當的是：", 0.1], ["四個選項：A，(A)〈勞山道士〉中，道士認為王生「恐嬌惰不能作苦…；B，(B)〈師說〉中韓愈認為「聖人無常師」，與《老子》…", 10.65], ["解題要點：韓愈「聖人無常師」與老子「善人者，不善人之師」皆強調可向不同人學習，義理相通。", 33.55], ["答案：(B)", 43.01]]}, {"no": 14, "has": 1, "dur": 51.48, "audio": "audio/q14.mp3", "steps": [["q", "on", 1.39], ["o0", "on bad", 23.87], ["o1", "on bad", 28.1], ["o2", "on ok", 32.18], ["o3", "on bad", 36.54], ["l0", "on", 40.88], ["ans", "on", 50.01], ["rule", "on", 50.81]], "caps": [["第 14 題，下文對「盜」的敘述，旨在強調： 夫民不遽為盜必有迫使之為盜者，然後甘於為盜，非其性生 好為盜也。邇來強盜紛起…", 0.1], ["四個選項：A，(A)強盜治生無術，僥悍必勝以往；B，(B)性情桀驁者，日後為盜者甚多；C，(C)地方多盜，常肇因於民不聊生…", 22.07], ["解題要點：文中指盜非本性，實因水旱凶荒、衣食無門而聚為盜，故強調民不聊生為盜源。", 40.52], ["答案：(C)", 50.31]]}, {"no": 15, "has": 1, "dur": 50.37, "audio": "audio/q15.mp3", "steps": [["q", "on", 1.39], ["o0", "on bad", 25.15], ["o1", "on bad", 28.52], ["o2", "on ok", 32.07], ["o3", "on bad", 35.73], ["l0", "on", 39.45], ["ans", "on", 48.9], ["rule", "on", 49.7]], "caps": [["第 15 題，下文藉「金受礪」所說明的道理，最接近於： 君與臣兮相符，金與礪兮相須。離之而道斯遠，全之而德不 孤。故為金也…", 0.1], ["四個選項：A，(A)失之東隅，收之桑榆；B，(B)精誠所至，金石為開；C，(C)以人為鏡，可以明得失；D，(D)路遙知馬力…", 23.34], ["解題要點：「金受礪」喻君須擇賢佐，賢佐如磨石能正己成德，與「以人為鏡，可以明得失」最相近。", 39.1], ["答案：(C)", 49.2]]}, {"no": 16, "has": 1, "dur": 52.39, "audio": "audio/q16.mp3", "steps": [["q", "on", 1.37], ["o0", "on ok", 23.63], ["o1", "on bad", 28.12], ["o2", "on bad", 33.14], ["o3", "on bad", 37.73], ["l0", "on", 42.89], ["ans", "on", 50.94], ["rule", "on", 51.74]], "caps": [["第 16 題，關於溫庭筠詞的敘述，符合下文觀點的是： 王國維《人間詞話》曾駁斥張惠言之說：「固哉皐文之為詞 也。飛卿〈菩薩…", 0.1], ["四個選項：A，(A)王國維認為張惠言過度讚美溫庭筠詞；B，(B)王國維因溫庭筠雕琢藻飾而貶抑其詞；C，(C)溫庭筠自比其詞…", 21.78], ["解題要點：王國維斥張惠言「深文羅織」，即批評他把溫詞牽附上比《騷》，過度讚美。", 42.53], ["答案：(A)", 51.24]]}, {"no": 17, "has": 1, "dur": 52.12, "audio": "audio/q17.mp3", "steps": [["q", "on", 1.38], ["o0", "on ok", 16.89], ["o1", "on bad", 22.59], ["o2", "on bad", 28.18], ["o3", "on bad", 34.27], ["l0", "on", 40.16], ["ans", "on", 50.66], ["rule", "on", 51.46]], "caps": [["第 17 題，鄭愁予詩風多變，早期情懷浪漫，流露古典情韻；後期則多體悟 深沉，隱含生命哲思。下列詩句，最能體現後期詩風的是：", 0.1], ["四個選項：A，(A)煉自己成為容器／不再是自己而是／大實若虛／此…；B，(B)雲在我底路上，在我底衣上，／我在一個隱隱的思…", 15.03], ["解題要點：後期詩風多深沉哲思，「煉自己成為容器……過癮而不焚身」最具生命體悟，其餘偏早期浪漫情韻。", 39.8], ["答案：(A)", 50.96]]}, {"no": 18, "has": 1, "dur": 49.63, "audio": "audio/q18.mp3", "steps": [["q", "on", 0.0], ["o0", "on ok", 0.6], ["o1", "on bad", 1.2], ["o2", "on bad", 1.8], ["o3", "on bad", 2.4], ["l0", "on", 3.1], ["ans", "on", 48.17], ["rule", "on", 48.97]], "caps": [["第 18 題，關於○1 、○2 二詩所敘寫的古代思想，最適當的研判是： ○1 孩提親長根天性，堯舜由來共一初。情欲既趨天者…", 0.1], ["四個選項：A，(A)○1 、○2 皆是儒家；B，(B)○1 、○2 皆是道家；C，(C)○1 是儒家，○2 是道家；D，(…", 21.58], ["解題要點：○1 論性善與情欲，○2 言循天理而樂，皆屬儒家義理，非道家自然無為之說。", 39.06], ["答案：(A)", 48.47]]}, {"no": 19, "has": 1, "dur": 31.9, "audio": "audio/q19.mp3", "steps": [["q", "on", 1.39], ["o0", "on bad", 7.19], ["o1", "on bad", 10.61], ["o2", "on bad", 13.87], ["o3", "on ok", 17.57], ["l0", "on", 21.24], ["ans", "on", 30.46], ["rule", "on", 31.26]], "caps": [["第 19 題，上文對隋煬帝的描述，側重的面向是：", 0.1], ["四個選項：A，(A)空有抱負卻無力實現；B，(B)武力開國又武力治國；C，(C)積極建設並深察民瘼；D，(D)衝勁十足且規…", 5.45], ["解題要點：文中強調煬帝不停出巡、營建東都與大運河，著眼於其幹勁十足與宏觀規劃。", 20.88], ["答案：(D)", 30.76]]}, {"no": 20, "has": 1, "dur": 39.08, "audio": "audio/q20.mp3", "steps": [["q", "on", 1.31], ["o0", "on ok", 8.76], ["o1", "on bad", 13.98], ["o2", "on bad", 19.16], ["o3", "on bad", 24.35], ["l0", "on", 29.65], ["ans", "on", 37.63], ["rule", "on", 38.43]], "caps": [["第 20 題，上文結尾引用皮日休〈汴河懷古〉，目的在強調隋煬帝：", 0.1], ["四個選項：A，(A)開鑿運河之功，不宜被其荒於嬉遊所掩；B，(B)因開鑿運河而亡國，從結果論實非明智；C，(C)開鑿運河畢…", 7.0], ["解題要點：引皮日休詩意在替煬帝平反：開河之功不應被水殿龍舟的荒嬉所掩蓋。", 29.3], ["答案：(A)", 37.93]]}], VOICE = "Xiaoxiao";
+const $ = id => document.getElementById(id);
+const dbg = m => { try { $("DBG").textContent = m; } catch (e) { } };
+window.onerror = (m, s, l) => { dbg("ERR@" + l + ":" + m); return false; };
+
+let curNo = 0, curPage = null, ci = 0, capIdx = -1;
+const RESET_CLS = ["on", "s2", "s3", "pw", "balanced", "m0", "m1", "m2", "m3"];
+const audio = new Audio();
+audio.preload = "auto";
+const pg = n => $("pg" + n);
+const el = (page, k) => page.querySelector('[data-k="' + k + '"]');
+const dur = n => (PAGES[n - 1] && PAGES[n - 1].dur) || 0;
+
+function reset(page) {
+  page.querySelectorAll("*").forEach(e => RESET_CLS.forEach(c => e.classList.remove(c)));
+  $("CAPG").innerHTML = "";   /* 字幕為全卷共用元素 */
+  capIdx = -1;
+}
+function addStep(s) {
+  const e = el(curPage, s[0]);
+  if (!e) return;
+  s[1].split(" ").forEach(c => e.classList.add(c));
+}
+function paint(page) {  /* 靜態：一次畫到 t 秒 */
+  const cs = $("CAPG");
+  page.querySelectorAll("*").forEach(e => RESET_CLS.forEach(c => e.classList.remove(c)));
+  capIdx = -1;
+  const st = PAGES[curNo - 1].steps;
+  for (let i = 0; i < st.length; i++) if (st[i][2] <= paint.t) { const e = el(page, st[i][0]); if (e) st[i][1].split(" ").forEach(c => e.classList.add(c)); }
+  const cp = PAGES[curNo - 1].caps;
+  let k = -1; for (let i = 0; i < cp.length; i++) if (cp[i][1] <= paint.t) k = i;
+  if (k >= 0 && cs) { cs.innerHTML = "<span>" + cp[k][0] + "</span>"; capIdx = k; }
+  $("FL").style.width = (dur(curNo) ? (100 * paint.t / dur(curNo)) : 0) + "%";
+  $("TM").textContent = fmt(paint.t) + " / " + fmt(dur(curNo));
+}
+function updateCap(t) {
+  const cp = PAGES[curNo - 1].caps;
+  let k = -1; for (let i = 0; i < cp.length; i++) if (cp[i][1] <= t) k = i;
+  if (k === capIdx) return;
+  capIdx = k;
+  const box = $("CAPG");
+  if (k < 0) { box.innerHTML = ""; return; }
+  box.innerHTML = "<span>" + cp[k][0] + "</span>";
+  requestAnimationFrame(() => box.firstChild && box.firstChild.classList.add("on"));
+}
+function fmt(s) { s = Math.max(0, s | 0); return (s / 60 | 0) + ":" + String(s % 60).padStart(2, "0"); }
+
+function tick() {
+  if (!audio.paused && curPage) {
+    const t = audio.currentTime, st = PAGES[curNo - 1].steps;
+    while (ci < st.length && st[ci][2] <= t) { addStep(st[ci]); ci++; }
+    updateCap(t);
+    const D = audio.duration || dur(curNo);
+    $("FL").style.width = (D ? (100 * t / D) : 0) + "%";
+    $("TM").textContent = fmt(t) + " / " + fmt(D);
+  }
+  requestAnimationFrame(tick);
+}
+requestAnimationFrame(tick);
+
+function goto(n, t) {
+  if (!PAGES[n - 1]) return;
+  audio.pause(); audio.removeAttribute("src"); audio.load();
+  $("BT").textContent = "▶";
+  document.querySelectorAll(".qpage").forEach(p => p.classList.remove("cur"));
+  const page = pg(n); page.classList.add("cur");
+  document.querySelectorAll(".qno").forEach(b => b.classList.toggle("act", +b.dataset.n === n));
+  curNo = n; curPage = page; ci = 0;
+  reset(page);
+  $("CN").textContent = n;
+  const P = PAGES[n - 1];
+  if (!P.has) { $("TM").textContent = "— / —"; $("FL").style.width = "0%"; $("CAPG").innerHTML = ""; return; }
+  audio.src = P.audio;
+  if (t != null) { paint.t = t; paint(page); }
+  else {
+    $("FL").style.width = "0%"; $("TM").textContent = "0:00 / " + fmt(P.dur);
+    ci = 0;
+    audio.play().then(() => $("BT").textContent = "❚❚").catch(() => { });
+  }
+}
+
+document.querySelectorAll(".qno").forEach(b => b.onclick = () => goto(+b.dataset.n));
+$("BT").onclick = () => {
+  if (!PAGES[curNo - 1].has) return;
+  if (audio.paused) audio.play().then(() => $("BT").textContent = "❚❚").catch(() => { });
+  else { audio.pause(); $("BT").textContent = "▶"; }
+};
+$("RP").onclick = () => { if (PAGES[curNo - 1].has) { reset(curPage); ci = 0; audio.currentTime = 0; audio.play().catch(() => { }); $("BT").textContent = "❚❚"; } };
+audio.onpause = () => $("BT").textContent = "▶";
+audio.onended = () => $("BT").textContent = "▶";
+audio.onplay = () => $("BT").textContent = "❚❚";
+$("TK").onclick = e => {
+  if (!PAGES[curNo - 1].has) return;
+  const r = $("TK").getBoundingClientRect();
+  const p = Math.min(1, Math.max(0, (e.clientX - r.left) / r.width));
+  const D = audio.duration || dur(curNo);
+  audio.currentTime = p * D;
+  if (audio.paused) { paint.t = audio.currentTime; paint(curPage); } else { ci = 0; }
+};
+function audit() {  /* 版面自檢：越界 / 文字溢出 / 元素重疊 */
+  const WR = $("wrap").getBoundingClientRect(), L = [], items = [];
+  const nm = e => e.dataset.k || (e.className.split(" ")[0] || "el");
+  const all = curPage.querySelectorAll(".q,.ln,.fig,.anscard,.rule"), capEl2 = $("CAPG");
+  const list = Array.prototype.slice.call(all);
+  if (capEl2) list.push(capEl2);
+  list.forEach(e => {
+    const r = e.getBoundingClientRect(), k = nm(e);
+    items.push({ k: k, r: r });
+    if (r.bottom > WR.bottom + 1 || r.top < WR.top - 1 || r.left < WR.left - 1 || r.right > WR.right + 1)
+      L.push("OUT:" + k + "[t" + Math.round(r.top - WR.top) + ",b" + Math.round(r.bottom - WR.top) + ",l" + Math.round(r.left - WR.left) + ",r" + Math.round(r.right - WR.left) + "]");
+    if (e.classList.contains("ln")) {
+      const v = e.firstElementChild;
+      if (v && v.scrollHeight > e.clientHeight + 1) L.push("CLIP:" + k + "[" + v.scrollHeight + ">" + e.clientHeight + "]");
+    }
+    if (e.classList.contains("fig") && e.scrollHeight > e.clientHeight + 1) L.push("CLIPF[" + e.scrollHeight + ">" + e.clientHeight + "]");
+  });
+  for (let i = 0; i < items.length; i++) for (let j = i + 1; j < items.length; j++) {
+    const a = items[i].r, b = items[j].r;
+    const ov = Math.min(a.bottom, b.bottom) - Math.max(a.top, b.top);
+    const oh = Math.min(a.right, b.right) - Math.max(a.left, b.left);
+    if (ov > 1.5 && oh > 1.5) L.push("OVL:" + items[i].k + "~" + items[j].k + "[" + Math.round(ov) + "x" + Math.round(oh) + "]");
+  }
+  return "AUDIT|" + (L.length ? L.join(" ; ") : "clean");
+}
+function fit() {
+  const k = Math.min(window.innerWidth / 1320, window.innerHeight / 830);
+  document.documentElement.style.setProperty("--k", Math.max(.45, Math.min(1.25, k)));
+}
+window.addEventListener("resize", fit); fit();
+
+const qs = new URLSearchParams(location.search);
+const qn = parseInt(qs.get("q") || "1", 10);
+if (qs.has("at")) {
+  document.body.classList.add("st");
+  goto(qn, parseFloat(qs.get("at")) || 0);
+  dbg("st|q=" + qn + "|at=" + qs.get("at") + "|cap=" + ($("CAPG").textContent || "").slice(0, 12)
+    + "|" + (qs.has("audit") ? audit() : ""));
+} else {
+  goto(qn, null);
+  dbg("ok|ready|q=" + qn + "|dur=" + dur(qn));
+}
+</script>
+<script>
+(function(){
+ const L=[];
+ document.body.classList.add('st');
+ for (const P of PAGES){
+   if(!P.has) continue;
+   const pts=[Math.max(0.4,P.dur*0.5), Math.max(0.8,P.dur*0.8), Math.max(1.0,P.dur-0.3)];
+   for (const at of pts){ goto(P.no, at); L.push('Q'+P.no+' '+audit()); }
+ }
+ document.getElementById('DBG').textContent = L.join('\n');
+})();
+</script>
+
+</body></html>

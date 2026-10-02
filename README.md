@@ -1,0 +1,174 @@
+---
+AIGC:
+    Label: "1"
+    ContentProducer: 001191440300708461136T1XGW3
+    ProduceID: becc38517d62cb2ce22002a529d5de39_454d28feb68911f18d43525400393706
+    ReservedCode1: GW/08iY4LfOvS2wgZSsTYz8okyJTERYqmE1fFyQO88zT+bxYLQMblKU+uSc5S9ltwJ/fa8nPq2U2kNlRhzhWpo5fKj8xKY64Bxv8v8DC74sgbU+4ksLJDnHnl7iEyuTTVfxGPw4ZN8v7SXdsSKRFMhKd9sIFtzT4DfbnsuY5T4Ws1SRRVsmCZgOcPU0=
+    ContentPropagator: 001191440300708461136T1XGW3
+    PropagateID: becc38517d62cb2ce22002a529d5de39_454d28feb68911f18d43525400393706
+    ReservedCode2: GW/08iY4LfOvS2wgZSsTYz8okyJTERYqmE1fFyQO88zT+bxYLQMblKU+uSc5S9ltwJ/fa8nPq2U2kNlRhzhWpo5fKj8xKY64Bxv8v8DC74sgbU+4ksLJDnHnl7iEyuTTVfxGPw4ZN8v7SXdsSKRFMhKd9sIFtzT4DfbnsuY5T4Ws1SRRVsmCZgOcPU0=
+---
+
+# 考古題解題學習站（資料驅動・科目不限）
+
+純靜態的考古題練習站：**沒有建置工具、沒有框架、沒有 CDN**，所有頁面用相對路徑，
+可直接離線用瀏覽器打開（`file://`），也可整包丟上 GitHub Pages 的子路徑。
+
+站台本身**不知道任何科目**——首頁的分組、科目卡片、導覽列、進度統計、跨科目搜尋，
+全部由索引檔 [`assets/js/subjects.js`](assets/js/subjects.js) 即時產生；
+科目數量、名稱、考試名稱、年份、標籤、題數、資料檔路徑都可以自由增減，
+**新增科目不需要修改任何頁面程式碼**。
+
+---
+
+## 一、三步驟：新增一個科目／一年份題庫
+
+假設要新增「116 學年度・物理」：
+
+### 步驟 1：在索引檔多登錄一筆
+
+打開 `assets/js/subjects.js`，在 `subjects` 陣列裡加一個物件（欄位說明見第二節）：
+
+```js
+{
+  "id": "physics-116",                       // 科目代號，決定網址 subject/physics-116/
+  "name": "物理",                             // 科目名稱
+  "short": "物理",                            // 導覽列用的簡稱（可省略）
+  "exam": "身心障礙學生升學大專校院甄試",       // 考試名稱
+  "year": 116,                                // 年份（排序與分組用）
+  "yearLabel": "116 學年度",                   // 年份顯示文字（省略時由 year 自動組出）
+  "tags": ["第二、三類組", "單選 25 題"],       // 自由標籤（可省略）
+  "count": 25,                                // 題數（題庫尚未登錄時的預估顯示）
+  "note": "題庫來源：116_物理_試題.pdf",        // 補充說明（可省略）
+  "data": "assets/js/data/physics-116.js",    // ★ 題庫資料檔路徑（相對站根）
+  "anim": {                                   // 動畫模板（可省略）
+    "src": "assets/anim/physics-116/phy-3b1b.html?q=$(n)#cv$(n)",
+    "label": "3Blue1Brown 動畫"
+  },
+  "order": 10
+}
+```
+
+> `$(n)` 會被換成題號；`$(id)` 會被換成科目 id。
+> 只想先放導覽入口、還沒有題庫時，把 `"data"` 設成 `null`，前台會顯示「題庫建置中」。
+
+### 步驟 2：放入題庫資料檔
+
+依上面的 `data` 路徑建立檔案（檔名要一致），格式照抄
+[`assets/js/data/math-a.js`](assets/js/data/math-a.js)：
+
+```js
+window.EXAM_BANKS = window.EXAM_BANKS || {};
+window.EXAM_BANKS["physics-116"] = {
+  "id": "physics-116",
+  "name": "物理",
+  "source": "116 學年度⋯官方試題",   // 會顯示在科目頁（可省略）
+  "note": "詳解依官方答案整理",       // 可省略
+  "questions": [
+    {
+      "n": 1,                        // 題號（清單、單題頁、進度都靠它）
+      "unit": "牛頓第二定律",          // 單元／觀念標籤（可省略）
+      "diff": 2,                     // 難度 1–3（可省略）
+      "answer": 1,                   // 正解索引：0=A、1=B、2=C、3=D（可省略）
+      "stem": "題幹（可用 HTML，例如 2<sup>a+b</sup>）",
+      "options": ["選項A", "選項B", "選項C", "選項D"],
+      "sol": "<p>詳解（HTML）。可用 .lead / ol / li / .ans / .tip / .eqs / .matrix 等樣式。</p>"
+    }
+  ]
+};
+```
+
+> 物件的 key（`"physics-116"`）必須和索引檔的 `id` 相同。
+
+### 步驟 3：產生頁面
+
+```bash
+python3 tools/sync.py
+```
+
+它會讀索引檔，產生（或更新）：
+
+```
+index.html                      ← 首頁
+subject/<id>/index.html         ← 科目頁
+subject/<id>/q.html             ← 單題頁（q.html?n=<題號>）
+```
+
+完成。重新整理瀏覽器，新科目就會自動出現在首頁（自動歸到它的年份分組）、
+導覽列與跨科目搜尋裡；**不需要動到 `assets/js/site.js` 或其他頁面**。
+
+> 這一步只產生 HTML 外殼（三個固定頁面型別），內容一律由 JS 依索引檔即時渲染，
+> 所以就算忘了執行 `sync.py`，只要資料夾存在，頁面照樣能運作。
+
+---
+
+## 二、索引欄位說明（`assets/js/subjects.js`）
+
+| 欄位 | 必填 | 說明 |
+|---|---|---|
+| `id` | ★ | 科目代號，只用英數與 `-` `_` `.`，同時決定網址 `subject/<id>/` |
+| `name` | ★ | 科目名稱 |
+| `short` | | 簡稱，導覽列空間不足時使用 |
+| `exam` | | 考試名稱，顯示在科目卡與科目頁 |
+| `year` | | 年份數字，用於排序與分組 |
+| `yearLabel` | | 年份顯示文字，省略時由 `year` 組出「`<year>` 學年度」 |
+| `tags` | | 標籤陣列（分組、類組、身分別…自由填） |
+| `count` | | 題數；只影響「尚未登錄題庫」時的預估顯示 |
+| `note` | | 補充說明，顯示於科目頁 |
+| `data` | ★ | 題庫資料檔路徑（相對站根）；`null` = 尚未登錄題庫 |
+| `anim` | | 動畫模板 `{ "src": "...?q=$(n)#cv$(n)", "label": "動畫" }` |
+| `order` | | 排序權重，越小越前面 |
+
+`site` 區塊可設定站名、副標、頁尾文字與描述，同樣不必改程式碼。
+
+---
+
+## 三、目錄結構
+
+```
+exam-site/
+├─ index.html                 首頁（由 sync.py 產生；內容由索引檔即時渲染）
+├─ subject/<id>/index.html    科目頁
+├─ subject/<id>/q.html        單題頁（?n=<題號>）
+├─ assets/
+│  ├─ css/site.css            站台樣式（淺色主題、RWD）
+│  ├─ js/subjects.js          ★ 索引檔（唯一要維護的科目清單）
+│  ├─ js/site.js              站台引擎（不含任何寫死的科目／年份／標籤）
+│  ├─ js/data/math-a.js       題庫資料檔（示範：數學 A 20 題）
+│  └─ anim/math-a/…           3Blue1Brown 動畫（?q=N 可定位到第 N 題）
+├─ tools/
+│  ├─ sync.py                 依索引檔產生頁面（見步驟 3）
+│  └─ shell.html              頁面外殼版型（要改 `<head>`／頁尾就改這裡）
+└─ README.md
+```
+
+---
+
+## 四、功能
+
+- **首頁**：依年份自動分組的科目卡片（題數、完成度、可練習／建置中），以及站台統計。
+- **跨科目搜尋**：一次搜尋**所有已登錄科目**的題幹、選項與解析，可切換「全部科目／單一科目」，
+  結果附命中位置與片段。
+- **科目頁**：題目清單（題號、題幹摘要、單元、作答狀態）、本科篩選、清除本科進度。
+- **單題頁**：點選項立即對答案、展開詳解、載入該題動畫（可另開視窗）、上下題切換。
+- **學習進度**：存在瀏覽器 `localStorage` 的 `examSite.progress.v1`，依科目 id 分開存放；
+  換裝置不會同步，清除瀏覽器資料即歸零。
+
+## 五、部署
+
+```bash
+# 整站複製到 GitHub Pages 的 repo（子路徑也適用，因為全部是相對路徑）
+cp -r exam-site/* <你的-repo>/
+```
+
+`file://` 直接雙擊 `index.html` 也能用（題庫與索引都用 `<script>` 載入，不需要伺服器）。
+
+## 六、示範資料
+
+| 科目 id | 名稱 | 題數 | 狀態 |
+|---|---|---|---|
+| `math-a` | 數學 A | 20 | 完整題庫＋詳解＋動畫 |
+
+其餘科目（物理、化學、英文、國文）在索引檔中**只登錄了導覽入口**（`data: null`），
+示範「尚未登錄題庫」的狀態；補上題庫資料檔後即會自動變成可練習。
+*（内容由AI生成，仅供参考）*

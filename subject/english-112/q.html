@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>英文 單題｜考古題解題學習站</title>
+<meta name="description" content="考古題解題學習站：資料驅動、科目不限的純靜態題庫，含逐題詳解與動畫。">
+<script>
+/* JS 錯誤計數器（headless 自檢用）：頁面掛載前就註冊，任何錯誤都會被記在 <html data-js-errors> */
+document.documentElement.dataset.jsErrors = '0';
+window.addEventListener('error', function () {
+  var d = document.documentElement;
+  d.dataset.jsErrors = String(Number(d.dataset.jsErrors || 0) + 1);
+});
+</script>
+<link rel="stylesheet" href="../../assets/css/site.css">
+</head>
+<body>
+<a class="skip" href="#app">跳到主要內容</a>
+
+<header class="site-header">
+  <div class="wrap head-inner">
+    <a class="brand" id="brand" href="../../index.html">
+      <span class="brand-mark" id="brand-mark">題</span>
+      <span class="brand-text">
+        <span id="brand-title">考古題解題學習站</span>
+        <small id="brand-sub"></small>
+      </span>
+    </a>
+    <nav class="head-nav" id="head-nav" aria-label="科目導覽"></nav>
+  </div>
+</header>
+
+<main class="wrap" id="app"></main>
+
+<footer class="site-footer"><div class="wrap" id="footer-text"></div></footer>
+
+<!-- ① 索引檔：唯一的科目清單（首頁、導覽、科目頁、搜尋全靠它） -->
+<script src="../../assets/js/subjects.js"></script>
+<!-- ② 站台引擎：不含任何寫死的科目／年份／標籤 -->
+<script src="../../assets/js/site.js"></script>
+</body>
+</html>
