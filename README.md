@@ -1,14 +1,3 @@
----
-AIGC:
-    Label: "1"
-    ContentProducer: 001191440300708461136T1XGW3
-    ProduceID: becc38517d62cb2ce22002a529d5de39_454d28feb68911f18d43525400393706
-    ReservedCode1: GW/08iY4LfOvS2wgZSsTYz8okyJTERYqmE1fFyQO88zT+bxYLQMblKU+uSc5S9ltwJ/fa8nPq2U2kNlRhzhWpo5fKj8xKY64Bxv8v8DC74sgbU+4ksLJDnHnl7iEyuTTVfxGPw4ZN8v7SXdsSKRFMhKd9sIFtzT4DfbnsuY5T4Ws1SRRVsmCZgOcPU0=
-    ContentPropagator: 001191440300708461136T1XGW3
-    PropagateID: becc38517d62cb2ce22002a529d5de39_454d28feb68911f18d43525400393706
-    ReservedCode2: GW/08iY4LfOvS2wgZSsTYz8okyJTERYqmE1fFyQO88zT+bxYLQMblKU+uSc5S9ltwJ/fa8nPq2U2kNlRhzhWpo5fKj8xKY64Bxv8v8DC74sgbU+4ksLJDnHnl7iEyuTTVfxGPw4ZN8v7SXdsSKRFMhKd9sIFtzT4DfbnsuY5T4Ws1SRRVsmCZgOcPU0=
----
-
 # 考古題解題學習站（資料驅動・科目不限）
 
 純靜態的考古題練習站：**沒有建置工具、沒有框架、沒有 CDN**，所有頁面用相對路徑，
@@ -171,4 +160,3 @@ cp -r exam-site/* <你的-repo>/
 
 其餘科目（物理、化學、英文、國文）在索引檔中**只登錄了導覽入口**（`data: null`），
 示範「尚未登錄題庫」的狀態；補上題庫資料檔後即會自動變成可練習。
-*（内容由AI生成，仅供参考）*
