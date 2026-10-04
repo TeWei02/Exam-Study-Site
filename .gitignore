@@ -1,2 +1,6 @@
 .DS_Store
 *.log
+
+# 聽力音檔：實體僅保留在本機工作區，不納入版控與歷史
+assets/anim/**/audio/
+*.mp3

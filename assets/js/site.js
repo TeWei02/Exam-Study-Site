@@ -51,6 +51,10 @@
     if (s.year != null) { return s.year + ' 學年度'; }
     return '未標示年份';
   }
+  function subLabel(s) {
+    if (!s) { return ''; }
+    return String(yearKeyOf(s)).replace(' 學年度', '') + ' ' + (s.name || s.id);
+  }
   function metaLine(s) {
     var parts = [];
     if (s.exam) { parts.push(s.exam); }
@@ -252,6 +256,7 @@
          '<div id="q-results"></div></section>';
 
     h += '<div id="groups"></div>';
+    h += crossHubHTML();
     h += '<section class="panel howto"><h2>怎麼用</h2><ol>' +
          '<li>在下方選一個科目，進入科目頁看題目清單。</li>' +
          '<li>點題號進入單題頁，選答案後會立刻對答案並可展開詳解。</li>' +
@@ -263,6 +268,7 @@
     renderScopeSelect();
     renderCards();
     renderHeroStats();
+    bindCrossHub();
     bindGlobalSearch();
     loadAllBanks().then(function () {
       var miss = loadableSubjects().filter(function (s) { return FAILED[s.id]; });
@@ -298,6 +304,233 @@
     host.innerHTML = items.map(function (it) {
       return '<span class="stat"><b>' + it[1] + '</b>' + esc(it[0]) + '</span>';
     }).join('');
+  }
+
+  /* ---------- 6.5 一科訓練五科（跨科串聯／綜合混編／弱科帶動） ---------- */
+  function crossHubHTML() {
+    return '' +
+      '<section class="panel cross-hub" id="cross-hub">' +
+        '<h2>一科訓練五科</h2>' +
+        '<p class="hint">練一科，同時把其他科的同一個觀念拉進來。三種模式都直接吃你現在的題庫與作答紀錄，不新增任何寫死的科目。</p>' +
+        '<div class="cross-modes">' +
+          '<article class="cross-mode">' +
+            '<h3><span class="mode-no">1</span>跨科串聯</h3>' +
+            '<p>單題頁下方會自動列出其他科「同一個觀念」的題目，練一題就順手把別科也帶上。</p>' +
+            '<div id="cross-link-list"><p class="hint">統計中…</p></div>' +
+          '</article>' +
+          '<article class="cross-mode">' +
+            '<h3><span class="mode-no">2</span>綜合混編卷</h3>' +
+            '<p>挑一個學年度，跨五科抽題組成一份綜合卷，在這裡就能連續作答。</p>' +
+            '<div class="cross-form">' +
+              '<label>學年度<select id="mix-year"></select></label>' +
+              '<label>每科題數<select id="mix-per">' +
+                '<option value="1">1</option><option value="2" selected>2</option>' +
+                '<option value="3">3</option><option value="4">4</option></select></label>' +
+              '<button class="btn btn-primary" id="mix-go" type="button">生成混編卷</button>' +
+            '</div>' +
+          '</article>' +
+          '<article class="cross-mode">' +
+            '<h3><span class="mode-no">3</span>弱科帶動</h3>' +
+            '<p>依你目前的答對率找出最弱的科目，優先抽它的題目組成訓練卷。</p>' +
+            '<div class="cross-form">' +
+              '<label>題數<select id="weak-count">' +
+                '<option value="5">5</option><option value="10" selected>10</option>' +
+                '<option value="15">15</option></select></label>' +
+              '<button class="btn btn-primary" id="weak-go" type="button">開始弱科訓練</button>' +
+            '</div>' +
+            '<div id="weak-stat"></div>' +
+          '</article>' +
+        '</div>' +
+        '<div id="practice-host"></div>' +
+      '</section>';
+  }
+
+  function totalQuestions() {
+    var n = 0;
+    SUBJECTS.forEach(function (s) {
+      var b = cachedBank(s.id);
+      n += b ? b.questions.length : 0;
+    });
+    return n;
+  }
+  function loadedBankCount() {
+    var n = 0;
+    loadableSubjects().forEach(function (s) { if (cachedBank(s.id)) { n++; } });
+    return n;
+  }
+  function recordedOf(s, q) { return subjectProgress(s.id)[String(q.n)] || null; }
+  function needScore(s, q) {
+    var r = recordedOf(s, q);
+    if (!r) { return 0; }            /* 沒作答過：優先練 */
+    if (r.ok) { return 2; }          /* 已答對：排最後 */
+    return 1;                        /* 答錯過：中間 */
+  }
+  function shuffle(arr) {
+    for (var i = arr.length - 1; i > 0; i--) {
+      var j = Math.floor(Math.random() * (i + 1));
+      var t = arr[i]; arr[i] = arr[j]; arr[j] = t;
+    }
+    return arr;
+  }
+
+  function buildMixed(yearLabel, per) {
+    var items = [];
+    SUBJECTS.forEach(function (s) {
+      if (!s.data || yearKeyOf(s) !== yearLabel) { return; }
+      var b = cachedBank(s.id);
+      if (!b) { return; }
+      var pool = shuffle(b.questions.slice()).sort(function (a, c) { return needScore(s, a) - needScore(s, c); });
+      pool.slice(0, per).forEach(function (q) { items.push({ s: s, q: q }); });
+    });
+    return items;
+  }
+
+  /* 以「科目」為單位彙整（數學／物理／化學／英文／國文各年份合併），找出真正的弱科 */
+  function weakRanking() {
+    var groups = {}, order = [];
+    SUBJECTS.forEach(function (s) {
+      if (!s.data) { return; }
+      var b = cachedBank(s.id);
+      if (!b) { return; }
+      var st = statsOf(s, b.questions.length);
+      var key = s.name || s.id;
+      if (!groups[key]) { groups[key] = { name: key, subjects: [], done: 0, ok: 0, total: 0 }; order.push(key); }
+      var g = groups[key];
+      g.subjects.push(s);
+      g.done += st.done; g.ok += st.ok; g.total += st.total;
+    });
+    var rank = order.map(function (k) {
+      var g = groups[k];
+      g.rate = g.done ? (g.ok / g.done) : -1;
+      return g;
+    });
+    rank.sort(function (a, b) {
+      if (a.rate !== b.rate) { return a.rate - b.rate; }
+      return a.done - b.done;
+    });
+    return rank;
+  }
+  function buildWeak(count) {
+    var rank = weakRanking();
+    var weakOnes = rank.filter(function (x) { return x.done > 0 && x.rate < 0.8; });
+    var pool = weakOnes.slice(0, 2);
+    rank.forEach(function (x) {                       /* 不足兩科時，用還沒練過的科目補齊 */
+      if (pool.length >= 2 || pool.indexOf(x) >= 0 || x.done > 0) { return; }
+      pool.push(x);
+    });
+    if (!pool.length) { pool = rank.slice(0, 2); }
+    var names = pool.map(function (x) { return x.name; }).join('、');
+    var note = weakOnes.length
+      ? '依你目前的答對率，先從 ' + names + ' 抽題（跨年份混合）。'
+      : '目前還沒有明顯落後的科目，先抽 ' + names + ' 熱身；錯的題目會被記住，下次優先再練。';
+    var items = [], seenIds = {};
+    pool.forEach(function (g) {
+      var cand = [];
+      g.subjects.forEach(function (s) {
+        var b = cachedBank(s.id);
+        if (!b) { return; }
+        b.questions.forEach(function (q) { cand.push({ s: s, q: q }); });
+      });
+      shuffle(cand).sort(function (a, c) { return needScore(a.s, a.q) - needScore(c.s, c.q); });
+      cand.slice(0, Math.max(1, Math.ceil(count / pool.length))).forEach(function (it) {
+        if (seenIds[it.s.id + '#' + it.q.n]) { return; }
+        seenIds[it.s.id + '#' + it.q.n] = 1;
+        items.push(it);
+      });
+    });
+    return { items: items.slice(0, count), ranked: rank, note: note };
+  }
+  function renderWeakStat(rank) {
+    var host = $('weak-stat');
+    if (!host) { return; }
+    var r = rank || weakRanking();
+    if (!r.length) { host.innerHTML = ''; return; }
+    var parts = r.slice(0, 5).map(function (x) {
+      var pct = x.done ? Math.round(x.rate * 100) + '%' : '—';
+      return esc(x.name) + ' ' + pct + '（' + x.done + '／' + x.total + '）';
+    });
+    host.innerHTML = '<p class="hint">目前答對率：' + parts.join('・') + '</p>';
+  }
+
+  function renderCrossLinkSample() {
+    var host = $('cross-link-list');
+    if (!host) { return; }
+    var marked = [];
+    SUBJECTS.forEach(function (s) {
+      var b = cachedBank(s.id);
+      if (!b) { return; }
+      b.questions.forEach(function (q) {
+        if (q.cross && q.cross.length) { marked.push({ s: s, q: q }); }
+      });
+    });
+    var h = '';
+    if (marked.length) {
+      h += '<p class="hint">已標註 ' + marked.length + ' 題有人工跨科連結，例如：</p><ul class="cross-list">';
+      marked.slice(0, 4).forEach(function (it) {
+        h += '<li><a href="' + esc(url('subject/' + it.s.id + '/q.html?n=' + encodeURIComponent(it.q.n))) + '">' +
+             '<span class="cross-sub">' + esc(subLabel(it.s)) + '</span>' +
+             '<span class="cross-no">第 ' + esc(it.q.n) + ' 題</span>' +
+             '<span class="cross-why">延伸 ' + it.q.cross.length + ' 題</span></a></li>';
+      });
+      h += '</ul>';
+    } else {
+      h += '<p class="hint">還沒有標註資料也沒關係：單題頁會用題幹關鍵字，自動找出其他科的同概念題目。</p>';
+    }
+    h += '<p class="hint">已載入 ' + loadedBankCount() + ' 份題庫、共 ' + totalQuestions() + ' 題可跨科比對。</p>';
+    host.innerHTML = h;
+  }
+
+  function bindCrossHub() {
+    var yearSel = $('mix-year');
+    if (yearSel) {
+      var seen = {}, keys = [];
+      SUBJECTS.forEach(function (s) {
+        if (!s.data) { return; }
+        var k = yearKeyOf(s);
+        if (seen[k] == null) { seen[k] = 0; keys.push(k); }
+        seen[k]++;
+      });
+      var h = '';
+      keys.forEach(function (k) {
+        if (seen[k] < 2) { return; }
+        h += '<option value="' + esc(k) + '">' + esc(k) + '（' + seen[k] + ' 科）</option>';
+      });
+      yearSel.innerHTML = h;
+    }
+    var mixGo = $('mix-go');
+    if (mixGo) {
+      mixGo.addEventListener('click', function () {
+        var yv = yearSel ? yearSel.value : '';
+        var perEl = $('mix-per');
+        var per = Number(perEl ? perEl.value : 2);
+        if (!yv) { return; }
+        mixGo.disabled = true;
+        loadAllBanks().then(function () {
+          mixGo.disabled = false;
+          var items = buildMixed(yv, per);
+          renderPractice('practice-host', items, yv + ' 綜合混編卷', '五科交錯出題，答完立刻看解析；右上可跳單題頁。');
+          renderHeroStats();
+        });
+      });
+    }
+    var weakGo = $('weak-go');
+    if (weakGo) {
+      weakGo.addEventListener('click', function () {
+        var cntEl = $('weak-count');
+        var cnt = Number(cntEl ? cntEl.value : 10);
+        weakGo.disabled = true;
+        loadAllBanks().then(function () {
+          weakGo.disabled = false;
+          var res = buildWeak(cnt);
+          renderWeakStat(res.ranked);
+          renderPractice('practice-host', res.items, '弱科訓練卷', res.note);
+          renderHeroStats();
+        });
+      });
+    }
+    renderCrossLinkSample();
+    renderWeakStat(null);
+    loadAllBanks().then(function () { renderCrossLinkSample(); renderWeakStat(null); });
   }
 
   function renderCards() {
@@ -646,6 +879,8 @@
     h += '</div>';
     if (asrc) { h += '<div class="anim-box" id="anim-box"></div>'; }
     h += '<div id="sol-box"></div>';
+    h += '<div class="cross-host" id="cross-box" data-cross-ready="0">' +
+         '<p class="cross-loading">正在載入跨科延伸…</p></div>';
     h += '<div class="pager">' +
       '<span id="pg-prev"></span><span id="pg-next"></span></div>';
     h += '</section>';
@@ -752,7 +987,346 @@
         : '<span class="btn" aria-disabled="true">已是本卷最後一題</span>';
     }
     refreshPager();
+    mountCross(s, q);
   }
+
+  /* ---------- 8.5 跨科串聯：單題頁下方的延伸題 ---------- */
+  var CROSS_STOP = {
+    '下列': 1, '何者': 1, '何項': 1, '試問': 1, '關於': 1, '請問': 1, '敘述': 1,
+    '正確': 1, '錯誤': 1, '選出': 1, '的是': 1, '哪些': 1, '如圖': 1, '附圖': 1,
+    '以及': 1, '一個': 1, '兩個': 1, '下列何者': 1, '下列敘述': 1
+  };
+  var CROSS_BAD = /(的值|之值|的值為|為何|多少|下列|以下|以上|哪一|哪個|哪些|共有|一共|總共|可以|應該|必須|選項|答案|如圖|附圖|圖中|如下|何者|正確|錯誤|最接近|據上述|上述|接近|敘述|試問|請問)/;
+  var CROSS_PRE = '的了是在若為與及或且一這那其就也都不會可則到由被將把之而數某上下大小我你他她它個些每';
+  var CROSS_SUF = '的了是在若為與及或且之而都也不可則到由被將把得地於對從並會';
+  var CROSS_EN = {
+    the: 1, and: 1, for: 1, that: 1, with: 1, was: 1, were: 1, are: 1, is: 1, of: 1, to: 1,
+    in: 1, on: 1, by: 1, as: 1, at: 1, it: 1, its: 1, his: 1, her: 1, their: 1, they: 1,
+    this: 1, these: 1, those: 1, from: 1, which: 1, what: 1, when: 1, where: 1, who: 1,
+    not: 1, but: 1, or: 1, if: 1, then: 1, than: 1, so: 1, such: 1, can: 1, could: 1,
+    should: 1, would: 1, may: 1, might: 1, must: 1, have: 1, has: 1, had: 1, do: 1,
+    does: 1, did: 1, be: 1, been: 1, being: 1, about: 1, into: 1, over: 1, after: 1,
+    before: 1, between: 1, during: 1, only: 1, also: 1, more: 1, most: 1, some: 1, any: 1,
+    all: 1, both: 1, each: 1, other: 1, another: 1, one: 1, two: 1, first: 1, second: 1,
+    following: 1, according: 1, passage: 1, article: 1, choose: 1, best: 1, answer: 1,
+    option: 1, statement: 1, true: 1, false: 1, correct: 1, incorrect: 1, question: 1,
+    blank: 1, least: 1, likely: 1, there: 1, here: 1, him: 1, she: 1, he: 1, you: 1, we: 1
+  };
+  function crossTermOK(w, loose) {
+    if (/^[A-Za-z]/.test(w)) {                        /* 英文詞：至少 4 字母且非功能詞 */
+      return w.length >= 4 && !CROSS_EN[w.toLowerCase()];
+    }
+    if (w.length < (loose ? 2 : 3)) { return false; } /* 華語詞：嚴格模式至少 3 字 */
+    if (CROSS_PRE.indexOf(w.charAt(0)) >= 0) { return false; }
+    if (CROSS_SUF.indexOf(w.charAt(w.length - 1)) >= 0) { return false; }
+    if (CROSS_STOP[w] || CROSS_BAD.test(w)) { return false; }
+    return true;
+  }
+  function crossHay(qq) {
+    return plain(qq.stem || '') + ' ' + plain(qq.sol || '') + ' ' + (qq.unit || '');
+  }
+  /* 由題幹切出候選詞（長詞優先）；loose=true 時容許 2 字詞，用於退階的相似題比對 */
+  function crossTerms(q, loose) {
+    var txt = plain(q.stem || '') + ' ' + plain((q.options || []).join(' '));
+    var runs = txt.match(/[\u4e00-\u9fa5]+|[A-Za-z]{4,}/g) || [];
+    var seen = {}, out = [];
+    runs.forEach(function (run) {
+      if (/^[A-Za-z]+$/.test(run)) {
+        if (!seen[run] && crossTermOK(run, loose)) { seen[run] = 1; out.push(run); }
+        return;
+      }
+      for (var L = 5; L >= (loose ? 2 : 3); L--) {
+        for (var i = 0; i + L <= run.length; i++) {
+          var w = run.substr(i, L);
+          if (seen[w] || !crossTermOK(w, loose)) { continue; }
+          seen[w] = 1;
+          out.push(w);
+        }
+      }
+    });
+    return out;
+  }
+  function autoCrossHits(s, q, k, mode, loose) {
+    var terms = crossTerms(q, loose);
+    if (!terms.length) { return []; }
+    var sName = s.name || s.id, pools = [], same = (mode === 'same');
+    SUBJECTS.forEach(function (t) {
+      if (!t.data || String(t.id) === String(s.id)) { return; }
+      if (same !== ((t.name || t.id) === sName)) { return; }  /* cross：排除同科目；same：只取同科目其他年份 */
+      var b = cachedBank(t.id);
+      if (b) { pools.push({ s: t, qs: b.questions }); }
+    });
+    if (!pools.length) { return []; }
+
+    /* 第一遍：統計每個候選詞出現於多少題、多少個科目（越少越能代表一個特定觀念） */
+    var df = {}, dfSubj = {}, total = 0;
+    terms.forEach(function (w) { df[w] = 0; dfSubj[w] = {}; });
+    pools.forEach(function (p) {
+      total += p.qs.length;
+      var group = p.s.name || p.s.id;
+      p.qs.forEach(function (qq) {
+        var hay = crossHay(qq);
+        terms.forEach(function (w) {
+          if (hay.indexOf(w) >= 0) { df[w]++; dfSubj[w][group] = 1; }
+        });
+      });
+    });
+    var maxSubj = pools.length >= 3 ? 2 : pools.length;
+    var rare = terms.filter(function (w) {
+      if (df[w] < 1 || df[w] > Math.max(2, total * 0.25)) { return false; }
+      var n = 0, g;
+      for (g in dfSubj[w]) { if (Object.prototype.hasOwnProperty.call(dfSubj[w], g)) { n++; } }
+      return n <= maxSubj;                       /* 橫跨 3 科以上的是通用字詞，不是觀念 */
+    });
+    if (!rare.length) { return []; }
+
+    /* 第二遍：逐題計分，稀有詞權重高 */
+    var hits = [];
+    pools.forEach(function (p) {
+      p.qs.forEach(function (qq) {
+        var hay = crossHay(qq), score = 0, first = '', best = 0;
+        rare.forEach(function (w) {
+          if (hay.indexOf(w) < 0) { return; }
+          var wt = (w.length >= 4 ? 1.6 : 1) / df[w];
+          score += wt;
+          if (wt > best) { best = wt; first = w; }
+        });
+        if (score > 0) { hits.push({ id: p.s.id, n: qq.n, score: score, why: '同概念：' + first }); }
+      });
+    });
+    hits.sort(function (a, b) { return b.score - a.score; });
+    return hits.slice(0, k);
+  }
+  /* ---------- 8.5.1 跨科概念詞庫：人工整理的核心概念 → 各科都會考的同一件事 ---------- */
+  var CROSS_CONCEPTS = [
+    { label: '向量與內積', core: ['向量', '內積', '正交'], terms: ['分量', '夾角', '方向', '平行'] },
+    { label: '三角與週期', core: ['三角函數', '正弦', '餘弦'], terms: ['週期', '振幅', '角度', '疊合'] },
+    { label: '指數與對數', core: ['對數', 'log', '指數'], terms: ['次方', '分貝', 'dB', '成長率', '倍數'] },
+    { label: '機率與期望值', core: ['機率', '期望值'], terms: ['隨機', '不放回', '排列', '組合', '中獎'] },
+    { label: '統計與平均', core: ['標準差', '中位數', '平均數'], terms: ['平均', '資料', '統計', '分布'] },
+    { label: '函數與圖形', core: ['函數', '斜率', '極值'], terms: ['圖形', '頂點', '最大值', '最小值', '面積'] },
+    { label: '幾何與圓', core: ['圓心', '半徑', '弦'], terms: ['圓形', '三角形', '對稱', '距離'] },
+    { label: '力與運動', core: ['加速度', '摩擦力', '合力', '牛頓'], terms: ['速度', '速率', '彈簧', '位移', '質量'] },
+    { label: '動量與碰撞', core: ['動量', '衝量'], terms: ['碰撞', '守恆', '動能'] },
+    { label: '能量與熱', core: ['熱力學', '反應熱', '內能', '熱量'], terms: ['能量', '溫度', '吸熱', '放熱', '比熱'] },
+    { label: '電與磁', core: ['電流', '電壓', '電阻', '磁場', '電場', '電路'], terms: ['通電', '發電', '電荷'] },
+    { label: '波動與聲音', core: ['聲波', '波長', '都卜勒', '波速'], terms: ['頻率', '振動', '共鳴', '回聲'] },
+    { label: '光與輻射', core: ['光電效應', '光子', '能階', '光譜', '雷射'], terms: ['輻射', '折射', '反射', '干涉'] },
+    { label: '原子與分子', core: ['原子', '同位素', '質子', '中子'], terms: ['分子', '電子', '元素'] },
+    { label: '化學計量與平衡', core: ['反應式', '莫耳', '係數'], terms: ['平衡', '計量', '催化', '化學式'] },
+    { label: '酸鹼與電解質', core: ['電解質', '中和', '氫離子', '酸性', '鹼性'], terms: ['酸鹼', '離子', 'pH'] },
+    { label: '氧化還原', core: ['氧化', '還原', '氧化數'], terms: ['電子轉移', '電池', '電鍍'] },
+    { label: '溶液與濃度', core: ['濃度', '溶解度', '稀釋', '溶質'], terms: ['溶液', '溶劑', '飽和'] },
+    { label: '氣體性質', core: ['理想氣體', '分壓', '氣體'], terms: ['壓力', '體積', '溫度', '莫耳體積'] },
+    { label: '有機與生物分子', core: ['聚合物', '蛋白質', '脂肪', '醣類'], terms: ['有機', '醇', '酯', '胺'] },
+    { label: '閱讀理解與主旨', group: 'lang', core: ['主旨', '大意', '文意', '全文'], terms: ['段落', '作者', '敘述', '內容'] },
+    { label: '字義與詞彙', group: 'lang', core: ['字義', '詞義', '成語', '詞性'], terms: ['意義', '意思', '用法', '解釋'] },
+    { label: '修辭與文學', group: 'lang', core: ['修辭', '譬喻', '對偶', '押韻', '格律', '對仗'], terms: ['象徵', '詩', '散文', '小說'] },
+    { label: '因果與推論', group: 'lang', core: ['推論', '推斷', '據此', '可知'], terms: ['因為', '因此', '原因', '導致', '結果'] }
+  ];
+  /* 語文科（國文／英文）與數理科分開比對，避免「閱讀理解」這類概念把理化題連到國文題 */
+  function subjGroup(name) { return (name === '國文' || name === '英文') ? 'lang' : 'sci'; }
+  /* 以概念為主軸找其他科的題目：命中同一個核心概念才算跨科串聯 */
+  function conceptHits(s, q, k) {
+    var txt = crossHay(q) + ' ' + plain((q.options || []).join(' '));
+    var myGroup = subjGroup(s.name || s.id);
+    var mine = [];
+    CROSS_CONCEPTS.forEach(function (c) {
+      if (c.group === 'lang' && myGroup !== 'lang') { return; }   /* 語文概念不從數理題發起 */
+      var core = c.core.filter(function (t) { return txt.indexOf(t) >= 0; });
+      if (!core.length) { return; }                 /* 未命中高訊號詞 → 這個概念不啟用 */
+      var extra = c.terms.filter(function (t) { return txt.indexOf(t) >= 0; });
+      mine.push({ c: c, core: core, all: core.concat(extra) });
+    });
+    if (!mine.length) { return []; }
+    var sName = s.name || s.id, pools = [];
+    SUBJECTS.forEach(function (t) {
+      if (!t.data || String(t.id) === String(s.id)) { return; }
+      if ((t.name || t.id) === sName) { return; }
+      var b = cachedBank(t.id);
+      if (b) { pools.push({ s: t, qs: b.questions }); }
+    });
+    if (!pools.length) { return []; }
+
+    var df = {};                                   /* 第一遍：概念詞在跨科題庫中的普遍程度 */
+    pools.forEach(function (p) {
+      p.qs.forEach(function (qq) {
+        var hay = crossHay(qq) + ' ' + plain((qq.options || []).join(' '));
+        mine.forEach(function (m) {
+          m.all.forEach(function (t) { if (hay.indexOf(t) >= 0) { df[t] = (df[t] || 0) + 1; } });
+        });
+      });
+    });
+
+    var best = {};                                 /* 每題只保留分數最高的那個概念 */
+    pools.forEach(function (p) {
+      p.qs.forEach(function (qq) {
+        var hay = crossHay(qq) + ' ' + plain((qq.options || []).join(' '));
+        mine.forEach(function (m) {
+          if (m.c.group === 'lang' && subjGroup(p.s.name || p.s.id) !== 'lang') { return; }
+          var mCore = m.core.filter(function (t) { return hay.indexOf(t) >= 0; });
+          var mAll = m.all.filter(function (t) { return hay.indexOf(t) >= 0; });
+          if (!mCore.length && mAll.length < 2) { return; }   /* 至少要命中高訊號詞，或兩個一般詞 */
+          var score = 0, dfMax = 1;
+          mAll.forEach(function (t) {
+            var isCore = m.core.indexOf(t) >= 0;
+            score += isCore ? 1.2 : 0.5;
+            dfMax = Math.max(dfMax, df[t] || 1);
+          });
+          score /= Math.sqrt(1 + (dfMax - 1) * 0.15);         /* 越普遍的詞越不值錢 */
+          var key = p.s.id + '#' + qq.n;
+          if (!best[key] || best[key].score < score) {
+            best[key] = { id: p.s.id, n: qq.n, score: score, group: p.s.name || p.s.id,
+                          why: '同概念：' + m.c.label };
+          }
+        });
+      });
+    });
+    var hits = [];
+    Object.keys(best).forEach(function (key) { hits.push(best[key]); });
+    hits.sort(function (a, b) { return b.score - a.score; });
+    var out = [], per = {}, seen = {};
+    hits.forEach(function (h) {                     /* 同一科最多取 2 題，讓清單橫跨不同科 */
+      if (seen[h.id + '#' + h.n] || out.length >= k) { return; }
+      per[h.group] = per[h.group] || 0;
+      if (per[h.group] >= 2) { return; }
+      seen[h.id + '#' + h.n] = 1; per[h.group]++;
+      out.push(h);
+    });
+    return out;
+  }
+  function crossItemHTML(it) {
+    var ts = subjectById(it.id) || {};
+    return '<li><a href="' + esc(url('subject/' + it.id + '/q.html?n=' + encodeURIComponent(it.n))) + '">' +
+      '<span class="cross-sub">' + esc(ts.name ? subLabel(ts) : it.id) + '</span>' +
+      '<span class="cross-no">第 ' + esc(it.n) + ' 題</span>' +
+      (it.why ? '<span class="cross-why">' + esc(it.why) + '</span>' : '') + '</a></li>';
+  }
+  function mountCross(s, q) {
+    var box = $('cross-box');
+    if (!box) { return; }
+    function render(items, isMarked, label) {
+      var h = '<h2>跨科延伸' + (isMarked ? '' : '<span class="cross-tag">自動推薦</span>') + '</h2>';
+      if (!items.length) {
+        h += '<p class="hint">' + esc(label || '這題暫時找不到其他科的同概念題目。') + '</p>';
+        box.innerHTML = h;
+        return;
+      }
+      h += '<p class="hint">' + esc(label) + '</p>';
+      h += '<ul class="cross-list">' + items.map(crossItemHTML).join('') + '</ul>';
+      box.innerHTML = h;
+    }
+    var marked = (q.cross || []).filter(function (it) { return it && it.id; });
+    if (marked.length) { render(marked, true, '這題已標註的同概念題目：'); return; }
+    box.innerHTML = '<h2>跨科延伸</h2><p class="hint">正在比對其他科目的同概念題目…</p>';
+    loadAllBanks().then(function () {
+      var items = conceptHits(s, q, 4), label = '同一個核心概念的跨科題目：';
+      if (items.length < 2) {                       /* 概念詞庫命中不足 → 先退回同科目其他年份 */
+        var same = autoCrossHits(s, q, 4, 'same');
+        if (same.length < 2) { same = autoCrossHits(s, q, 4, 'same', true); }
+        if (same.length > items.length) { items = same; label = '同科目其他年份的相似題：'; }
+      }
+      if (items.length < 2) {                       /* 仍不足 → 才用題幹關鍵字跨科掃一次 */
+        var kw = autoCrossHits(s, q, 4, 'cross');
+        if (kw.length > items.length) { items = kw; label = '用題幹關鍵字在其他科找到的相似題：'; }
+      }
+      if (!items.length) { label = '這題暫時找不到同概念題目。'; }
+      render(items, false, label);
+    });
+  }
+
+  /* ---------- 8.6 站內練習卷（綜合混編／弱科帶動共用） ---------- */
+  function renderPractice(hostId, items, title, note) {
+    var host = $(hostId);
+    if (!host) { return; }
+    if (!items || !items.length) {
+      host.innerHTML = '<div class="practice"><h2>' + esc(title) + '</h2>' +
+        '<p class="hint">目前沒有可抽的題目。</p></div>';
+      return;
+    }
+    var h = '<div class="practice"><div class="practice-head">' +
+      '<h2>' + esc(title) + '</h2><span class="badge badge-ok">' + items.length + ' 題</span></div>' +
+      (note ? '<p class="hint">' + esc(note) + '</p>' : '');
+    items.forEach(function (it, i) {
+      var q = it.q, s = it.s;
+      h += '<article class="pq" data-i="' + i + '">' +
+        '<div class="pq-head"><span class="pq-no">' + (i + 1) + '</span>' +
+        '<span class="pq-sub">' + esc(subLabel(s)) + '・第 ' + esc(q.n) + ' 題</span>' +
+        '<a class="pq-link" href="' + esc(url('subject/' + s.id + '/q.html?n=' + encodeURIComponent(q.n))) + '">單題頁</a></div>' +
+        '<div class="pq-stem">' + (q.stem || '') + '</div><ul class="opts pq-opts">';
+      (q.options || []).forEach(function (o, k) {
+        h += '<li><button class="opt" type="button" data-k="' + k + '">' +
+          '<span class="opt-key">' + keyOf(k) + '</span><span class="opt-txt">' + o + '</span></button></li>';
+      });
+      h += '</ul><div class="pq-fb"></div><div class="pq-sol"></div></article>';
+    });
+    h += '<div class="practice-foot"><button class="btn" id="' + esc(hostId) + '-clear" type="button">' +
+      '清除本卷作答紀錄</button></div></div>';
+    host.innerHTML = h;
+
+    var cards = host.querySelectorAll('.pq');
+    for (var i = 0; i < cards.length; i++) { bindPracticeCard(cards[i], items[i]); }
+    renderMathIn(host);
+    var clr = $(hostId + '-clear');
+    if (clr) {
+      clr.addEventListener('click', function () {
+        items.forEach(function (it) { setRecord(it.s.id, it.q.n, null); });
+        renderPractice(hostId, items, title, note);
+        renderHeroStats();
+        renderWeakStat(null);
+      });
+    }
+  }
+  function bindPracticeCard(card, it) {
+    var q = it.q, s = it.s;
+    var fb = card.querySelector('.pq-fb'), solBox = card.querySelector('.pq-sol');
+    var opened = false;
+    function showSol() {
+      if (opened || !solBox) { return; }
+      opened = true;
+      solBox.innerHTML = '<div class="sol"><h2>詳解</h2>' + (q.sol || '<p>本題尚未提供詳解。</p>') + '</div>';
+      renderMathIn(solBox);
+    }
+    function paint(rec) {
+      var btns = card.querySelectorAll('.opt');
+      for (var i = 0; i < btns.length; i++) {
+        btns[i].classList.remove('pick', 'ok', 'bad');
+        var bi = Number(btns[i].getAttribute('data-k'));
+        if (rec && (rec.tr || []).indexOf(bi) >= 0) { btns[i].classList.add('bad'); }
+        if (rec && rec.pick === bi) { btns[i].classList.add(rec.ok ? 'ok' : 'pick'); }
+      }
+      if (rec && rec.pick != null) {
+        var solved = rec.ok || (rec.tr && rec.tr.indexOf(q.answer) >= 0);
+        var txt = rec.ok ? '答對了！' : (solved ? '正確答案是 ' + keyOf(q.answer) + '。' : '再看看，這題還沒解開。');
+        fb.innerHTML = '<p class="feedback ' + (rec.ok ? 'ok' : 'bad') + '">' +
+          '<span class="fb-title">' + (rec.ok ? '答對：' : '再試一次：') + '</span>' + esc(txt) + '</p>';
+      } else {
+        fb.innerHTML = '';
+      }
+    }
+    var cur = subjectProgress(s.id)[String(q.n)] || null;
+    paint(cur);
+    if (cur && cur.ok) { showSol(); }
+    var opts = card.querySelector('.pq-opts');
+    if (opts) {
+      opts.addEventListener('click', function (ev) {
+        var btn = ev.target.closest ? ev.target.closest('.opt') : null;
+        if (!btn) { return; }
+        var k = Number(btn.getAttribute('data-k'));
+        var r = subjectProgress(s.id)[String(q.n)] || { pick: null, ok: false, tries: 0, tr: [] };
+        var wrong = (r.tr || []).slice();
+        r.tries = (r.tries || 0) + 1;
+        r.pick = k;
+        if (q.answer == null || k === q.answer) { r.ok = true; }
+        else if (wrong.indexOf(k) < 0) { wrong.push(k); }
+        r.tr = wrong;
+        setRecord(s.id, q.n, r);
+        paint(r);
+        if (r.ok) { showSol(); renderHeroStats(); renderWeakStat(null); }
+      });
+    }
+  }
+
   function keyOf(i) {
     if (i == null || i < 0) { return '—'; }
     return ['A', 'B', 'C', 'D', 'E', 'F'][i] || String(i + 1);
