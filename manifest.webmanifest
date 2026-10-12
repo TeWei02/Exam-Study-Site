@@ -1,0 +1,25 @@
+{
+  "id": "./",
+  "name": "考古題解題學習站",
+  "short_name": "考古題",
+  "description": "資料驅動、科目不限的純靜態題庫，含逐題詳解與觀點動畫。離線也能讀。",
+  "lang": "zh-Hant",
+  "dir": "ltr",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#f5f7fb",
+  "theme_color": "#1f6feb",
+  "categories": ["education", "books"],
+  "icons": [
+    { "src": "assets/icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "assets/icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "assets/icons/icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ],
+  "shortcuts": [
+    { "name": "線上學習入口", "url": "./quiz/index.html" },
+    { "name": "一科訓練五科", "url": "./cross.html" },
+    { "name": "2026 大事專區", "url": "./events.html" }
+  ]
+}
