@@ -203,6 +203,20 @@ mark{background:#fff3bf;color:inherit;padding:0 2px;border-radius:3px}
 .actions{display:flex;flex-wrap:wrap;gap:10px;margin:16px 0 0}
 .anim-box{margin:18px 0 0}
 .anim-box iframe{width:100%;height:62vh;min-height:340px;border:1px solid var(--line);border-radius:12px;background:#fff}
+/* 動畫入口（cross 路徑站／練習卷共用；單題頁沿用 .actions 內的按鈕） */
+.anim-entry{margin:12px 0 0}
+.anim-entry.is-compact{margin-top:0}
+.anim-note{margin:0 0 6px;font-size:.8rem;color:var(--ink-mute)}
+.anim-actions{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.anim-actions .btn{font-size:.85rem;padding:6px 12px}
+.anim-entry .anim-box{margin:12px 0 0}
+.anim-entry .anim-box:empty{display:none}
+.anim-entry .anim-box iframe{height:52vh;min-height:280px}
+/* cross.html 五科學習路徑：把入口做成獨立色塊，確保實際渲染下明顯可見可點 */
+.cross-stop .anim-entry{margin-top:10px;padding:10px 12px;border:1px solid var(--brand-soft);border-radius:12px;background:#f7faff}
+.cross-stop .anim-entry .anim-actions .btn{font-size:.87rem;padding:7px 15px}
+.cross-stop .anim-entry .anim-actions .btn.btn-primary{font-weight:600}
+.practice .pq .anim-entry{margin-top:10px;padding-top:10px;border-top:1px dashed var(--line)}
 .sol{margin:18px 0 0;border-top:1px dashed var(--line);padding-top:14px;font-size:15.5px;line-height:1.95}
 .sol h2{font-size:17px;margin:0 0 10px}
 .sol .lead{margin:0 0 10px}
@@ -260,6 +274,21 @@ mark{background:#fff3bf;color:inherit;padding:0 2px;border-radius:3px}
 .katex-display { overflow-x: auto; overflow-y: hidden; padding: 2px 0; margin: 10px 0; }
 .katex-display > .katex { white-space: normal; }
 
+/* ---------- 科目頁頂端：「一科訓練五科」入口列（連到 cross.html） ---------- */
+.cross-entry{
+  display:flex;flex-wrap:wrap;align-items:center;gap:10px 14px;
+  margin:0 0 18px;padding:12px 16px;
+  border:1px solid #cfe0fb;border-left:4px solid var(--brand);border-radius:12px;
+  background:linear-gradient(90deg,var(--brand-soft),#fff 68%);
+  box-shadow:var(--shadow);
+}
+.cross-entry .ce-tag{
+  flex:0 0 auto;font-size:.8rem;font-weight:700;color:var(--brand-dark);
+  background:#fff;border:1px solid #cfe0fb;border-radius:999px;padding:3px 12px;
+}
+.cross-entry .ce-txt{flex:1 1 300px;font-size:.9rem;line-height:1.7;color:var(--ink-soft)}
+.cross-entry .ce-go{flex:0 0 auto;font-size:.86rem;padding:7px 14px}
+
 /* ---------- 一科訓練五科：跨科串聯／綜合混編／弱科帶動 ---------- */
 .cross-hub h2 { margin-bottom: 6px; }
 .cross-hub > .hint { margin-bottom: 16px; }
@@ -272,10 +301,17 @@ mark{background:#fff3bf;color:inherit;padding:0 2px;border-radius:3px}
 .cross-form label { font-size: .86rem; display: inline-flex; align-items: center; gap: 6px; }
 .cross-form select { padding: 5px 8px; border-radius: 8px; border: 1px solid #e3e6ef; }
 .cross-hub #practice-host:not(:empty) { margin-top: 20px; }
+.subject-cross { margin-bottom: 18px; }
+.subject-cross h2 { margin-bottom: 6px; }
+.subject-cross .cross-form { margin-top: 10px; }
+.subject-cross #sub-practice-host:not(:empty) { margin-top: 20px; }
 .cross-list { list-style: none; padding: 0; margin: 8px 0 0; }
-.cross-list li { margin: 0 0 8px; }
-.cross-list a { display: flex; flex-wrap: wrap; gap: 8px; align-items: baseline; text-decoration: none; border: 1px solid #e3e6ef; border-radius: 10px; padding: 8px 12px; }
-.cross-list a:hover { border-color: #2b6cb0; }
+.cross-list li { margin: 0 0 8px; border: 1px solid #e3e6ef; border-radius: 10px; padding: 8px 12px; background: #fff; }
+.cross-list li:hover { border-color: #bcd4fb; }
+.cross-list a { display: flex; flex-wrap: wrap; gap: 8px; align-items: baseline; text-decoration: none; border: 0; border-radius: 0; padding: 0; }
+.cross-list li.has-anim { border-color: #cfe0fb; }
+.cross-list li.has-anim .anim-entry { margin-top: 8px; padding-top: 8px; border-top: 1px dashed var(--line); }
+.cross-list .anim-actions .btn { font-size: .8rem; padding: 4px 10px; }
 .cross-sub { font-weight: 600; }
 .cross-no { font-size: .84rem; color: #666; }
 .cross-why { font-size: .8rem; color: #2b6cb0; }
@@ -291,3 +327,298 @@ mark{background:#fff3bf;color:inherit;padding:0 2px;border-radius:3px}
 .pq-fb:empty, .pq-sol:empty { display: none; }
 .practice-foot { margin-top: 16px; }
 @media (max-width: 720px) { .cross-modes { grid-template-columns: 1fr; } }
+
+/* ---------- 一科訓練五科：跨科學習單元（assets/js/data/cross.js） ---------- */
+.unit-h1 { margin: 0 0 8px; font-size: 1.4rem; }
+.unit-head h2 { margin: 0 0 6px; font-size: 1.24rem; }
+.unit-intro { font-size: .95rem; line-height: 1.9; margin: 12px 0 14px; }
+.unit-key { background: #f2f7ff; border-left: 3px solid #2b6cb0; border-radius: 0 10px 10px 0; padding: 10px 14px; font-size: .9rem; line-height: 1.8; }
+.unit-key b { display: inline-block; margin-right: 8px; color: #2b6cb0; }
+.unit-h3 { font-size: 1rem; margin: 20px 0 10px; }
+.cross-units a { flex-direction: column; align-items: flex-start; gap: 4px; }
+.cross-unit-path { font-size: .82rem; color: #666; }
+.cross-path { list-style: none; padding: 0; margin: 0; }
+.cross-stop { border: 1px solid #e3e6ef; border-radius: 12px; padding: 13px 15px; margin-bottom: 10px; background: #fff; }
+.cross-stop.is-start { border-color: #2b6cb0; background: #fbfdff; }
+.stop-head { display: flex; flex-wrap: wrap; gap: 9px; align-items: center; }
+.stop-no { display: inline-flex; width: 24px; height: 24px; border-radius: 50%; background: #edf2ff; color: #2b6cb0; align-items: center; justify-content: center; font-size: .8rem; font-weight: 600; }
+.stop-sub { font-weight: 600; }
+.stop-link { margin-left: auto; font-size: .82rem; }
+.stop-point, .stop-why, .stop-next { margin: 9px 0 0; font-size: .92rem; line-height: 1.85; }
+.stop-point b { display: inline-block; margin-right: 8px; font-size: .74rem; color: #2b6cb0; background: #edf2ff; border-radius: 999px; padding: 1px 9px; }
+.stop-why { color: #555; }
+.stop-next { font-size: .88rem; color: #2b6cb0; background: #f2f7ff; border-radius: 10px; padding: 8px 12px; }
+@media (max-width: 720px) { .stop-link { margin-left: 0; } .unit-h1 { font-size: 1.2rem; } }
+
+/* ==== 單元觀點動畫（cross.html 單元標題下方直接嵌入，預設可見；由 manifest 驅動） ==== */
+.unit-anim{margin:16px 0 4px;border:1px solid var(--line);border-radius:var(--radius);background:#0a1024;overflow:hidden;box-shadow:var(--shadow)}
+.unit-anim .anim-head{display:flex;flex-wrap:wrap;align-items:center;gap:10px;padding:11px 14px;background:linear-gradient(180deg,#101a34,#0b1226);border-bottom:1px solid #223055}
+.unit-anim .anim-title{color:#ffd166;font-size:.95rem;letter-spacing:.5px}
+.unit-anim .anim-meta{color:#93a1c8;font-size:.82rem}
+.unit-anim .anim-open{margin-left:auto;color:#cfe0ff;font-size:.82rem;text-decoration:none;border:1px solid #33436f;border-radius:999px;padding:4px 12px}
+.unit-anim .anim-open:hover{border-color:#66d9ef;color:#fff}
+.unit-anim .anim-stops{padding:8px 14px;color:#a8b8dd;font-size:.82rem;background:#0c1428;border-bottom:1px solid #1b2748}
+.unit-anim .anim-stops b{color:#66d9ef;margin-right:8px;font-weight:600}
+.unit-anim .anim-frame{position:relative;width:100%;padding-top:56.25%}
+.unit-anim .anim-frame iframe{position:absolute;left:0;top:0;width:100%;height:100%;border:0;display:block;background:#070a14}
+.unit-anim .anim-note{margin:0;padding:9px 14px;color:#8ea0c8;font-size:.8rem;background:#0c1428}
+.unit-anim .anim-missing{margin:0;padding:14px;color:var(--ink-soft);font-size:.86rem;background:#fff}
+
+/* ==== 首頁「一科練五科」區塊的觀點動畫入口（與 cross.html 共用同一套播放器） ==== */
+.hub-anim { margin-top: 22px; border-top: 1px dashed #e3e6ef; padding-top: 14px; }
+.hub-anim .unit-h3 { display: flex; align-items: center; gap: 8px; margin-top: 0; }
+.hub-anim-tabs { display: flex; flex-wrap: wrap; gap: 8px; margin: 10px 0 2px; }
+.hub-anim .hub-tab { font: inherit; cursor: pointer; display: inline-flex; align-items: baseline; gap: 8px;
+  padding: 6px 14px; border-radius: 999px; border: 1px solid #d7dcea; background: #fff; color: #2b3555; transition: .2s; }
+.hub-anim .hub-tab:hover { border-color: #2b6cb0; }
+.hub-anim .hub-tab.on { color: #fff; border-color: #ffd166; background: linear-gradient(180deg, #2a3a68, #1b2748); }
+.hub-anim .hub-tab-t { font-size: .9rem; font-weight: 600; }
+.hub-anim .hub-tab-n { font-size: .76rem; color: #93a1c8; }
+.hub-anim .hub-tab.on .hub-tab-n { color: #ffd166; }
+.cross-units li { display: flex; align-items: center; gap: 10px; }
+.cross-units li > a { flex: 1; }
+.cross-units .hub-anim-go { font: inherit; font-size: .78rem; cursor: pointer; white-space: nowrap;
+  padding: 4px 12px; border-radius: 999px; border: 1px solid #33436f; background: #111a33; color: #cfe0ff; }
+.cross-units .hub-anim-go:hover { border-color: #66d9ef; color: #fff; }
+@media (max-width: 720px) { .cross-units li { flex-direction: column; align-items: flex-start; } }
+
+/* =============================================================================
+   學習資源與時事專區（OCW／2026 諾貝爾獎時事）
+   資料：assets/js/data/resources.js、assets/anim/news/*
+   僅為閱讀與連結區塊，不涉及任何題目的答案、選項與作答判定樣式。
+   ============================================================================= */
+.head-nav a.nav-ocw { background: #fff4d6; color: #8a6d1f; }
+.head-nav a.nav-ocw:hover { background: #ffe9b0; color: #6b5316; }
+.ocw-hub > h2 { margin: 0 0 8px; font-size: 1.24rem; }
+.ocw-news { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; margin: 14px 0 6px; }
+.news-card { border: 1px solid var(--line); border-left: 4px solid var(--brand); border-radius: 12px; background: #fff; padding: 14px 16px; }
+.news-card.med { border-left-color: #2f855a; }
+.news-card.phys { border-left-color: #2b6cb0; }
+.news-head { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin-bottom: 6px; }
+.news-award { font-size: .76rem; font-weight: 700; color: #2b6cb0; background: #edf2ff; border-radius: 999px; padding: 2px 10px; }
+.news-card.med .news-award { color: #22543d; background: #e6f7ef; }
+.news-date { font-size: .76rem; color: var(--ink-mute); }
+.news-title { margin: 4px 0 6px; font-size: 1rem; line-height: 1.6; }
+.news-people { margin: 0 0 8px; font-size: .8rem; color: var(--ink-mute); }
+.news-oneliner { margin: 0 0 10px; font-size: .92rem; line-height: 1.85; color: var(--ink-soft); }
+.news-block { margin: 0 0 10px; }
+.news-block b { display: inline-block; margin-bottom: 3px; font-size: .78rem; color: #2b6cb0; background: #f2f7ff; border-radius: 999px; padding: 1px 9px; }
+.news-block p { margin: 4px 0 0; font-size: .9rem; line-height: 1.9; }
+.news-kws { display: flex; flex-wrap: wrap; gap: 6px; margin: 8px 0; }
+.news-kw { font-size: .74rem; color: var(--ink-soft); background: #f2f5f9; border-radius: 999px; padding: 2px 9px; }
+.news-unit { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; font-size: .84rem; margin: 8px 0 4px; }
+.news-unit b { font-size: .76rem; color: var(--ink-mute); font-weight: 600; }
+.news-mini { font-size: .76rem; border: 1px solid #d7dcea; border-radius: 999px; padding: 2px 10px; }
+.news-srcs { margin-top: 8px; font-size: .82rem; }
+.news-srcs summary { cursor: pointer; color: #2b6cb0; }
+.news-srcs ul { margin: 6px 0 0 18px; padding: 0; }
+.news-srcs li { margin-bottom: 3px; }
+.news-src-from { margin-left: 8px; font-size: .74rem; color: var(--ink-mute); }
+.ocw-units { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+.ocw-unit { border: 1px solid var(--line); border-radius: 12px; background: #fff; padding: 12px 14px; }
+.ocw-unit h4 { margin: 0 0 6px; font-size: .95rem; }
+.ocw-unit-news { margin: 0 0 8px; font-size: .82rem; color: var(--ink-soft); line-height: 1.8; }
+.ocw-tag { display: inline-block; margin-right: 6px; font-size: .72rem; color: #8a6d1f; background: var(--warn-soft); border-radius: 999px; padding: 1px 8px; }
+.ocw-unit-anchors { margin: 0; display: flex; flex-wrap: wrap; gap: 6px; align-items: center; font-size: .8rem; }
+.ocw-unit-anchors b { font-size: .74rem; color: var(--ink-mute); font-weight: 600; }
+.ocw-anchor { border: 1px solid #d7dcea; border-radius: 999px; padding: 2px 10px; font-size: .78rem; }
+.ocw-grp { margin-bottom: 12px; }
+.ocw-grp h4 { margin: 0 0 6px; font-size: .92rem; color: #2b6cb0; }
+.ocw-links { list-style: none; padding: 0; margin: 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 6px 18px; }
+.ocw-links li { display: flex; flex-wrap: wrap; gap: 8px; align-items: baseline; }
+.ocw-note { font-size: .78rem; color: var(--ink-mute); }
+.ocw-foot { margin-top: 14px; border-top: 1px dashed var(--line); padding-top: 12px; }
+.ocw-cta { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; margin: 6px 0 0; }
+
+/* 單題頁的時事提示（純閱讀提示，與作答判定無關；此容器為空時自動移除） */
+.news-host:empty { display: none; }
+.news-mini-card { border: 1px solid var(--line); border-left: 3px solid #8a6d1f; border-radius: 0 12px 12px 0; background: #fffdf6; padding: 12px 14px; margin: 10px 0; }
+.news-body { margin: 6px 0; font-size: .9rem; line-height: 1.9; color: var(--ink-soft); }
+.news-anchor-why { margin: 6px 0; font-size: .9rem; line-height: 1.9; background: #f7f9ff; border-radius: 10px; padding: 8px 12px; }
+.news-anchor-why b { display: inline-block; margin-right: 8px; font-size: .76rem; color: #2b6cb0; }
+.news-mini-links { display: flex; flex-wrap: wrap; gap: 14px; margin: 8px 0 0; font-size: .84rem; }
+
+/* cross.html 單元頁的「時事篇」 */
+.unit-news { margin: 6px 0 4px; }
+.unit-news-cards { list-style: none; padding: 0; margin: 12px 0 0; }
+.unit-news-cards li { border: 1px solid var(--line); border-radius: 12px; background: #fff; padding: 12px 14px; margin-bottom: 10px; }
+.unit-news-lens { margin: 4px 0 6px; font-size: .92rem; line-height: 1.85; color: #2b6cb0; }
+.unit-news-body { margin: 0 0 8px; font-size: .9rem; line-height: 1.9; color: var(--ink-soft); }
+.unit-news-anchors { margin: 0; display: flex; flex-wrap: wrap; gap: 6px; }
+.unit-news-anchors a { font-size: .78rem; border: 1px solid #d7dcea; border-radius: 999px; padding: 2px 10px; }
+@media (max-width: 720px) {
+  .ocw-news, .ocw-units, .ocw-links { grid-template-columns: 1fr; }
+}
+
+/* =============================================================================
+   安靜精讀版（quiet mode）
+   -----------------------------------------------------------------------------
+   對應學習者回報的五個障礙：
+     1. 太花      → 白底、單一主色、無漸層、無動畫、無語音、無自動播放
+     2. 太快太跳  → 卡片與步驟由使用者按鈕決定何時出現（隱藏卡片用 .q-locked）
+     3. 版面亂    → 單欄、字級 17.5px、行高 2、卡片之間留白
+     4. 沒有步驟  → 固定 ①讀題 ②關鍵想法 ③逐步解 ④對答案 ⑤記題型
+     5. 太發散    → 精讀頁不掛時事／跨科延伸，只留題型與考場提醒
+   單題頁（site.js renderQuietPanel）與整卷頁（assets/anim/<id>/*_quiet.html）共用這一組樣式。
+   ============================================================================= */
+.quiet { color: #20262e; }
+
+.quiet .q-progressline { font-size: 14.5px; line-height: 1.9; color: #5c6673; margin: 0 0 8px; }
+.quiet .q-order { background: #f6f8fb; border: 1px solid #e6e9ee; border-radius: 10px; padding: 10px 14px; font-size: 15px; line-height: 2; color: #3b4450; margin: 0 0 18px; }
+.quiet .q-card { background: #fff; border: 1px solid #e6e9ee; border-radius: 12px; padding: 20px 22px; margin: 0 0 16px; }
+.quiet .q-card.q-locked { display: none; }
+.quiet .q-card h3 { font-size: 17px; font-weight: 700; margin: 0 0 12px; display: flex; align-items: center; gap: 8px; }
+.quiet .q-num { display: inline-flex; flex: 0 0 26px; width: 26px; height: 26px; align-items: center; justify-content: center; border-radius: 50%; background: #f6f8fb; border: 1px solid #e6e9ee; font-size: 15px; color: #1b5fd0; }
+.quiet .q-hintline { font-size: 15px; line-height: 1.95; color: #5c6673; margin: 0 0 14px; }
+.quiet .q-stem { font-size: 19px; line-height: 2.05; margin: 0 0 16px; }
+.quiet .q-stem p { margin: 0 0 10px; }
+.quiet .q-opts { list-style: none; padding: 0; margin: 0; }
+.quiet .q-opts > li { margin: 0 0 10px; }
+.quiet .q-opt { display: flex; gap: 12px; width: 100%; text-align: left; background: #fff; border: 1px solid #e6e9ee; border-radius: 10px; padding: 12px 14px; font-size: 17.5px; line-height: 1.9; color: inherit; cursor: pointer; font-family: inherit; }
+.quiet .q-opt:hover { border-color: #c6d2e6; }
+.quiet .q-opt.ok { border-color: #63b183; background: #eef8f2; }
+.quiet .q-opt.bad { border-color: #dfa5a5; background: #fdf3f3; }
+.quiet .q-opt-key { flex: 0 0 22px; font-weight: 700; color: #5c6673; }
+.quiet .q-opt-txt { flex: 1 1 auto; min-width: 0; }
+.quiet .q-fb { font-size: 16px; line-height: 1.95; margin: 12px 0 0; }
+.quiet .q-fb.ok { color: #2f7d55; }
+.quiet .q-fb.bad { color: #a4453f; }
+.quiet .q-body { font-size: 17.5px; line-height: 2; }
+.quiet .q-body p { margin: 0 0 12px; }
+.quiet .q-body ul, .quiet .q-body ol { margin: 0 0 12px; padding-left: 1.5em; }
+.quiet .q-body li { margin: 0 0 8px; }
+.quiet .q-body table { border-collapse: collapse; width: 100%; margin: 0 0 12px; font-size: 16px; }
+.quiet .q-body th, .quiet .q-body td { border: 1px solid #e6e9ee; padding: 8px 10px; text-align: left; vertical-align: top; line-height: 1.9; }
+.quiet .q-body .eqs, .quiet .q-body div.eqs { font-size: 16.5px; line-height: 2.1; background: #f6f8fb; border-radius: 10px; padding: 10px 14px; margin: 0 0 12px; }
+.quiet .q-step { border-left: 3px solid #dfe5ee; padding: 2px 0 2px 16px; margin: 0 0 18px; }
+.quiet .q-step:last-child { margin-bottom: 0; }
+.quiet .q-step h4 { font-size: 15.5px; font-weight: 700; color: #1b5fd0; margin: 0 0 8px; }
+.quiet .q-next { margin-top: 14px; }
+.quiet .q-yoursline { font-size: 16px; line-height: 1.95; color: #3b4450; margin: 12px 0 0; }
+.quiet .q-typebox { background: #f6f8fb; }
+.quiet .q-typemt { width: 100%; border-collapse: collapse; font-size: 16.5px; margin: 0 0 10px; }
+.quiet .q-typemt th { width: 118px; text-align: left; font-weight: 700; color: #5c6673; vertical-align: top; padding: 10px 10px 10px 0; border-bottom: 1px solid #e6e9ee; line-height: 1.9; }
+.quiet .q-typemt td { padding: 10px 0; border-bottom: 1px solid #e6e9ee; line-height: 1.9; }
+.quiet .q-typemt tr:last-child th, .quiet .q-typemt tr:last-child td { border-bottom: 0; }
+.quiet .q-pager { display: flex; justify-content: space-between; gap: 12px; margin: 22px 0 0; }
+.quiet .q-backline { font-size: 15px; line-height: 1.95; color: #5c6673; margin: 18px 0 0; }
+
+/* 科目頁的「安靜精讀版怎麼用」說明卡 */
+.q-howto h2 { margin: 0 0 10px; }
+.q-howto p { font-size: 17px; line-height: 2; color: #3b4450; margin: 0 0 12px; }
+.q-howto-list { font-size: 17.5px; line-height: 2.05; padding-left: 1.5em; margin: 0 0 16px; }
+.q-howto-list li { margin: 0 0 10px; }
+.q-howto-actions { display: flex; flex-wrap: wrap; gap: 10px; }
+
+/* 安靜精讀版科目的題目清單：字大、題幹可換行、行距寬，一列讀完再看下一列 */
+.quiet-list .toolbar .filter-input { font-size: 17px; }
+.quiet-list .qlist .qrow { align-items: flex-start; padding: 14px 16px; font-size: 17px; }
+.quiet-list .qlist .qno { font-size: 16.5px; }
+.quiet-list .qlist .qstem { font-size: 17px; line-height: 1.95; white-space: normal; overflow: visible; text-overflow: clip; }
+.quiet-list .qlist .qunit { font-size: 14px; }
+.quiet-list .qlist .qstate { font-size: 13.5px; }
+@media (max-width: 720px) {
+  .quiet .q-card { padding: 16px 16px; }
+  .quiet .q-stem { font-size: 18px; }
+  .quiet .q-typemt th { width: 92px; }
+}
+
+/* ===== 2026 大事：領域色票 ===== */
+.news-card.chem { border-left-color: #6b46c1; }
+.news-card.sport { border-left-color: #c05621; }
+.news-card.astro { border-left-color: #4c51bf; }
+.news-card.climate { border-left-color: #0f766e; }
+.news-card.ai { border-left-color: #1a365d; }
+.news-card.tw { border-left-color: #97266d; }
+.news-card.chem .news-award { color: #553c9a; background: #f3e8ff; }
+.news-card.sport .news-award { color: #9c4221; background: #feebc8; }
+.news-card.astro .news-award { color: #3730a3; background: #e0e7ff; }
+.news-card.climate .news-award { color: #115e59; background: #ccfbf1; }
+.news-card.ai .news-award { color: #1a365d; background: #ebf8ff; }
+.news-card.tw .news-award { color: #702459; background: #fdeaf3; }
+
+/* ===== 2026 大事一覽 ===== */
+.ocw-events { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; margin: 14px 0 6px; }
+.news-srcs a { overflow-wrap: anywhere; word-break: break-word; }
+
+/* ===== 五科對照點 ===== */
+.ev-points { margin-top: 14px; }
+.ev-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 14px; margin: 12px 0 4px; }
+.ev-card { border: 1px solid var(--line); border-left: 4px solid var(--brand); border-radius: 12px; background: #fff; padding: 14px 16px; }
+.ev-card.med { border-left-color: #2f855a; }
+.ev-card.phys { border-left-color: #2b6cb0; }
+.ev-card.chem { border-left-color: #6b46c1; }
+.ev-card.sport { border-left-color: #c05621; }
+.ev-card.astro { border-left-color: #4c51bf; }
+.ev-card.climate { border-left-color: #0f766e; }
+.ev-card.ai { border-left-color: #1a365d; }
+.ev-card.tw { border-left-color: #97266d; }
+.ev-sub { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin-bottom: 6px; }
+.ev-badge { font-size: .74rem; font-weight: 700; color: #2b6cb0; background: #edf2ff; border-radius: 999px; padding: 2px 10px; }
+.ev-q { font-size: .76rem; color: var(--ink-mute); }
+.ev-title { margin: 4px 0 6px; font-size: 1rem; line-height: 1.6; }
+.ev-news-ref { margin: 0 0 10px; font-size: .82rem; color: var(--ink-mute); }
+.ev-news-links { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin: 4px 0 0; }
+.ev-news-ref b, .ev-block-head b { font-size: .74rem; color: #2b6cb0; background: #f2f7ff; border-radius: 999px; padding: 1px 9px; }
+.ev-block { margin: 0 0 10px; }
+.ev-block-head { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin-bottom: 3px; }
+.ev-block p { margin: 4px 0 0; font-size: .9rem; line-height: 1.9; }
+.ev-links { display: flex; flex-wrap: wrap; gap: 8px; margin: 8px 0 0; }
+/* ===== 2026 大事專區頁（events.html）：領域篩選、逐段朗讀 ===== */
+.ev-hero { margin-bottom: 14px; }
+.ev-hero h2 { margin-top: 0; }
+.ev-hero-links { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+.ocw-cta-main { margin: 10px 0 4px; }
+.ev-filters { display: flex; flex-wrap: wrap; gap: 8px; margin: 8px 0 10px; }
+.ev-chip { display: inline-flex; align-items: center; gap: 6px; font: inherit; font-size: .86rem;
+  color: #1a365d; background: #fff; border: 1px solid #cfd8e8; border-radius: 999px; padding: 6px 14px; cursor: pointer; }
+.ev-chip:hover { background: #f2f7ff; }
+.ev-chip.on { background: #1a365d; border-color: #1a365d; color: #fff; font-weight: 700; }
+.ev-chip-n { font-size: .74rem; color: var(--ink-mute); background: #eef2f8; border-radius: 999px; padding: 0 7px; }
+.ev-chip.on .ev-chip-n { color: #1a365d; background: #fff; }
+.ev-chip-zero { opacity: .55; }
+.ev-chip-zero .ev-chip-n { background: transparent; }
+.ev-tag { font-size: .74rem; font-weight: 700; color: #fff; background: #4a5568; border-radius: 999px; padding: 2px 10px; }
+.news-card.med .ev-tag { background: #2f855a; }
+.news-card.phys .ev-tag { background: #2b6cb0; }
+.news-card.chem .ev-tag { background: #6b46c1; }
+.news-card.sport .ev-tag { background: #c05621; }
+.news-card.astro .ev-tag { background: #4c51bf; }
+.news-card.climate .ev-tag { background: #0f766e; }
+.news-card.ai .ev-tag { background: #1a365d; }
+.news-card.tw .ev-tag { background: #97266d; }
+.news-head .speak-btn { margin-left: auto; }
+.speak-btn { font: inherit; font-size: .84rem; font-weight: 700; color: #7b341e; background: #fffaf0;
+  border: 1px solid #e2c08d; border-radius: 999px; padding: 6px 14px; cursor: pointer; white-space: nowrap; }
+.speak-btn:hover { background: #fef3c7; }
+.speak-btn:focus-visible { outline: 3px solid #2b6cb0; outline-offset: 2px; }
+.ev-toggle { font-size: .86rem; }
+.ev-more { margin: 6px 0 2px; }
+.ev-body { margin: 10px 0 0; border-top: 1px dashed var(--line); padding-top: 10px; }
+.ev-body .ev-block p { font-size: .95rem; line-height: 2; }
+.ev-body .news-kws { margin: 10px 0; }
+.ev-entry { margin-top: 12px; }
+.ev-entry .btn { font-weight: 700; }
+.news-mini-card .news-head .speak-btn { margin-left: auto; }
+.news-mini-links { align-items: center; }
+
+@media (max-width: 720px) {
+  .ocw-events { grid-template-columns: 1fr; }
+  .ev-grid { grid-template-columns: 1fr; }
+}
+
+/* ---------- 家教伴讀版入口 ---------- */
+.tutor-entry{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin:14px 0 2px}
+.tutor-entry .btn{font-size:15px}
+.tutor-entry span{color:var(--ink-soft);font-size:13.5px}
+.tutor-grid .card{text-decoration:none;color:inherit}
+
+/* ---------- 今日複習 ---------- */
+.daily-hub .daily-head{display:flex;align-items:baseline;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-bottom:4px}
+.daily-progress{font-size:13.5px;color:var(--ink-soft)}
+.daily-card{border:1px solid var(--line);border-radius:14px;padding:14px 16px;margin-top:12px;background:rgba(0,0,0,.015)}
+.daily-card + .daily-card{margin-top:10px}
+.daily-card .ev-entry{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-top:12px}
+.btn.is-done{background:var(--ok,#3c9);border-color:var(--ok,#3c9);color:#fff;cursor:default}
+.daily-finish{font-size:14.5px;line-height:1.9;margin-top:10px;padding:10px 14px;border-radius:12px;background:rgba(0,0,0,.03);border:1px dashed var(--line)}
+@media (max-width:720px){.daily-card{padding:12px 12px}}

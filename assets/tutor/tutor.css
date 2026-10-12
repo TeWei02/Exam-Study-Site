@@ -1,0 +1,134 @@
+/* ===========================================================================
+   家教伴讀版 — 共用樣式（低刺激、單屏單事、大字）
+   來源：115 數學 A 家教伴讀試點（已驗收）之樣式，原樣抽出成共用檔。
+   白底、深灰字、單一強調色；無陰影堆疊、無漸層、無過場動畫
+   =========================================================================== */
+:root{
+  --bg:#ffffff;
+  --ink:#1b2430;
+  --ink-soft:#4d5866;
+  --ink-mute:#7b8695;
+  --line:#e4e7ec;
+  --line-strong:#cfd6e0;
+  --accent:#1f5f9e;        /* 單一強調色 */
+  --accent-soft:#eef4fb;
+  --ok:#2f7d5d;            /* 打勾用的低飽和墨綠 */
+  --ok-soft:#eef6f1;
+  --btn:#f7f8fa;
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0;height:100%}
+body{
+  background:var(--bg);color:var(--ink);
+  font-family:-apple-system,BlinkMacSystemFont,"PingFang TC","PingFang SC","Hiragino Sans","Noto Sans TC","Microsoft JhengHei",sans-serif;
+  font-size:18px;line-height:1.8;-webkit-text-size-adjust:100%;
+  display:flex;flex-direction:column;min-height:100%;
+}
+button{font-family:inherit;cursor:pointer}
+
+/* ---------- 頂端：今日進度 + 逐題打勾 ---------- */
+.bar{
+  position:sticky;top:0;z-index:9;background:#fff;border-bottom:1px solid var(--line);
+  padding:10px 20px;display:flex;flex-wrap:wrap;align-items:center;gap:10px 18px;
+}
+.bar .who{display:flex;align-items:center;gap:10px;flex:0 0 auto}
+.bar .tag{font-size:14px;font-weight:700;color:var(--accent);background:var(--accent-soft);border-radius:999px;padding:3px 11px}
+.bar .sub{font-size:15px;color:var(--ink-soft)}
+.bar .prog{display:flex;align-items:center;gap:10px;flex:1 1 auto;justify-content:flex-end;flex-wrap:wrap}
+.bar .prog .pnum{font-size:16px;color:var(--ink-soft);white-space:nowrap}
+.ticks{display:flex;flex-wrap:wrap;gap:4px}
+.tick{
+  width:24px;height:24px;border:1px solid var(--line-strong);background:#fff;border-radius:5px;
+  color:var(--ink-mute);font-size:11px;line-height:1;display:flex;align-items:center;justify-content:center;padding:0;
+}
+.tick.done{background:var(--ok-soft);border-color:var(--ok);color:var(--ok);font-weight:700}
+.tick.now{border-color:var(--accent);color:var(--accent);font-weight:700;background:var(--accent-soft)}
+.resetbtn{border:0;background:none;color:var(--ink-mute);font-size:13.5px;text-decoration:underline;padding:4px}
+.exit{display:inline-block;color:var(--ink-mute);font-size:13.5px;text-decoration:none;border:1px solid var(--line-strong);border-radius:999px;padding:4px 13px;margin-left:2px}
+.exit:hover{border-color:var(--accent);color:var(--accent);background:var(--accent-soft)}
+
+/* ---------- 舞台：一屏一件事 ---------- */
+.stage{
+  flex:1 1 auto;display:flex;align-items:center;justify-content:center;
+  padding:26px 22px 12px;
+}
+.screen{width:100%;max-width:900px}
+.guide{
+  font-size:20px;line-height:1.75;color:var(--ink-soft);margin:0 0 20px;
+  border-left:4px solid var(--accent-soft);padding-left:14px;
+}
+.screen.now .guide{border-left-color:var(--accent);}
+.bodybox{font-size:clamp(30px,5.2vw,42px);line-height:1.95;color:var(--ink)}
+/* 長串拉丁字母（如化學式 HOOCCH2CH(OH)COOH）本身沒有斷行機會，
+   窄螢幕會被撐出容器；允許在真的塞不下時於字元間斷行，避免橫向溢位。 */
+.bodybox,.bodybox p,.bodybox .lead,.bodybox .ans,.bodybox li,.stem{overflow-wrap:anywhere}
+.bodybox p{margin:0 0 14px}
+.bodybox p:last-child{margin-bottom:0}
+.bodybox .lead,.bodybox .ans,.bodybox p{font-size:1em}
+.bodybox b{color:var(--ink)}
+.bodybox sup{font-size:.62em;vertical-align:super;line-height:0}
+.bodybox sub{font-size:.62em;vertical-align:sub;line-height:0}
+.bodybox ol,.bodybox ul{margin:0;padding-left:1.35em}
+.bodybox li{margin:0 0 10px}
+.stem{font-size:clamp(28px,4.6vw,40px);line-height:1.85}
+.ansline{color:var(--ok);font-weight:700}
+/* 選項（作答） */
+.opts{display:grid;gap:12px;margin:6px 0 0}
+.opt{
+  display:flex;align-items:center;gap:14px;width:100%;text-align:left;
+  background:#fff;border:2px solid var(--line-strong);border-radius:12px;
+  padding:16px 18px;font-size:clamp(25px,3.2vw,30px);color:var(--ink);line-height:1.7;
+}
+.opt .k{font-weight:700;color:var(--accent);flex:0 0 auto;min-width:1.4em}
+.opt:hover{border-color:var(--accent)}
+.opt:focus-visible{outline:3px solid var(--accent-soft);outline-offset:2px}
+/* 首屏 */
+.startbtns{display:flex;flex-wrap:wrap;gap:12px;margin:4px 0 0}
+.tickline{font-size:17px;color:var(--ink-soft);margin:14px 0 0}
+
+/* ---------- 底部控制列 ---------- */
+.controls{
+  position:sticky;bottom:0;background:#fff;border-top:1px solid var(--line);
+  padding:12px 20px;display:flex;align-items:center;gap:12px;flex-wrap:wrap;
+}
+.controls .spacer{flex:1 1 auto}
+.btn{
+  border:1.5px solid var(--line-strong);background:var(--btn);color:var(--ink);
+  border-radius:12px;padding:13px 20px;font-size:17px;min-height:50px;
+}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:#fff;font-weight:700;padding:13px 28px}
+.btn.ghost{background:#fff}
+.btn:disabled{opacity:.45;cursor:default}
+.btn:focus-visible{outline:3px solid var(--accent-soft);outline-offset:2px}
+.readopt{display:flex;align-items:center;gap:8px;font-size:15px;color:var(--ink-soft)}
+.readopt input{width:18px;height:18px}
+.hintline{font-size:13px;color:var(--ink-mute);flex:1 1 100%}
+
+/* ---------- 教材區塊（其他科可能出現的內容塊，物理目前未用到） ---------- */
+.bodybox .eqs{font-size:1em;line-height:1.9;text-align:left;margin:0 0 12px;white-space:normal}
+.bodybox .tbl{display:block;width:100%;overflow-x:auto;margin:0 0 12px}
+.bodybox table{border-collapse:collapse;font-size:.82em;line-height:1.6}
+.bodybox th,.bodybox td{border:1px solid var(--line-strong);padding:6px 10px;text-align:center}
+.bodybox .matrix{display:inline-grid;gap:6px 14px;padding:8px 12px;font-size:.9em}
+
+@media (max-width:560px){
+  .bar{padding:9px 14px}
+  .stage{padding:18px 14px 8px}
+  .controls{padding:10px 14px;gap:9px}
+  .btn{padding:12px 16px;font-size:16px}
+  .tick{width:22px;height:22px;font-size:11px}
+  .guide{font-size:20px}
+  .bodybox{font-size:32px;line-height:1.95}
+  .stem{font-size:30px}
+  .opt{font-size:26px}
+}
+
+
+/* ---------- 2026 大事尾屏（第四節）：低刺激、一次一則 ---------- */
+.ev-screen .ev-list{margin:1.1em 0 .6em}
+.ev-screen .ev-item{border:1px solid rgba(0,0,0,.12);border-radius:12px;padding:14px 16px;margin:0 0 14px;background:#fff}
+.ev-screen .ev-title{font-size:1.1em;font-weight:700;margin:.1em 0 .35em;line-height:1.6}
+.ev-screen .ev-news{font-size:.95em;opacity:.75;margin:.1em 0 .55em}
+.ev-screen .ev-point{margin:.2em 0 .8em;line-height:1.9}
+.ev-screen .ev-say{display:inline-block}
+@media (max-width:640px){.ev-screen .ev-item{padding:12px 13px}.ev-screen .ev-title{font-size:1.04em}}

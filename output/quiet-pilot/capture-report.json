@@ -1,0 +1,13 @@
+{
+  "A_subject": "{\"jsErrors\":\"0\",\"cards\":0,\"visible\":0,\"steps\":0,\"stepsDOM\":0,\"iframe\":0,\"audio\":0,\"animBox\":false,\"newsBox\":false,\"crossBox\":false,\"howto\":true,\"bodyFont\":\"16px\",\"lineHeight\":\"28px\",\"title\":\"數學 A｜考古題解題學習站\"}",
+  "A_order": "{\"howtoTop\":401.75,\"bodyTop\":897.375,\"crossTop\":3064.890625}",
+  "B_q1_initial": "{\"jsErrors\":\"0\",\"cards\":5,\"visible\":1,\"steps\":0,\"stepsDOM\":0,\"iframe\":0,\"audio\":0,\"animBox\":false,\"newsBox\":false,\"crossBox\":false,\"howto\":false,\"bodyFont\":\"16px\",\"lineHeight\":\"35px\",\"title\":\"第 1 題｜數學 A｜考古題解題學習站\"}",
+  "C_q1_all": "{\"jsErrors\":\"0\",\"cards\":5,\"visible\":5,\"steps\":4,\"stepsDOM\":4,\"iframe\":0,\"audio\":0,\"animBox\":false,\"newsBox\":false,\"crossBox\":false,\"howto\":false,\"bodyFont\":\"16px\",\"lineHeight\":\"35px\",\"title\":\"第 1 題｜數學 A｜考古題解題學習站\"}",
+  "D_pick": "{\"n\":\"5\",\"answer\":0,\"picked\":1}",
+  "D_q5_all": "{\"jsErrors\":\"0\",\"cards\":5,\"visible\":5,\"steps\":3,\"stepsDOM\":3,\"iframe\":0,\"audio\":0,\"animBox\":false,\"newsBox\":false,\"crossBox\":false,\"howto\":false,\"bodyFont\":\"16px\",\"lineHeight\":\"35px\",\"title\":\"第 5 題｜數學 A｜考古題解題學習站\"}",
+  "D_yours": "你剛才選的是 (B)，正確答案是 (A)。回頭對一次③的每一步，找出是哪一步和你算的不一樣。",
+  "E_mobile": "{\"jsErrors\":\"0\",\"cards\":5,\"visible\":5,\"steps\":4,\"stepsDOM\":4,\"iframe\":0,\"audio\":0,\"animBox\":false,\"newsBox\":false,\"crossBox\":false,\"howto\":false,\"bodyFont\":\"15.5px\",\"lineHeight\":\"35px\",\"title\":\"第 1 題｜數學 A｜考古題解題學習站\"}",
+  "F_full_initial": "{\"cards\":5,\"visible\":1,\"steps\":0,\"stepsDOM\":0,\"iframe\":0,\"audio\":0,\"animBox\":false,\"newsBox\":false,\"crossBox\":false,\"howto\":false,\"bodyFont\":\"17.5px\",\"lineHeight\":\"35px\",\"title\":\"115 學年度數學 A 安靜精讀版（整卷）｜考古題解題學習站\"}",
+  "G_full_all": "{\"cards\":5,\"visible\":5,\"steps\":4,\"stepsDOM\":4,\"iframe\":0,\"audio\":0,\"animBox\":false,\"newsBox\":false,\"crossBox\":false,\"howto\":false,\"bodyFont\":\"17.5px\",\"lineHeight\":\"35px\",\"title\":\"115 學年度數學 A 安靜精讀版（整卷）｜考古題解題學習站\"}",
+  "console": []
+}

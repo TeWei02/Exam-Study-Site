@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>機率與期望｜時事篇</title>
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{height:100%;background:#080b11;color:#e8eef7;
+    font-family:"PingFang TC","Noto Sans TC","Microsoft JhengHei",system-ui,sans-serif;
+    overflow:hidden}
+  #wrap{position:fixed;inset:0;display:flex;align-items:center;justify-content:center}
+  #stage{position:relative;width:1280px;height:720px;transform-origin:center center;
+    background:radial-gradient(1100px 620px at 68% 42%,#101a28 0%,#0a0f18 55%,#070a10 100%);
+    border-radius:18px;overflow:hidden;box-shadow:0 24px 80px rgba(0,0,0,.6)}
+  canvas{position:absolute;inset:0;display:block}
+  .hud{position:absolute;left:0;right:0;top:0;height:56px;display:flex;align-items:center;
+    gap:14px;padding:0 26px;font-size:14px;color:#9fb3cd;letter-spacing:.02em;
+    background:linear-gradient(180deg,rgba(8,11,17,.92),rgba(8,11,17,0))}
+  .hud b{color:#e8eef7;font-weight:600}
+  .hud .spacer{flex:1}
+  .hud .tag{border:1px solid #2a3b52;border-radius:999px;padding:3px 10px;font-size:12px;color:#8fa8c7}
+  #card{position:absolute;left:44px;top:104px;width:626px;bottom:104px;overflow-y:auto;
+    padding:26px 28px 30px;border-radius:16px;border:1px solid rgba(120,170,230,.16);
+    background:linear-gradient(180deg,rgba(16,24,36,.92),rgba(11,17,26,.86));
+    backdrop-filter:blur(2px)}
+  #card::-webkit-scrollbar{width:8px}
+  #card::-webkit-scrollbar-thumb{background:#26364b;border-radius:8px}
+  .kicker{display:inline-block;font-size:13px;letter-spacing:.06em;color:#8fb8e6;
+    border:1px solid rgba(120,170,230,.35);border-radius:999px;padding:4px 12px;margin-bottom:14px}
+  .kicker.med{color:#8fe0c0;border-color:rgba(90,220,180,.4)}
+  .kicker.phys{color:#9fc8ff;border-color:rgba(120,180,255,.42)}
+  #card h1{font-size:25px;line-height:1.42;font-weight:700;margin-bottom:14px;letter-spacing:.01em}
+  #card p{font-size:15px;line-height:1.85;color:#c3d2e4;margin-bottom:12px}
+  .chips{display:flex;flex-wrap:wrap;gap:8px;margin:2px 0 14px}
+  .chips span{font-size:12px;color:#9fb3cd;border:1px solid #24354a;border-radius:6px;padding:3px 8px}
+  .who{font-size:12.5px;color:#8fa8c7;line-height:1.7;margin:-4px 0 14px}
+  .box{margin-top:16px;border-top:1px dashed rgba(120,170,230,.22);padding-top:14px}
+  .box .ah{font-size:12.5px;letter-spacing:.08em;color:#7f97b5;margin-bottom:8px}
+  .box ul{list-style:none;display:flex;flex-direction:column;gap:10px}
+  .box li a{color:#a8d4ff;text-decoration:none;font-size:14px;font-weight:600;
+    border-bottom:1px solid rgba(168,212,255,.3)}
+  .box li a:hover{color:#d7ebff;border-bottom-color:#d7ebff}
+  .box li span{display:block;font-size:13px;line-height:1.7;color:#9fb3cd;margin-top:4px}
+  .bar{position:absolute;left:44px;right:44px;bottom:26px;height:56px;display:flex;
+    align-items:center;gap:12px}
+  #dots{display:flex;gap:7px;align-items:center;flex:1}
+  #dots i{width:26px;height:4px;border-radius:2px;background:#22303f;cursor:pointer;transition:.2s}
+  #dots i.on{background:#6fb1ff}
+  button{font:inherit;font-size:13.5px;color:#d7e4f4;background:#16202d;border:1px solid #2a3b52;
+    border-radius:9px;padding:9px 15px;cursor:pointer;transition:.15s}
+  button:hover{background:#1d2a3a;border-color:#3a5170}
+  button.primary{background:#1d3a5c;border-color:#2f5f92;color:#eaf3ff}
+  a.plainbtn{font-size:13.5px;color:#9fb3cd;text-decoration:none;border:1px solid #2a3b52;
+    border-radius:9px;padding:9px 15px}
+  a.plainbtn:hover{color:#e8eef7;border-color:#3a5170}
+  #note{position:absolute;left:44px;right:44px;bottom:88px;font-size:11.5px;color:#5f7593;line-height:1.6}
+</style>
+</head>
+<body>
+<div id="wrap"><div id="stage">
+  <canvas id="cv" width="1280" height="720"></canvas>
+  <div class="hud">
+    <span class="tag">時事篇</span>
+    <b id="hud-unit"></b>
+    <span class="spacer"></span>
+    <span id="hud-step"></span>
+  </div>
+  <div id="card"></div>
+  <div id="note"></div>
+  <div class="bar">
+    <button id="prev">上一張</button>
+    <button id="next">下一張</button>
+    <button id="play" class="primary">自動播放：開</button>
+    <div id="dots"></div>
+    <a class="plainbtn" id="lnk-unit" href="#">單元動畫</a>
+    <a class="plainbtn" id="lnk-home" href="#">回資源專區</a>
+  </div>
+</div></div>
+<script>window.__NEWS_DATA__ = {"unit": {"id": "probability-and-expectation", "title": "機率與期望"}, "today": "2026-10-07", "version": "1.0", "news": ["nobel-med-2026", "nobel-phys-2026"], "note": "時事卡片只做「站內題目 ↔ 真實研究」的連結提示，不改變任何題目的答案與判定；類比段落是為了說明思考方式，並非命題對應關係。外部資源為各平臺公開頁面，本站不代管其內容，離線瀏覽時需自行連網。", "backHome": "../../../events.html", "backUnit": "../../../cross.html#probability-and-expectation", "steps": [{"kind": "title", "scene": "title", "kicker": "時事篇", "dur": 9, "title": "機率與期望｜兩則 2026 諾貝爾獎怎麼讀", "lines": ["這個單元原本是五科各一題的觀點串聯；這一頁把 2026 年諾貝爾生醫獎（光遺傳學）與物理獎（IceCube 中微子天文臺）兩則時事，接回同一個核心觀念。", "每一則時事都拆成兩張：先看得獎研究的原理，再看它和本單元哪幾題是同一種思考方式。"]}, {"kind": "news", "scene": "med", "accent": "med", "dur": 15, "kicker": "2026 諾貝爾生理學或醫學獎（2026-10-05）", "title": "光控離子通道與光遺傳學：用一盞藍燈打開神經細胞", "lines": ["三位科學家在單細胞藻類找到「通道視紫紅質」，把基因送進神經細胞後，藍光一照就能開啟離子通道、觸發神經訊號，開創了光遺傳學。", "黑格曼與內格爾在一種單細胞藻類中發現名為「通道視紫紅質」的蛋白質：它位在細胞表面，受到藍光照射時，其中的離子通道會像門一樣打開，帶電離子進入細胞並產生電訊號；他們也發現把這個蛋白質放進其他細胞，同樣能讓那些細胞對光有反應。戴瑟羅斯接著把編碼通道視紫紅質的基因導入大鼠神經細胞，2005 年發表以藍光觸發神經訊號的成果，兩年後進一步在活體小鼠腦中用光控制神經細胞活動。這套方法被稱為光遺傳學，讓研究者得以在活體大腦中研究神經細胞如何影響記憶、感覺與行為，並揭開與神經及精神疾病相關的神經迴路。", "光遺傳學的原理幾乎是高中課綱的組合技：光（電磁波與能量）、膜上的離子通道與離子梯度（生物、化學）、膜電位改變成電訊號（物理）。它示範了「一個機制被找到後，換一個系統照樣成立」——正是把一個觀念搬去解另一科題目的能力。"], "chips": ["光遺傳學", "通道視紫紅質", "光控離子通道", "膜電位", "藍光", "神經迴路"], "people": "Karl Deisseroth（卡爾·戴瑟羅斯）、Peter Hegemann（彼得·黑格曼）、Georg Nagel（格奧爾格·納格爾）", "sources": [{"title": "三名科學家獲 2026 年諾貝爾生理學或醫學獎（新華社）", "url": "https://www.toutiao.com/article/7693293195605574184", "source": "今日頭條／新華社"}, {"title": "2026 年諾貝爾生理學或醫學獎授予了三位科學家", "url": "https://news.cyol.com/gb/keji/articles/2026-10/06/content_enwOG6UBa2.html", "source": "中青在線"}, {"title": "諾貝爾生醫獎得主的凌晨：一個不想接電話，一個以為遇到詐騙", "url": "https://www.kepuchina.cn/article/articleinfo?ar_id=743473&business_type=100&classify=0", "source": "科普中國網"}]}, {"kind": "bridge", "scene": "bridge", "accent": "med", "dur": 14, "kicker": "接回本單元 · 機率", "title": "要讓神經細胞對光有反應，得先把基因成功送進「夠多」的細胞。", "lines": ["把編碼通道視紫紅質的基因導入神經細胞，每一次都不保證成功：有的細胞表現得多、有的少，有的根本沒被改變。實驗之所以做得成，是因為研究者處理的不是單一細胞的成敗，而是「大量細胞 × 成功率」的整體結果——能對光反應的細胞有多少、訊號有多強，都是期望值的問題。看清楚「哪一項才是會變的」，是這類實驗設計的第一步。"], "anchors": [{"label": "數A 第 15 題", "href": "../../../subject/math-a/q.html?n=15", "why": "期望值就是把每一種結局的機率乘上結果再加總；「送進去幾個細胞才夠」正是同一種算法。"}, {"label": "化學 第 25 題", "href": "../../../subject/chemistry/q.html?n=25", "why": "同位素那題先確定「只有中子數會變」，才知道機率要算在哪一項上；基因導入實驗也要先分清哪個變數才是隨機的。"}]}, {"kind": "news", "scene": "phys", "accent": "phys", "dur": 15, "kicker": "2026 諾貝爾物理學獎（2026-10-06）", "title": "一立方公里的南極冰，變成一顆看中微子的眼睛", "lines": ["哈爾岑自 1988 年提出用南極冰層探測中微子的構想，促成 2011 年冰立方中微子天文臺建成；團隊探測到首批高能中微子，數年後確認其中一些來自太陽系以外。", "中微子幾乎無處不在，能穿過地球與人體，卻極難被察覺；只有在極少數情況下，單個中微子會與原子核發生交互作用、留下可探測的訊號。哈爾岑 1988 年首次提出利用南極冰層探測中微子的設想：當中微子與原子核碰撞時，會產生能被透明冰層中傳感器捕捉的光訊號，而南極冰層外界干擾少、地質條件穩定，是理想的探測環境。在他推動下，冰立方中微子天文臺於 2011 年建成，利用約 1 立方千米的南極冰體並在其中部署光學傳感器；研究人員隨後探測到首批高能中微子，並在數年後確認其中一些來自太陽系以外。諾貝爾物理學委員會主席評價，他的堅韌與科學遠見為一種新的天文學鋪平了道路。", "這是一個「訊號極弱、背景極大」的觀測問題：只能靠規模（一立方公里的冰）、數量（數千顆傳感器）與時間（十年以上的累積）把極小的機率換成可期待的觀測數——和期望值、平均值、門檻與尺度換算這些題目是同一套思考。"], "chips": ["中微子", "IceCube", "高能中微子", "光學傳感器", "南極冰層", "弱交互作用"], "people": "Francis Halzen（弗朗西斯·哈爾岑）", "sources": [{"title": "2026 年諾貝爾物理學獎揭曉（中新網）", "url": "https://m.chinanews.com/wap/detail/cht/zw/10708477.shtml", "source": "中國新聞網"}, {"title": "弗朗西斯·哈爾岑獲 2026 年諾貝爾物理學獎（新華社）", "url": "https://big5.china.com.cn/gate/big5/news.china.com.cn/2026-10/07/content_118723913.shtml", "source": "中國網"}]}, {"kind": "bridge", "scene": "bridge", "accent": "phys", "dur": 14, "kicker": "接回本單元 · 期望值", "title": "中微子通量極大、作用機率極小，只能靠規模與時間把機率乘成可期待的觀測數。", "lines": ["中微子幾乎無處不在，卻極難被察覺——單一中微子與原子核作用的機率小得可憐。冰立方的策略是把三件事乘起來：1 立方公里的冰體（可能的靶）、數千顆光學傳感器（能看到的機會）、以及十年以上的觀測時間（可累積的次數）。這正是期望值的思考方式：不問「這一個會不會中」，而問「在這麼多機會下，總共該看到幾個」。至於「平均值」要在多大的數量下才有意義，又是另一個同源的問題。"], "anchors": [{"label": "數A 第 15 題", "href": "../../../subject/math-a/q.html?n=15", "why": "先列清單（每種結局 × 機率 × 結果）再算期望值，而不是猜「最可能的那一種」——偵測規劃就是這種算法。"}, {"label": "物理 第 1 題", "href": "../../../subject/physics/q.html?n=1", "why": "溫度是大量分子動能的平均值，整體一起前進不算在內；平均值與期望值都只有在「大量、同一組座標」下才說得通。"}]}, {"kind": "outro", "scene": "outro", "dur": 14, "kicker": "延伸", "title": "把兩則時事帶回站內與站外", "lines": ["站內：本單元的觀點動畫在 cross.html 對應單元下方；首頁另有「OCW／學習資源專區」整理開放式課程與自主學習平臺，單題頁也會標出該題對應的時事卡片。", "站外：以下平臺皆為公開頁面，本站不代管內容，需連網使用。"], "links": [{"title": "臺大開放式課程 NTU OCW", "url": "https://ocw.aca.ntu.edu.tw/", "note": "大學開放式課程（OCW）｜微積分、普通化學、經濟學原理等課程影音，另有熱門點閱排行可先挑入門課。"}, {"title": "清華大學開放式課程", "url": "http://ocw.et.nthu.edu.tw/ocw/index.php?page=resource", "note": "大學開放式課程（OCW）｜自然組與工程領域課程資源彙整頁。"}, {"title": "交通大學開放式課程", "url": "http://ocw.nctu.edu.tw", "note": "大學開放式課程（OCW）｜數學、物理、化學基礎課程為主。"}, {"title": "中華開放教育平台", "url": "https://www.openedu.tw/", "note": "磨課師與線上課程平台｜國內大學合開的磨課師課程入口。"}, {"title": "臺灣磨課師", "url": "http://taiwanmooc.org", "note": "磨課師與線上課程平台｜跨校磨課師課程總覽。"}, {"title": "ewant 育網開放教育平臺", "url": "http://www.ewant.org/", "note": "磨課師與線上課程平台｜交大主導的開放教育平臺，含高中先修與自主學習課程。"}, {"title": "均一教育平台", "url": "https://www.junyiacademy.org", "note": "中學自主學習與素養資源｜依概念切片的影片與練習，適合補洞。"}, {"title": "學習吧 LearnMode", "url": "https://www.learnmode.net", "note": "中學自主學習與素養資源｜教科書版本的影音與測驗。"}, {"title": "教育雲", "url": "https://cloud.edu.tw", "note": "中學自主學習與素養資源｜教育部整合的資源入口。"}, {"title": "臺北酷課雲", "url": "http://cooc.tp.edu.tw/index.htm", "note": "中學自主學習與素養資源｜北市課程影片與複習資源。"}, {"title": "愛學網", "url": "https://stv.moe.edu.tw/#", "note": "中學自主學習與素養資源｜國教院影音資源庫。"}, {"title": "教育大市集", "url": "https://market.cloud.edu.tw", "note": "中學自主學習與素養資源｜教學素材與補充教材市集。"}, {"title": "諾貝爾獎官方網站", "url": "https://www.nobelprize.org/", "note": "時事與科普｜每年十月初公布各獎項，公報文字是最可靠的第一手資料。"}, {"title": "科普中國網", "url": "https://www.kepuchina.cn/", "note": "時事與科普｜得獎研究的科普改寫，適合當閱讀測驗素材。"}]}]};</script>
+<script>
+(function () {
+  "use strict";
+  var D = window.__NEWS_DATA__;
+  var ERR = [];
+  if (!D || !D.steps || !D.steps.length) { ERR.push("資料為空"); }
+  var cv = document.getElementById("cv"), g = cv.getContext("2d");
+  var W = 1280, H = 720;
+  var stage = document.getElementById("stage");
+  var card = document.getElementById("card");
+  var dotsEl = document.getElementById("dots");
+  var stepEl = document.getElementById("hud-step");
+  var playBtn = document.getElementById("play");
+  var steps = D.steps || [];
+  var i = 0, t0 = performance.now(), autoplay = true, accum = 0;
+  var ACC = { med: "#5adcb4", phys: "#7fb6ff", both: "#a8c8ff" };
+
+  function esc(s) {
+    return String(s == null ? "" : s).replace(/&/g, "&amp;").replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+  }
+  function clamp(v, a, b) { return v < a ? a : (v > b ? b : v); }
+  function ease(v) { return v < 0 ? 0 : (v > 1 ? 1 : v * v * (3 - 2 * v)); }
+
+  /* ------------------------------------------------------------ 版面縮放 */
+  function resize() {
+    var k = Math.min(window.innerWidth / W, window.innerHeight / H);
+    stage.style.transform = "scale(" + k + ")";
+  }
+  window.addEventListener("resize", resize); resize();
+
+  /* ------------------------------------------------------------ 卡片內容 */
+  function renderCard() {
+    var s = steps[i] || {}, h = "";
+    if (s.kicker) { h += '<div class="kicker ' + esc(s.accent || "") + '">' + esc(s.kicker) + "</div>"; }
+    if (s.title) { h += "<h1>" + esc(s.title) + "</h1>"; }
+    if (s.people) { h += '<div class="who">' + esc(s.people) + "</div>"; }
+    if (s.chips && s.chips.length) {
+      h += '<div class="chips">';
+      s.chips.forEach(function (c) { h += "<span>" + esc(c) + "</span>"; });
+      h += "</div>";
+    }
+    (s.lines || []).forEach(function (p) { h += "<p>" + esc(p) + "</p>"; });
+    if (s.anchors && s.anchors.length) {
+      h += '<div class="box"><div class="ah">站內對應題目（點擊前往單題頁）</div><ul>';
+      s.anchors.forEach(function (a) {
+        h += '<li><a href="' + esc(a.href) + '">' + esc(a.label) + "</a><span>" + esc(a.why) + "</span></li>";
+      });
+      h += "</ul></div>";
+    }
+    if (s.sources && s.sources.length) {
+      h += '<div class="box"><div class="ah">時事來源</div><ul>';
+      s.sources.forEach(function (a) {
+        h += '<li><a href="' + esc(a.url) + '" target="_blank" rel="noopener">' + esc(a.title) +
+          "</a><span>" + esc(a.source || "") + "</span></li>";
+      });
+      h += "</ul></div>";
+    }
+    if (s.links && s.links.length) {
+      h += '<div class="box"><div class="ah">外部學習資源（' + s.links.length + '）</div><ul>';
+      s.links.forEach(function (l) {
+        h += '<li><a href="' + esc(l.url) + '" target="_blank" rel="noopener">' + esc(l.title) +
+          "</a><span>" + esc(l.note || "") + "</span></li>";
+      });
+      h += "</ul></div>";
+    }
+    card.innerHTML = h;
+    card.scrollTop = 0;
+    stepEl.textContent = (i + 1) + " / " + steps.length + "｜" + (steps[i].kind || "");
+    var ds = dotsEl.children;
+    for (var k = 0; k < ds.length; k++) { ds[k].className = k === i ? "on" : ""; }
+  }
+
+  function buildDots() {
+    for (var k = 0; k < steps.length; k++) {
+      var d = document.createElement("i");
+      d.setAttribute("data-i", k);
+      d.title = (k + 1) + ". " + (steps[k].kind || "");
+      d.addEventListener("click", function (e) { jump(parseInt(e.currentTarget.getAttribute("data-i"), 10)); });
+      dotsEl.appendChild(d);
+    }
+  }
+
+  function jump(n, keepPlay) {
+    i = clamp(n, 0, steps.length - 1);
+    t0 = performance.now();
+    if (!keepPlay) { autoplay = false; }
+    playBtn.textContent = "自動播放：" + (autoplay ? "開" : "關");
+    renderCard();
+  }
+  function next() { jump(i + 1, autoplay); }
+  function prev() { jump(i - 1, autoplay); }
+
+  document.getElementById("next").addEventListener("click", function () { next(); });
+  document.getElementById("prev").addEventListener("click", function () { prev(); });
+  playBtn.addEventListener("click", function () {
+    autoplay = !autoplay; t0 = performance.now();
+    playBtn.textContent = "自動播放：" + (autoplay ? "開" : "關");
+  });
+  window.addEventListener("keydown", function (e) {
+    if (e.key === "ArrowRight" || e.key === "PageDown") { jump(i + 1); }
+    else if (e.key === "ArrowLeft" || e.key === "PageUp") { jump(i - 1); }
+    else if (e.key === " ") { e.preventDefault(); playBtn.click(); }
+    else if (e.key === "Home") { jump(0); }
+    else if (e.key === "End") { jump(steps.length - 1); }
+  });
+
+  /* -------------------------------------------------------------- 畫背景 */
+  function base(t) {
+    g.clearRect(0, 0, W, H);
+    g.fillStyle = "rgba(255,255,255,0.05)";
+    for (var x = 700; x < W; x += 40) {
+      for (var y = 90; y < 660; y += 40) {
+        var d = Math.hypot(x - 950, y - 350);
+        g.globalAlpha = clamp(0.5 - d / 900, 0.05, 0.5) * (0.7 + 0.3 * Math.sin(t * 1.1 + d / 90));
+        g.fillRect(x, y, 2, 2);
+      }
+    }
+    g.globalAlpha = 1;
+  }
+  function label(txt, x, y, color, size) {
+    g.font = "600 " + (size || 13) + "px 'PingFang TC','Noto Sans TC',sans-serif";
+    g.fillStyle = color || "#8fa8c7";
+    g.fillText(txt, x, y);
+  }
+  function glowDot(x, y, r, color, a) {
+    var gg = g.createRadialGradient(x, y, 0, x, y, r * 4);
+    gg.addColorStop(0, color); gg.addColorStop(1, "rgba(0,0,0,0)");
+    g.globalAlpha = a == null ? 0.9 : a;
+    g.fillStyle = gg; g.beginPath(); g.arc(x, y, r * 4, 0, Math.PI * 2); g.fill();
+    g.globalAlpha = 1;
+    g.fillStyle = color; g.beginPath(); g.arc(x, y, r, 0, Math.PI * 2); g.fill();
+  }
+
+  /* --------------------------------------------- 場景 1：標題 */
+  function scTitle(t) {
+    for (var k = 0; k < 3; k++) {
+      var r = 90 + k * 62 + 18 * Math.sin(t * 0.9 + k);
+      g.globalAlpha = 0.28 - k * 0.07;
+      g.strokeStyle = k === 1 ? "#5adcb4" : "#7fb6ff"; g.lineWidth = 1.4;
+      g.beginPath(); g.arc(960, 330, r, 0, Math.PI * 2); g.stroke();
+    }
+    g.globalAlpha = 1;
+    glowDot(960, 330, 5, "#eaf3ff", 0.85);
+    label("NOBEL 2026 · 生醫（光遺傳學）", 760, 520, "#5adcb4", 14);
+    label("NOBEL 2026 · 物理（IceCube 中微子）", 760, 548, "#7fb6ff", 14);
+    var ids = D.news || [];
+    for (var j = 0; j < ids.length; j++) { glowDot(1210 - j * 26, 130, 3.5, ACC[ids[j] === "nobel-med-2026" ? "med" : "phys"], 0.8); }
+  }
+
+  /* --------------------------------------------- 場景 2：光遺傳學 */
+  function scMed(t) {
+    var mx = 1000, top = 150, bot = 600, cy = 375;
+    var open = ease(clamp((t - 0.7) / 1.0, 0, 1));
+    var gap = 26 + 26 * open;
+    g.lineWidth = 7; g.strokeStyle = "#4a6b8f"; g.lineCap = "round";
+    g.beginPath(); g.moveTo(mx, top); g.lineTo(mx, cy - gap); g.stroke();
+    g.beginPath(); g.moveTo(mx, cy + gap); g.lineTo(mx, bot); g.stroke();
+    g.fillStyle = "#2c4560";
+    for (var y = top; y < bot; y += 24) {
+      if (Math.abs(y - cy) < gap + 8) { continue; }
+      g.beginPath(); g.arc(mx, y, 5, 0, Math.PI * 2); g.fill();
+    }
+    label("細胞膜", mx + 14, top + 6, "#7f97b5", 12);
+    /* 藍光 */
+    for (var k = 0; k < 5; k++) {
+      var yy = 250 + k * 38, a = 0.15 + 0.5 * clamp(1 - Math.abs(yy - cy) / 150, 0, 1) * (0.6 + 0.4 * Math.sin(t * 4 + k));
+      g.strokeStyle = "rgba(90,170,255," + a.toFixed(3) + ")";
+      g.lineWidth = 2.4;
+      g.beginPath(); g.moveTo(720, yy - 40); g.lineTo(mx - 40, yy - 6 + 26 * (open - 0.5)); g.stroke();
+    }
+    label("藍光", 724, 232, "#7fb6ff", 13);
+    /* 離子 */
+    for (var p = 0; p < 9; p++) {
+      var ph = (t * 0.42 + p * 0.111) % 1;
+      var px = 730 + ph * 430;
+      var pass = open > 0.75;
+      var py = cy + Math.sin(p * 2.1) * 60 * (1 - clamp(Math.abs(px - mx) / 160, 0, 1));
+      if (!pass && Math.abs(px - mx) < 26) { px = mx - 26 - (26 - Math.abs(px - mx)); }
+      var col = p % 2 ? "#5adcb4" : "#a8d4ff";
+      glowDot(px, py, 4.5, col, 0.55 + 0.35 * (pass ? 1 : 0.3));
+    }
+    label("離子", 742, 300, "#8fe0c0", 13);
+    /* 膜電位 */
+    var bx = 720, by = 662, w = 460;
+    g.strokeStyle = "rgba(140,170,200,.5)"; g.lineWidth = 1.4;
+    g.beginPath(); g.moveTo(bx, by); g.lineTo(bx + w, by); g.stroke();
+    var amp = ease(clamp((t - 2.0) / 1.2, 0, 1)) * 74;
+    g.strokeStyle = "#ffd479"; g.lineWidth = 2.6; g.beginPath();
+    for (var xx = 0; xx <= w; xx += 4) {
+      var spike = Math.exp(-Math.pow((xx - 250) / 34, 2)) * amp + Math.exp(-Math.pow((xx - 250) / 90, 2)) * amp * 0.22;
+      var yv = by - 8 - spike - 10 * Math.sin(xx / w * Math.PI);
+      if (xx === 0) { g.moveTo(bx + xx, yv); } else { g.lineTo(bx + xx, yv); }
+    }
+    g.stroke();
+    label("膜電位（動作電位）", bx, by + 22, "#ffd479", 12);
+  }
+
+  /* --------------------------------------------- 場景 3：中微子 */
+  function scPhys(t) {
+    var x0 = 760, y0 = 210, x1 = 1210, y1 = 560;
+    g.fillStyle = "rgba(120,190,255,.06)";
+    g.strokeStyle = "rgba(159,232,255,.28)"; g.lineWidth = 1.4;
+    g.beginPath(); g.rect(x0, y0, x1 - x0, y1 - y0); g.fill(); g.stroke();
+    g.strokeStyle = "rgba(159,232,255,.10)";
+    for (var x = x0 + 40; x < x1; x += 45) { g.beginPath(); g.moveTo(x, y0); g.lineTo(x, y1); g.stroke(); }
+    for (var y = y0 + 40; y < y1; y += 45) { g.beginPath(); g.moveTo(x0, y); g.lineTo(x1, y); g.stroke(); }
+    var sensors = [];
+    for (var sx = x0 + 40; sx < x1 - 10; sx += 62) {
+      for (var sy = y0 + 40; sy < y1 - 10; sy += 62) { sensors.push([sx, sy]); }
+    }
+    var hit = [985, 372];
+    var prog = ease(clamp(t / 1.6, 0, 1));
+    /* 中微子軌跡 */
+    g.strokeStyle = "rgba(180,220,255,.75)"; g.lineWidth = 2; g.setLineDash([9, 7]);
+    g.lineDashOffset = -t * 26;
+    g.beginPath(); g.moveTo(700, 640); g.lineTo(700 + (hit[0] - 700) * prog, 640 + (hit[1] - 640) * prog); g.stroke();
+    g.setLineDash([]);
+    label("中微子", 706, 668, "#9fc8ff", 13);
+    if (prog > 0.98) {
+      var rr = 20 + ((t * 1.5) % 1.3) * 120;
+      g.strokeStyle = "rgba(255,255,255," + (0.55 * (1 - ((t * 1.5) % 1.3) / 1.3)).toFixed(3) + ")";
+      g.lineWidth = 2; g.beginPath(); g.arc(hit[0], hit[1], rr, 0, Math.PI * 2); g.stroke();
+      glowDot(hit[0], hit[1], 6, "#ffffff", 0.95);
+      var lit = ease(clamp((t - 1.8) / 1.2, 0, 1));
+      for (var k = 0; k < sensors.length; k++) {
+        var s = sensors[k], d = Math.hypot(s[0] - hit[0], s[1] - hit[1]);
+        var near = d < 190;
+        if (near) {
+          g.strokeStyle = "rgba(120,200,255," + (0.30 * lit).toFixed(3) + ")"; g.lineWidth = 1.2;
+          g.beginPath(); g.moveTo(hit[0], hit[1]); g.lineTo(s[0], s[1]); g.stroke();
+        }
+        g.fillStyle = near ? "rgba(180,235,255," + (0.35 + 0.6 * lit).toFixed(3) + ")" : "rgba(150,200,240,.30)";
+        g.beginPath(); g.arc(s[0], s[1], near ? 4.6 : 3.2, 0, Math.PI * 2); g.fill();
+        if (near) { glowDot(s[0], s[1], 2.4, "#9fe8ff", 0.35 + 0.5 * lit); }
+      }
+      label("碰撞 → 光訊號", hit[0] + 14, hit[1] - 14, "#eaf3ff", 13);
+    }
+    label("南極冰層（約 1 立方公里）", x0, y0 - 12, "#9fc8ff", 13);
+    label("光學傳感器陣列", x0, y1 + 24, "#8fa8c7", 12);
+  }
+
+  /* --------------------------------------------- 場景 4：橋接 */
+  function scBridge(t) {
+    var accent = ACC[steps[i].accent || "both"] || ACC.phys;
+    var lx = 790, ly = 268, rx = 1080, ry = 268;
+    g.strokeStyle = "rgba(150,190,230,.45)"; g.lineWidth = 2; g.setLineDash([8, 7]);
+    g.lineDashOffset = -t * 22;
+    g.beginPath(); g.moveTo(lx + 66, ly); g.lineTo(rx - 96, ry); g.stroke();
+    g.setLineDash([]);
+    g.globalAlpha = 0.95;
+    var grd = g.createRadialGradient(lx, ly, 4, lx, ly, 70);
+    grd.addColorStop(0, accent); grd.addColorStop(1, "rgba(0,0,0,0)");
+    g.fillStyle = grd; g.beginPath(); g.arc(lx, ly, 70, 0, Math.PI * 2); g.fill();
+    g.globalAlpha = 1;
+    g.strokeStyle = accent; g.lineWidth = 2;
+    g.beginPath(); g.arc(lx, ly, 52, 0, Math.PI * 2); g.stroke();
+    label("時事", lx - 16, ly + 5, "#eaf3ff", 15);
+    g.strokeStyle = "rgba(150,190,230,.5)";
+    g.beginPath(); g.moveTo(rx - 96, ry - 40); g.lineTo(rx + 132, ry - 40);
+    g.lineTo(rx + 132, ry + 40); g.lineTo(rx - 96, ry + 40); g.closePath(); g.stroke();
+    label(D.unit.title.slice(0, 7), rx - 82, ry + 5, "#e8eef7", 14);
+    var anchors = steps[i].anchors || [];
+    for (var k = 0; k < anchors.length; k++) {
+      var ax = 1180 - k * 0, ay = 430 + k * 58;
+      var ax2 = 1010;
+      var pulse = 0.55 + 0.45 * Math.sin(t * 2.2 - k * 0.7);
+      g.strokeStyle = "rgba(150,190,230," + (0.30 + 0.30 * pulse).toFixed(3) + ")"; g.lineWidth = 1.6;
+      g.beginPath(); g.moveTo(rx + 132, ry); g.bezierCurveTo(rx + 210, ry + 40, ax2 + 60, ay - 20, ax2, ay); g.stroke();
+      glowDot(ax2, ay, 5, accent, 0.5 + 0.5 * pulse);
+      label(anchors[k].label, ax2 + 16, ay + 5, "#dbe8f7", 13);
+    }
+    label("站內對應題目", 1010, 402, "#7f97b5", 12);
+  }
+
+  /* --------------------------------------------- 場景 5：片尾 */
+  function scOutro(t) {
+    var items = [["時事篇", 780], ["單元動畫", 975], ["題庫單題", 1170]];
+    for (var k = 0; k < items.length; k++) {
+      var x = items[k][1];
+      g.strokeStyle = "rgba(150,190,230,.5)"; g.lineWidth = 1.6;
+      g.beginPath(); g.moveTo(x - 78, 300); g.lineTo(x + 78, 300);
+      g.lineTo(x + 78, 372); g.lineTo(x - 78, 372); g.closePath(); g.stroke();
+      label(items[k][0], x - 42, 342, "#e8eef7", 14);
+      if (k < items.length - 1) {
+        g.strokeStyle = "rgba(150,190,230,.55)";
+        g.beginPath(); g.moveTo(x + 78, 336); g.lineTo(x + 116, 336); g.stroke();
+        g.beginPath(); g.moveTo(x + 116, 336); g.lineTo(x + 106, 330); g.lineTo(x + 106, 342); g.closePath();
+        g.fillStyle = "rgba(150,190,230,.7)"; g.fill();
+      }
+    }
+    var ph = (t * 0.5) % 1;
+    glowDot(780 + ph * 390, 336, 5, "#7fb6ff", 0.9);
+    label("觀念 → 時事 → 題目 → 資源", 780, 250, "#9fc8ff", 15);
+  }
+
+  var SCENES = { title: scTitle, med: scMed, phys: scPhys, bridge: scBridge, outro: scOutro };
+
+  function loop(now) {
+    var t = (now - t0) / 1000;
+    base(t);
+    var fn = SCENES[steps[i] && steps[i].scene] || scTitle;
+    try { fn(t); } catch (e) { if (ERR.length < 5) { ERR.push(String(e)); } }
+    if (autoplay && t > (steps[i].dur || 12)) { if (i < steps.length - 1) { jump(i + 1, true); } else { autoplay = false; playBtn.textContent = "自動播放：關"; } }
+    requestAnimationFrame(loop);
+  }
+
+  document.getElementById("hud-unit").textContent = D.unit.title;
+  document.getElementById("note").textContent = D.note || "";
+  document.getElementById("lnk-unit").href = D.backUnit;
+  document.getElementById("lnk-home").href = D.backHome;
+  buildDots();
+  renderCard();
+  requestAnimationFrame(function (now) { t0 = now; loop(now); });
+
+  /* ------------------------------------------------------------- 驗收介面 */
+  window.__xnews = {
+    ready: true,
+    version: D.version || "",
+    unit: D.unit,
+    news: D.news || [],
+    steps: steps.length,
+    anchors: steps.reduce(function (a, s) { return a + ((s.anchors || []).length); }, 0),
+    links: steps.reduce(function (a, s) { return a + ((s.links || []).length); }, 0),
+    state: function () {
+      return { i: i, kind: steps[i] && steps[i].kind, scene: steps[i] && steps[i].scene, autoplay: autoplay, t: (performance.now() - t0) / 1000 };
+    },
+    jump: function (n) { jump(n); return this.state(); },
+    ui: function () {
+      var btns = [].map.call(document.querySelectorAll("button"), function (b) { return b.textContent; });
+      return { dots: dotsEl.children.length, buttons: btns, cardHTML: card.innerHTML.length, hud: stepEl.textContent };
+    },
+    cardText: function () { return card.textContent; },
+    errors: ERR
+  };
+})();
+</script>
+</body>
+</html>

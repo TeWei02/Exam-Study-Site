@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>115 英文 家教伴讀｜考古題解題學習站</title>
+<meta name="description" content="家教伴讀版：一屏只講一件事、大字白底、每段可唸給我聽、逐題打勾，答錯不懲罰。">
+<script>
+/* JS 錯誤計數器（headless 自檢用） */
+document.documentElement.dataset.jsErrors = '0';
+window.addEventListener('error', function () {
+  var d = document.documentElement;
+  d.dataset.jsErrors = String(Number(d.dataset.jsErrors || 0) + 1);
+});
+</script>
+<link rel="stylesheet" href="../../assets/tutor/tutor.css">
+</head>
+<body>
+
+<header class="bar">
+  <div class="who">
+    <span class="tag">家教伴讀</span>
+    <a class="exit" href="index.html">回科目頁</a>
+    <span class="sub" id="whoSub">115 學年度英文</span>
+  </div>
+  <div class="prog">
+    <span class="pnum" id="pnum">今日進度 0／25</span>
+    <div class="ticks" id="ticks" aria-label="逐題進度"></div>
+    <button class="resetbtn" id="reset" type="button">重設今天進度</button>
+  </div>
+</header>
+
+<main class="stage" id="stage" aria-live="polite"></main>
+
+<nav class="controls">
+  <button class="btn ghost" id="btn-prev" type="button">← 上一句</button>
+  <button class="btn" id="btn-speak" type="button">唸給我聽</button>
+  <span class="spacer"></span>
+  <span class="readopt">
+    <input type="checkbox" id="chain">
+    <label for="chain">唸完自動唸下一句</label>
+  </span>
+  <button class="btn primary" id="btn-next" type="button">下一句 →</button>
+  <span class="hintline" id="hintline">鍵盤：← → 換句、R 唸這一句。全程不會自動播放，都由你決定什麼時候往下。</span>
+</nav>
+
+<script src="../../assets/js/data/english-quiet.js"></script>
+<!-- 2026 大事資料（純閱讀素材，不含題目與答案） -->
+<script src="../../assets/js/data/resources.js"></script>
+<script>
+window.TUTOR_CFG = {
+  key: 'tutor115.english.progress',
+  bankId: 'english',
+  /* 本頁專屬：英文題幹與選項改用英文語音唸。
+     其他四科都不設 speakLang，共用引擎照舊 zh-TW，完全不受影響。 */
+  speakLang: 'en-US',
+  speakRate: 0.92
+};
+</script>
+<script src="../../assets/tutor/tutor-core.js"></script>
+<script>
+/* ── 英文頁專屬：朗讀改成「英文段用英文發音、中文段維持中文」 ──────────
+   作法：只在本頁包一層 speechSynthesis.speak，把要唸的句子切成
+   中文段 / 英文段，英文段用 en-US、中文引導語用 zh-TW，逐段接續唸完
+   才觸發原本的 onend，所以「唸完自動唸下一句」照常運作。
+   共用檔 assets/tutor/tutor-core.js 完全不動，其他四科也不載入這段。 */
+(function () {
+  var cfg = window.TUTOR_CFG || {};
+  var EN = cfg.speakLang;                /* 本頁為 'en-US' */
+  var ZH = cfg.speakLangZh || 'zh-TW';
+  var RATE = cfg.speakRate || 0.92;
+  if (!EN || !window.speechSynthesis || !window.SpeechSynthesisUtterance) { return; }
+  var ss = window.speechSynthesis;
+  var nativeSpeak = ss.speak;
+  var nativeCancel = ss.cancel;
+
+  function isHan(c) { return /[\u3400-\u9fff\uf900-\ufaff]/.test(c); }
+  function isLatin(c) { return /[A-Za-z]/.test(c); }
+
+  /* 切成段落：標點、數字、空白跟著前一段走。
+     含 3 個以上連續英文字母的段落才算英文段，避免 A／B／C 這種單一字母
+     被拆成獨立短句，聽起來會斷斷續續。 */
+  function segments(text) {
+    var s = String(text || ''), out = [], cur = '', curEn = false, i, c;
+    for (i = 0; i < s.length; i++) {
+      c = s.charAt(i);
+      if (isHan(c) || isLatin(c)) {
+        var en = isLatin(c);
+        if (cur && en !== curEn) { out.push({ text: cur, en: curEn }); cur = ''; }
+        curEn = en;
+      }
+      cur += c;
+    }
+    if (cur) { out.push({ text: cur, en: curEn }); }
+    var wordy = /[A-Za-z]{3,}/;
+    var merged = [];
+    out.forEach(function (seg) {
+      if (!seg.en) {                 /* 中文段：自成一段，維持中文語音 */
+        merged.push({ text: seg.text, en: false });
+        return;
+      }
+      if (wordy.test(seg.text)) {     /* 有完整英文單字：用英文語音 */
+        merged.push({ text: seg.text, en: true });
+        return;
+      }
+      /* 只有單字母 A／B、縮寫等短英文：併回前一段，避免斷斷續續 */
+      if (merged.length) { merged[merged.length - 1].text += seg.text; return; }
+      merged.push({ text: seg.text, en: false });
+    });
+    return merged.filter(function (seg) { return seg.text.replace(/\s+/g, '').length; });
+  }
+
+  var token = 0;
+  ss.speak = function (u) {
+    var segs = segments(u.text);
+    var hasEn = segs.some(function (s) { return s.en; });
+    if (!hasEn) { nativeSpeak.call(ss, u); return; }   /* 純中文屏：原樣送出 */
+    var my = ++token;
+    var queue = segs.slice();
+    (function nextSeg() {
+      if (my !== token) { return; }                    /* 已被停止／重新朗讀 */
+      var seg = queue.shift();
+      if (!seg) {
+        if (u.onend) { try { u.onend({}); } catch (e) {} }
+        return;
+      }
+      var p = new SpeechSynthesisUtterance(seg.text);
+      p.lang = seg.en ? EN : ZH;
+      p.rate = RATE;
+      p.pitch = u.pitch || 1;
+      p.onend = nextSeg;
+      p.onerror = function () { if (u.onerror) { try { u.onerror({}); } catch (e) {} } };
+      nativeSpeak.call(ss, p);
+    })();
+  };
+  ss.cancel = function () { token++; return nativeCancel.call(ss); };
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>115 物理 家教伴讀｜考古題解題學習站</title>
+<meta name="description" content="家教伴讀版：一屏只講一件事、大字白底、每段可唸給我聽、逐題打勾，答錯不懲罰。">
+<script>
+/* JS 錯誤計數器（headless 自檢用） */
+document.documentElement.dataset.jsErrors = '0';
+window.addEventListener('error', function () {
+  var d = document.documentElement;
+  d.dataset.jsErrors = String(Number(d.dataset.jsErrors || 0) + 1);
+});
+</script>
+<link rel="stylesheet" href="../../assets/tutor/tutor.css">
+</head>
+<body>
+
+<header class="bar">
+  <div class="who">
+    <span class="tag">家教伴讀</span>
+    <a class="exit" href="index.html">回科目頁</a>
+    <span class="sub" id="whoSub">115 學年度物理</span>
+  </div>
+  <div class="prog">
+    <span class="pnum" id="pnum">今日進度 0／20</span>
+    <div class="ticks" id="ticks" aria-label="逐題進度"></div>
+    <button class="resetbtn" id="reset" type="button">重設今天進度</button>
+  </div>
+</header>
+
+<main class="stage" id="stage" aria-live="polite"></main>
+
+<nav class="controls">
+  <button class="btn ghost" id="btn-prev" type="button">← 上一句</button>
+  <button class="btn" id="btn-speak" type="button">唸給我聽</button>
+  <span class="spacer"></span>
+  <span class="readopt">
+    <input type="checkbox" id="chain">
+    <label for="chain">唸完自動唸下一句</label>
+  </span>
+  <button class="btn primary" id="btn-next" type="button">下一句 →</button>
+  <span class="hintline" id="hintline">鍵盤：← → 換句、R 唸這一句。全程不會自動播放，都由你決定什麼時候往下。</span>
+</nav>
+
+<script src="../../assets/js/data/physics-quiet.js"></script>
+<!-- 2026 大事資料（純閱讀素材，不含題目與答案） -->
+<script src="../../assets/js/data/resources.js"></script>
+<script>
+window.TUTOR_CFG = {
+  key: 'tutor115.physics.progress',
+  bankId: 'physics'
+};
+</script>
+<script src="../../assets/tutor/tutor-core.js"></script>
+</body>
+</html>

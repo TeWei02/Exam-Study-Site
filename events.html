@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>2026 大事專區｜考古題解題學習站</title>
+<meta name="description" content="2026 大事專區：體育、天文、氣候環境、醫學公衛、AI、台灣本地與諾貝爾獎的大事，一次篩選、一次看完；每則大事與每個五科對照點都能逐段「唸給我聽」，不自動播放。">
+<script>
+/* JS 錯誤計數器（headless 自檢用）：頁面掛載前就註冊，任何錯誤都會被記在 <html data-js-errors> */
+document.documentElement.dataset.jsErrors = '0';
+window.addEventListener('error', function () {
+  var d = document.documentElement;
+  d.dataset.jsErrors = String(Number(d.dataset.jsErrors || 0) + 1);
+});
+</script>
+<link rel="stylesheet" href="assets/css/site.css">
+</head>
+<body>
+<a class="skip" href="#app">跳到主要內容</a>
+
+<header class="site-header">
+  <div class="wrap head-inner">
+    <a class="brand" id="brand" href="index.html">
+      <span class="brand-mark" id="brand-mark">題</span>
+      <span class="brand-text">
+        <span id="brand-title">考古題解題學習站</span>
+        <small id="brand-sub"></small>
+      </span>
+    </a>
+    <nav class="head-nav" id="head-nav" aria-label="科目導覽"></nav>
+  </div>
+</header>
+
+<main class="wrap" id="app"></main>
+
+<footer class="site-footer"><div class="wrap" id="footer-text"></div></footer>
+
+<!-- ① 索引檔：唯一的科目清單（導覽、科目連結全靠它） -->
+<script src="assets/js/subjects.js"></script>
+<!-- ①-b 2026 大事資料（純閱讀素材，不含題目與答案） -->
+<script src="assets/js/data/resources.js"></script>
+<script src="assets/anim/news/manifest.js"></script>
+<!-- ② 站台引擎：不含任何寫死的科目／年份／標籤；events 頁由其中 renderEventsPage() 渲染 -->
+<script src="assets/js/site.js"></script>
+</body>
+</html>

@@ -54,9 +54,18 @@ window.EXAM_INDEX =
       "count": 20,
       "note": "題庫來源：115_數學A_試題.pdf／115_數學A_詳解.pdf",
       "data": "assets/js/data/math-a.js",
+      "tutor": {
+        "href": "tutor.html",
+        "label": "家教伴讀版"
+      },
+      "quiet": {
+        "data": "assets/js/data/math-a-quiet.js",
+        "label": "安靜精讀版",
+        "note": "試點科目：五步精讀、無動畫無語音、一次一步"
+      },
       "anim": {
-        "src": "assets/anim/math-a/mathA_all.html?q=$(n)",
-        "label": "3B1B 動態講解（曉曉語音・整卷單檔）"
+        "src": "assets/anim/math-a/mathA_quiet.html?q=$(n)",
+        "label": "安靜精讀版・整卷逐步講解（靜態、不自動播放）"
       },
       "order": 1
     },
@@ -73,6 +82,10 @@ window.EXAM_INDEX =
       "count": 20,
       "note": "題庫來源：115_物理試題.pdf／115 物理答案（官方 20 題單選）",
       "data": "assets/js/data/physics.js",
+      "tutor": {
+        "href": "tutor.html",
+        "label": "家教伴讀版"
+      },
       "anim": {
         "src": "assets/anim/physics/physics_all.html?q=$(n)",
         "label": "3B1B 動態講解（曉曉語音・整卷單檔）"
@@ -92,6 +105,10 @@ window.EXAM_INDEX =
       "count": 25,
       "note": "題庫來源：115_化學試題.pdf／115 化學答案（官方 25 題單選）",
       "data": "assets/js/data/chemistry.js",
+      "tutor": {
+        "href": "tutor.html",
+        "label": "家教伴讀版"
+      },
       "order": 3,
       "anim": {
         "src": "assets/anim/chemistry/chemistry_all.html?q=$(n)",
@@ -112,6 +129,10 @@ window.EXAM_INDEX =
       "count": 25,
       "note": "題庫來源：115_英文試題.pdf（25 題，含詞彙、綜合測驗、閱讀測驗）",
       "data": "assets/js/data/english.js",
+      "tutor": {
+        "href": "tutor.html",
+        "label": "家教伴讀版"
+      },
       "order": 4,
       "anim": {
         "src": "assets/anim/english/english_all.html?q=$(n)",
@@ -131,6 +152,10 @@ window.EXAM_INDEX =
       "count": 20,
       "note": "題庫來源：115_國文試題.pdf／115 國文答案（官方 20 題單選，含 19-20 題組）",
       "data": "assets/js/data/chinese.js",
+      "tutor": {
+        "href": "tutor.html",
+        "label": "家教伴讀版"
+      },
       "order": 5,
       "anim": {
         "src": "assets/anim/chinese/chinese_all.html?q=$(n)",

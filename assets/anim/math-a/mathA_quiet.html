@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>115 學年度數學 A 安靜精讀版（整卷）｜考古題解題學習站</title>
+<meta name="description" content="安靜精讀版：一次只顯示一題、一步一步出現，沒有動畫、沒有語音、不會自動播放。">
+<link rel="stylesheet" href="../../css/site.css">
+<!-- 安靜精讀版資料（由 tools/gen_quiet.py 產生，與單題頁共用同一份內容） -->
+<script src="../../js/data/math-a-quiet.js"></script>
+<style>
+/* 整卷精讀頁專用版面：淺色、單欄、字大、行距寬；不使用任何動畫與陰影 */
+html{-webkit-text-size-adjust:100%}
+body.quiet-page{background:#fff;color:#20262e;font-size:17.5px;line-height:2;
+  font-family:-apple-system,BlinkMacSystemFont,"PingFang TC","Noto Sans TC","Microsoft JhengHei",sans-serif}
+.q-page-head{border-bottom:1px solid #e6e9ee;background:#fff;position:sticky;top:0;z-index:10}
+.q-page-head .inner{max-width:1080px;margin:0 auto;padding:14px 20px}
+.q-page-title{font-size:19px;font-weight:700;line-height:1.6}
+.q-page-sub{color:#5c6673;font-size:14.5px;line-height:1.8;margin-top:2px}
+.q-layout{max-width:1080px;margin:0 auto;padding:20px;display:flex;gap:28px;align-items:flex-start}
+.q-toc{flex:0 0 168px;position:sticky;top:96px}
+.q-toc h2{font-size:14.5px;color:#5c6673;font-weight:600;margin:0 0 8px}
+.q-toc-list{display:flex;flex-wrap:wrap;gap:6px}
+.q-toc-list button{width:40px;height:36px;border:1px solid #e6e9ee;background:#fff;border-radius:9px;
+  font-size:15px;color:#3b4450;cursor:pointer;font-variant-numeric:tabular-nums}
+.q-toc-list button:hover{border-color:#b9c6dc}
+.q-toc-list button.on{background:#1b5fd0;border-color:#1b5fd0;color:#fff}
+.q-toc-list button.done{border-color:#9ec9b3;background:#eef8f2}
+.q-toc-list button.on.done{background:#1b5fd0;border-color:#1b5fd0;color:#fff}
+.q-toc-note{color:#8a94a3;font-size:13.5px;line-height:1.9;margin-top:12px}
+.q-main{flex:1 1 auto;min-width:0;max-width:760px}
+.q-foot{max-width:760px;border-top:1px solid #e6e9ee;margin-top:20px;padding-top:14px;
+  color:#5c6673;font-size:14.5px}
+.q-foot a{color:#1b5fd0}
+@media (max-width:860px){
+  .q-layout{flex-direction:column;gap:16px;padding:14px}
+  .q-toc{position:static;flex:none;width:100%}
+  .q-toc-list{flex-wrap:nowrap;overflow-x:auto;padding-bottom:6px}
+  .q-toc-list button{flex:0 0 auto}
+}
+</style>
+</head>
+<body class="quiet-page quiet">
+
+<header class="q-page-head">
+  <div class="inner">
+    <div class="q-page-title">115 學年度數學 A ・ 安靜精讀版（整卷）</div>
+    <div class="q-page-sub">共 <b id="q-total">20</b> 題 ・ 一次只顯示一題 ・ 不會自動播放 ・ 沒有語音 ・ 解析一步一步出現</div>
+  </div>
+</header>
+
+<div class="q-layout">
+  <nav class="q-toc" aria-label="題號">
+    <h2>選題</h2>
+    <div class="q-toc-list" id="q-toc"></div>
+    <p class="q-toc-note" id="q-toc-note"></p>
+  </nav>
+  <main class="q-main" id="q-main"></main>
+</div>
+
+<script>
+(function () {
+  var DATA = (window.EXAM_QUIET || {})['math-a'];
+  var KEYS = ['A', 'B', 'C', 'D', 'E', 'F'];
+  var LS = 'quiet:math-a';
+  var main = document.getElementById('q-main');
+  var toc = document.getElementById('q-toc');
+  var tocNote = document.getElementById('q-toc-note');
+
+  function store() {
+    try { return JSON.parse(localStorage.getItem(LS)) || {}; } catch (e) { return {}; }
+  }
+  function setStore(v) { try { localStorage.setItem(LS, JSON.stringify(v)); } catch (e) { } }
+  function st() {
+    var s = store();
+    s.pick = s.pick || {}; s.done = s.done || {};
+    return s;
+  }
+  function esc(x) {
+    return String(x == null ? '' : x).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  }
+  function qAt(n) {
+    var qs = DATA ? DATA.questions : [];
+    for (var i = 0; i < qs.length; i++) { if (String(qs[i].n) === String(n)) { return { q: qs[i], i: i }; } }
+    return null;
+  }
+  function curN() {
+    var m = /[?&]n=(\d+)/.exec(location.search);
+    if (m) { return Number(m[1]); }
+    var s = store();
+    return Number(s.last || (DATA ? DATA.questions[0].n : 1));
+  }
+
+  if (!DATA || !DATA.questions || !DATA.questions.length) {
+    main.innerHTML = '<p>精讀資料尚未產生：請在站台根目錄執行 <code>python3 tools/gen_quiet.py</code>。</p>';
+    return;
+  }
+
+  document.getElementById('q-total').textContent = DATA.questions.length;
+
+  function renderToc(n) {
+    var s = st();
+    var h = '';
+    DATA.questions.forEach(function (q) {
+      var cls = 'q' + (String(q.n) === String(n) ? ' on' : '') +
+                (s.done[String(q.n)] ? ' done' : '');
+      h += '<button type="button" class="' + cls + '" data-n="' + q.n + '">' + q.n + '</button>';
+    });
+    toc.innerHTML = h;
+    var done = Object.keys(s.done).length;
+    tocNote.innerHTML = '已完成 ' + done + '／' + DATA.questions.length + ' 題。<br>綠框＝答對過。';
+  }
+  toc.addEventListener('click', function (ev) {
+    var b = ev.target.closest ? ev.target.closest('button[data-n]') : null;
+    if (b) { go(Number(b.getAttribute('data-n'))); }
+  });
+
+  function go(n) {
+    var s = store(); s.last = n; setStore(s);
+    var p = new URLSearchParams(location.search);
+    p.set('n', String(n));
+    history.replaceState(null, '', location.pathname + '?' + p.toString());
+    render(n);
+  }
+
+  /* ---------------- 題目頁（五步） ---------------- */
+  var openedSteps = 0;   /* ③逐步解 已顯示到第幾步 */
+  var step3Shown = 0;
+
+  function render(n) {
+    var hit = qAt(n);
+    if (!hit) { main.innerHTML = '<p>找不到第 ' + esc(n) + ' 題。</p>'; return; }
+    var q = hit.q, qs = DATA.questions, idx = hit.i;
+    var s = st();
+    var picked = s.pick[String(q.n)];
+
+    var h = '';
+    h += '<div class="q-progressline">' + esc(DATA.yearLabel || '') + ' ' + esc(DATA.name) +
+         ' ・ 第 ' + q.n + ' 題／共 ' + qs.length + ' 題' +
+         (q.unit ? ' ・ ' + esc(q.unit) : '') + '</div>';
+
+    h += '<div class="q-order">順序：① 讀題 → ② 關鍵想法 → ③ 逐步解 → ④ 對答案 → ⑤ 記題型</div>';
+
+    /* ① 讀題 */
+    h += '<section class="q-card" id="qc1">' +
+         '<h3><span class="q-num">①</span>讀題</h3>' +
+         '<p class="q-hintline">先把題目慢慢讀兩次。想不出來也沒關係，下面的卡片會一步一步帶你走，不會自己跳走。</p>' +
+         '<div class="q-stem">' + (q.stem || '') + '</div>' +
+         '<ul class="q-opts" id="q-opts">';
+    (q.options || []).forEach(function (o, i) {
+      var cls = '';
+      if (picked === i) { cls = (q.answer === i) ? ' ok' : ' bad'; }
+      h += '<li><button type="button" class="q-opt ' + cls + '" data-i="' + i + '">' +
+           '<span class="q-opt-key">' + (KEYS[i] || (i + 1)) + '</span>' +
+           '<span class="q-opt-txt">' + o + '</span></button></li>';
+    });
+    h += '</ul><div id="q-fb"></div>' +
+         '<button type="button" class="btn btn-primary q-next" id="q-to2">讀完了，看②關鍵想法</button>' +
+         '</section>';
+
+    /* ② 關鍵想法 */
+    h += '<section class="q-card q-locked" id="qc2">' +
+         '<h3><span class="q-num">②</span>關鍵想法</h3>' +
+         '<div class="q-body">' + (q.key || '<p>本題沒有獨立的關鍵想法段落。</p>') + '</div>' +
+         '<button type="button" class="btn btn-primary q-next" id="q-to3">懂了，開始③逐步解</button>' +
+         '</section>';
+
+    /* ③ 逐步解 */
+    h += '<section class="q-card q-locked" id="qc3">' +
+         '<h3><span class="q-num">③</span>逐步解</h3>' +
+         '<p class="q-hintline">一次只出現一步。看完一步、想清楚了，再按下面的按鈕看下一步。</p>' +
+         '<div id="q-steps"></div>' +
+         '<button type="button" class="btn btn-primary q-next" id="q-nextstep">看第 1 步</button>' +
+         '</section>';
+
+    /* ④ 對答案 */
+    h += '<section class="q-card q-locked" id="qc4">' +
+         '<h3><span class="q-num">④</span>對答案</h3>' +
+         '<div class="q-body">' + (q.ans || '<p>本題未提供官方答案句。</p>') + '</div>' +
+         '<div id="q-yours"></div>' +
+         '<button type="button" class="btn btn-primary q-next" id="q-to5">看⑤記題型</button>' +
+         '</section>';
+
+    /* ⑤ 記題型 */
+    var next = qs[idx + 1];
+    h += '<section class="q-card q-locked q-typebox" id="qc5">' +
+         '<h3><span class="q-num">⑤</span>記題型</h3>' +
+         '<table class="q-typemt"><tbody>' +
+         '<tr><th>這一題的題型</th><td>' + esc(q.unit || '（未標單元）') + '</td></tr>' +
+         '<tr><th>難度</th><td>' + (q.diff ? esc(q.diff) + ' ／ 3' : '未標') + '</td></tr>' +
+         '<tr><th>考場提醒</th><td>' + (q.tip || '本題沒有額外提醒。') + '</td></tr>' +
+         '</tbody></table>' +
+         '<p class="q-hintline">同一種題型只要記住上面這一件事，下次看到就知道從哪裡下手。</p>' +
+         '</section>';
+
+    h += '<div class="q-pager"><span>' +
+         (idx > 0 ? '<button type="button" class="btn" id="q-prev">上一題：第 ' + qs[idx - 1].n + ' 題</button>'
+                  : '<span class="btn" aria-disabled="true">已是第一題</span>') +
+         '</span><span>' +
+         (next ? '<button type="button" class="btn btn-primary" id="q-nextq">下一題：第 ' + next.n + ' 題</button>'
+               : '<span class="btn" aria-disabled="true">已是本卷最後一題</span>') +
+         '</span></div>';
+
+    main.innerHTML = h;
+    renderToc(q.n);
+    bind(q, qs, idx, picked);
+    window.scrollTo(0, 0);
+  }
+
+  function show(id) {
+    var el = document.getElementById(id);
+    if (el) { el.classList.remove('q-locked'); }
+    return el;
+  }
+  function revealTo(id) {
+    var el = show(id);
+    if (el) { try { el.scrollIntoView({ behavior: 'auto', block: 'start' }); } catch (e) { } }
+  }
+
+  function bind(q, qs, idx, picked) {
+    var s;
+    /* 作答 */
+    var opts = document.getElementById('q-opts');
+    var fb = document.getElementById('q-fb');
+    function paintPick(i) {
+      var btns = opts.querySelectorAll('.q-opt');
+      for (var k = 0; k < btns.length; k++) {
+        btns[k].classList.remove('ok', 'bad');
+        if (Number(btns[k].getAttribute('data-i')) === i) {
+          btns[k].classList.add(i === q.answer ? 'ok' : 'bad');
+        }
+      }
+      fb.innerHTML = (i === q.answer)
+        ? '<p class="q-fb ok">答對了。先別急，往下看②關鍵想法裡的「為什麼」。</p>'
+        : '<p class="q-fb bad">目前選的不是答案。沒關係，往下看②③就會知道差在哪一步。</p>';
+    }
+    if (opts) {
+      opts.addEventListener('click', function (ev) {
+        var b = ev.target.closest ? ev.target.closest('.q-opt') : null;
+        if (!b) { return; }
+        var i = Number(b.getAttribute('data-i'));
+        var stt = st();
+        stt.pick[String(q.n)] = i;
+        if (i === q.answer) { stt.done[String(q.n)] = 1; }
+        setStore(stt);
+        paintPick(i);
+        renderToc(q.n);
+        var mine = document.getElementById('q-yours');
+        if (mine && mine.innerHTML) { mine.innerHTML = yourLine(i); }
+      });
+      if (picked != null) { paintPick(picked); }
+    }
+
+    var to2 = document.getElementById('q-to2');
+    if (to2) { to2.addEventListener('click', function () { revealTo('qc2'); }); }
+
+    var to3 = document.getElementById('q-to3');
+    if (to3) { to3.addEventListener('click', function () { revealTo('qc3'); showFirstStep(); }); }
+
+    var steps = q.steps || [];
+    step3Shown = 0;
+    function showFirstStep() {
+      if (step3Shown === 0) { addStep(); }
+    }
+    function addStep() {
+      if (step3Shown >= steps.length) { return; }
+      var host = document.getElementById('q-steps');
+      var box = document.createElement('div');
+      box.className = 'q-step';
+      var t = steps[step3Shown].t;
+      box.innerHTML = '<h4>第 ' + (step3Shown + 1) + ' 步' + (t ? '：' + esc(t) : '') + '</h4>' +
+                      '<div class="q-body">' + steps[step3Shown].h + '</div>';
+      host.appendChild(box);
+      step3Shown++;
+      var btn = document.getElementById('q-nextstep');
+      if (step3Shown >= steps.length) {
+        btn.textContent = '這是最後一步，看④對答案';
+        btn.setAttribute('data-mode', 'to4');
+      } else {
+        btn.textContent = '看第 ' + (step3Shown + 1) + ' 步（還有 ' + (steps.length - step3Shown) + ' 步）';
+      }
+    }
+    var nsb = document.getElementById('q-nextstep');
+    if (nsb) {
+      nsb.addEventListener('click', function () {
+        if (nsb.getAttribute('data-mode') === 'to4') { revealTo('qc4'); fillYours(); return; }
+        addStep();
+      });
+    }
+
+    function yourLine(i) {
+      var ok = (i === q.answer);
+      return '<p class="q-yoursline">你剛才選的是 (' + (KEYS[i] || '?') + ')，' +
+             (ok ? '和答案一致。' :
+              '正確答案是 (' + (KEYS[q.answer] || '?') + ')。回頭對一次③的每一步，找出是哪一步和你算的不一樣。') +
+             '</p>';
+    }
+    function fillYours() {
+      var host = document.getElementById('q-yours');
+      var stt = st();
+      var i = stt.pick[String(q.n)];
+      if (host && i != null) { host.innerHTML = yourLine(i); }
+    }
+
+    var to5 = document.getElementById('q-to5');
+    if (to5) { to5.addEventListener('click', function () { revealTo('qc5'); }); }
+
+    var prev = document.getElementById('q-prev');
+    if (prev) { prev.addEventListener('click', function () { go(qs[idx - 1].n); }); }
+    var nextq = document.getElementById('q-nextq');
+    if (nextq) { nextq.addEventListener('click', function () { go(qs[idx + 1].n); }); }
+  }
+
+  go(curN());
+})();
+</script>
+</body>
+</html>

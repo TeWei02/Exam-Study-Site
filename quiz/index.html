@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>線上學習入口｜考古題解題學習站</title>
+<meta name="description" content="考古題解題學習站的線上學習入口：開放式課程（OCW）與自主學習平臺索引、2026 諾貝爾獎時事篇、各科題庫與觀點動畫入口。">
+<link rel="stylesheet" href="../assets/css/site.css">
+<script>
+/* JS 錯誤計數器（headless 自檢用），與站內其他頁面一致 */
+document.documentElement.dataset.jsErrors = '0';
+window.addEventListener('error', function () {
+  var d = document.documentElement;
+  d.dataset.jsErrors = String(Number(d.dataset.jsErrors || 0) + 1);
+});
+</script>
+<style>
+  /* 本頁專用樣式（不改動 site.css，避免影響既有頁面） */
+  .ocw-hero{background:#fff;border:1px solid var(--line);border-radius:var(--radius);
+    box-shadow:var(--shadow);padding:22px 20px;margin:18px 0}
+  .ocw-hero h1{margin:0 0 8px;font-size:1.5rem}
+  .ocw-hero p{margin:0 0 6px;color:var(--ink-soft);font-size:.95rem;line-height:1.85}
+  .ocw-actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:14px}
+  .ocw-actions a{display:inline-block;padding:9px 15px;border-radius:10px;font-size:14px;
+    background:var(--brand);color:#fff}
+  .ocw-actions a.ghost{background:#f2f5f9;color:var(--ink-soft)}
+  .ocw-actions a:hover{text-decoration:none;filter:brightness(.96)}
+  h2.ocw-h2{font-size:1.16rem;margin:26px 0 6px;padding-bottom:8px;border-bottom:1px solid var(--line)}
+  .ocw-hint{color:var(--ink-mute);font-size:13.5px;margin:0 0 14px}
+  .ocw-news{border-left:3px solid var(--brand);border-radius:0 12px 12px 0;background:#f2f7ff}
+  .ocw-news.phys{border-left-color:#128a5a;background:#eefaf4}
+  .ocw-news h3{margin:0 0 6px;font-size:1.05rem}
+  .ocw-news .meta{font-size:12.5px;color:var(--ink-mute);margin:0 0 8px}
+  .ocw-news p{margin:0 0 8px;font-size:14px;line-height:1.85;color:var(--ink-soft)}
+  .ocw-kv{font-size:13px;color:var(--ink-soft);margin:0 0 6px}
+  .ocw-kv b{color:var(--ink)}
+  .ocw-links{list-style:none;padding:0;margin:0}
+  .ocw-links li{padding:10px 12px;border:1px solid var(--line);border-radius:12px;
+    background:#fff;margin-bottom:10px}
+  .ocw-links li:hover{border-color:#bcd4fb}
+  .ocw-links a{font-weight:600;font-size:14.5px}
+  .ocw-links .note{display:block;font-size:13px;color:var(--ink-soft);line-height:1.7;margin-top:3px}
+  .ocw-grp{margin-bottom:18px}
+  .ocw-grp>h3{margin:0 0 8px;font-size:15px}
+  .ocw-steps{counter-reset:n;list-style:none;padding:0;margin:0}
+  .ocw-steps li{counter-increment:n;position:relative;padding:10px 12px 10px 42px;
+    border:1px solid var(--line);border-radius:12px;background:#fff;margin-bottom:10px;
+    font-size:14px;line-height:1.8}
+  .ocw-steps li::before{content:counter(n);position:absolute;left:12px;top:11px;width:22px;height:22px;
+    border-radius:50%;background:#edf2ff;color:#2b6cb0;font-size:12.5px;font-weight:700;
+    display:flex;align-items:center;justify-content:center}
+  .ocw-note{font-size:12.5px;color:var(--ink-mute);line-height:1.8;margin-top:18px;
+    border-top:1px dashed var(--line);padding-top:12px}
+  .ocw-back{display:inline-block;margin:6px 0 0;font-size:13.5px}
+</style>
+</head>
+<body>
+<a class="skip" href="#app">跳到主要內容</a>
+
+<header class="site-header">
+  <div class="wrap head-inner">
+    <a class="brand" href="../index.html">
+      <span class="brand-mark">題</span>
+      <span class="brand-text">
+        <span>考古題解題學習站</span>
+        <small>線上學習入口：開放式課程索引＋時事篇＋題庫</small>
+      </span>
+    </a>
+    <nav class="head-nav" aria-label="頁內導覽">
+      <a href="#ocw-news">2026 諾貝爾時事</a>
+      <a href="#ocw-links">開放式課程</a>
+      <a href="#ocw-banks">本站題庫</a>
+      <a href="#ocw-how">使用方式</a>
+      <a href="../events.html">看 2026 大事專區</a>
+    </nav>
+  </div>
+</header>
+
+<main class="wrap" id="app">
+  <section class="ocw-hero">
+    <h1>線上學習入口</h1>
+    <p>這一頁把「站內題庫」與「站外開放式課程」接在一起：先用本站考古題確認懂不懂，再用開放式課程補觀念；兩則 2026 年諾貝爾獎時事則示範「同一套觀念怎麼在生醫與物理同時出現」。</p>
+    <p>全頁為純靜態 HTML：站內連結離線可用；連到站外的課程平臺需要網路，本站不代管、不轉載其內容。</p>
+    <div class="ocw-actions">
+      <a href="#ocw-news">看 2026 諾貝爾獎時事篇</a>
+      <a class="ghost" href="../cross.html">一科練五科・觀點動畫</a>
+      <a class="ghost" href="../index.html">回首頁</a>
+    </div>
+  </section>
+
+  <div id="ocw-news"></div>
+  <div id="ocw-links"></div>
+  <div id="ocw-banks"><p class="loading">載入題庫索引中…</p></div>
+  <div id="ocw-how"></div>
+  <p class="ocw-note" id="ocw-foot"></p>
+</main>
+
+<footer class="site-footer"><div class="wrap" id="footer-text"></div></footer>
+
+<script src="../assets/js/subjects.js"></script>
+<script src="../assets/js/data/resources.js"></script>
+<script>
+/* 本頁為獨立入口頁：只讀索引檔與資源檔，不介入作答判定與選項標記邏輯。 */
+(function () {
+  'use strict';
+  var R = window.EXAM_RESOURCES || {}, IDX = window.EXAM_INDEX || {};
+  var SITE = IDX.site || {}, SUBS = IDX.subjects || [];
+
+  function esc(s) {
+    return String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+  }
+
+  /* ---------- 1. 站外連結按鈕 / 頁尾 ---------- */
+  var foot = document.getElementById('footer-text');
+  if (foot) {
+    var fs = (SITE.footer || []).slice();
+    fs.push('本入口頁資料來源：assets/js/data/resources.js（時事與資源索引）、assets/js/subjects.js（科目索引）、assets/anim/news/manifest.js（時事篇動畫清單）。');
+    foot.innerHTML = fs.map(function (t) { return '<p>' + esc(t) + '</p>'; }).join('')
+      + '<p class="ocw-back"><a href="../index.html">← 回首頁</a>　·　<a href="../cross.html">一科練五科觀點動畫</a></p>';
+  }
+
+  /* ---------- 2. 2026 諾貝爾獎時事 ---------- */
+  var news = R.news || [];
+  var kits = R.unitKits || [];
+  var nh = ['<h2 class="ocw-h2" id="ocw-news-title">2026 諾貝爾獎時事篇</h2>',
+    '<p class="ocw-hint">每則時事都附「原理／意義／關鍵詞／來源」，並連到本站對應的單元時事篇動畫與題目。動畫為離線單檔，點開即播。</p>',
+    '<div class="grid">'];
+  news.forEach(function (n) {
+    var units = kits.filter(function (k) {
+      return (k.cards || []).some(function (c) { return c.news === n.id; });
+    }).map(function (k) { return k.id; });
+    nh.push('<article class="card ocw-news ' + esc(n.accent || '') + '">');
+    nh.push('<h3>' + esc(n.headline) + '</h3>');
+    nh.push('<p class="meta">' + esc(n.award) + '　·　' + esc(n.date) + '</p>');
+    if (n.people) { nh.push('<p class="meta">' + esc(n.people) + '</p>'); }
+    nh.push('<p>' + esc(n.oneLiner) + '</p>');
+    nh.push('<p class="ocw-kv"><b>原理：</b>' + esc(n.principle) + '</p>');
+    nh.push('<p class="ocw-kv"><b>意義：</b>' + esc(n.whyItMatters) + '</p>');
+    if ((n.sources || []).length) {
+      nh.push('<p class="meta">來源：' + n.sources.map(function (s, i) {
+        return '<a href="' + esc(s.url) + '" target="_blank" rel="noopener">[' + (i + 1) + '] ' + esc(s.source || s.title) + '</a>';
+      }).join('　') + '</p>');
+    }
+    if (units.length) {
+      nh.push('<div class="ocw-actions">' + units.map(function (u) {
+        return '<a href="../assets/anim/news/' + esc(u) + '.html">看時事篇動畫（' + esc(u) + '）</a>';
+      }).join('') + '</div>');
+    }
+    nh.push('</article>');
+  });
+  nh.push('</div>');
+  nh.push('<p class="ocw-hint" style="margin-top:14px">想看全部單元的時事篇：'
+    + (R.unitKits || []).map(function (k) {
+        return '<a href="../assets/anim/news/' + esc(k.id) + '.html">' + esc(k.id) + '</a>';
+      }).join('　·　') + '</p>');
+  document.getElementById('ocw-news').innerHTML = nh.join('');
+
+  /* ---------- 3. 開放式課程與學習平臺 ---------- */
+  var lh = ['<h2 class="ocw-h2" id="ocw-links-title">開放式課程與自主學習平臺</h2>',
+    '<p class="ocw-hint">以下為公開的開放式課程（OCW）與自主學習平臺，皆為站外連結、需連網；本站僅整理入口，內容與授權依各平臺公告。</p>'];
+  (R.links || []).forEach(function (g) {
+    lh.push('<section class="ocw-grp"><h3>' + esc(g.group) + '</h3>');
+    if (g.note) { lh.push('<p class="ocw-hint">' + esc(g.note) + '</p>'); }
+    lh.push('<ul class="ocw-links">');
+    (g.items || []).forEach(function (it) {
+      lh.push('<li><a href="' + esc(it.url) + '" target="_blank" rel="noopener">' + esc(it.title) + '</a>'
+        + '<span class="note">' + esc(it.note || '') + '</span></li>');
+    });
+    lh.push('</ul></section>');
+  });
+  document.getElementById('ocw-links').innerHTML = lh.join('');
+
+  /* ---------- 4. 本站題庫入口（依年度分組，資料驅動） ---------- */
+  function card(s) {
+    var tags = (s.tags || []).map(function (t) { return '<span class="chip">' + esc(t) + '</span>'; }).join('');
+    return '<article class="card">'
+      + '<div class="card-top"><h3>' + esc(s.name || s.id) + '</h3>'
+      + '<span class="badge badge-ok">' + esc(s.yearLabel || '') + '</span></div>'
+      + '<p class="card-exam">' + esc(s.exam || '') + '</p>'
+      + (tags ? '<p class="chips">' + tags + '</p>' : '')
+      + '<div class="card-foot"><span class="num">題數 ' + esc(s.count == null ? '—' : s.count) + '</span>'
+      + (s.anim ? '<span class="num">含 3B1B 動態講解</span>' : '') + '</div>'
+      + '<a class="go" href="../subject/' + esc(s.id) + '/index.html">進入題庫</a>'
+      + '</article>';
+  }
+  var years = {}, order = [];
+  SUBS.forEach(function (s) {
+    var y = s.yearLabel || '未標示年度';
+    if (!years[y]) { years[y] = []; order.push(y); }
+    years[y].push(s);
+  });
+  order.sort(function (a, b) { return String(b).localeCompare(String(a)); });
+  var bh = ['<h2 class="ocw-h2" id="ocw-banks-title">本站題庫入口</h2>',
+    '<p class="ocw-hint">共 ' + SUBS.length + ' 份題庫（依年度分組）。點「進入題庫」到科目頁；每題另有逐題詳解與 3B1B 風格動態講解。</p>'];
+  order.forEach(function (y) {
+    bh.push('<h3 class="year-label">' + esc(y) + '<span class="year-count">' + years[y].length + ' 科</span></h3>');
+    bh.push('<div class="grid">' + years[y].map(card).join('') + '</div>');
+  });
+  bh.push('<div class="ocw-actions" style="margin-top:16px">'
+    + '<a href="../cross.html">一科練五科（觀點動畫・綜合混編）</a>'
+    + '<a class="ghost" href="../events.html">站內資源專區</a></div>');
+  document.getElementById('ocw-banks').innerHTML = bh.join('');
+
+  /* ---------- 5. 使用方式 ---------- */
+  document.getElementById('ocw-how').innerHTML = [
+    '<h2 class="ocw-h2" id="ocw-how-title">怎麼用這一站</h2>',
+    '<p class="ocw-hint">建議順序：先做題 → 再看動畫 → 最後用時事篇把不同科的同一觀念串起來。</p>',
+    '<ol class="ocw-steps">',
+    '<li>從「本站題庫入口」選一份考古題，進科目頁瀏覽題號與作答狀態。</li>',
+    '<li>單題頁直接點選項作答：作答後會標出你的選擇、正確答案與錯誤選項（標記邏輯沿用站上原有規則，本專區未改動任何判定）。</li>',
+    '<li>看不懂就點該題的「動態講解」，看 3B1B 風格的分階段動畫與語音字幕。</li>',
+    '<li>想跨科複習，到「一科練五科」單元頁：同一核心觀念在五科各一題，單元頁下方有時事篇動畫。</li>',
+    '<li>觀念仍不熟，回到本頁「開放式課程與自主學習平臺」，挑對應科目的 OCW 課程補強。</li>',
+    '</ol>'
+  ].join('');
+
+  document.getElementById('ocw-foot').innerHTML = esc(R.note || '')
+    + '（資源版本 ' + esc(R.version || '') + '，更新 ' + esc(R.updated || '') + '）';
+})();
+</script>
+</body>
+</html>
