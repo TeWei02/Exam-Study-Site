@@ -13,6 +13,7 @@ const SHELL = [
   './index.html',
   './cross.html',
   './events.html',
+  './propmap.html',
   './quiz/',
   './quiz/index.html',
   './manifest.webmanifest',
@@ -20,6 +21,7 @@ const SHELL = [
   './assets/js/subjects.js',
   './assets/js/site.js',
   './assets/js/data/resources.js',
+  './assets/js/data/propmap.js',
   './assets/anim/news/manifest.js'
 ];
 
