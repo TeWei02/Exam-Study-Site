@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>觀點動畫｜一科練五科</title>
+<script>/* 驗收用：JS 錯誤計數器（掛在 <html data-js-errors>） */
+(function(){window.__errs=0;function bump(){window.__errs++;document.documentElement.setAttribute('data-js-errors',String(window.__errs));}
+document.documentElement.setAttribute('data-js-errors','0');
+window.addEventListener('error',bump);window.addEventListener('unhandledrejection',bump);})();</script>
+<style>
+:root{--fg:#e9eefc;--dim:#93a1c8;--gold:#ffd166;--cy:#66d9ef;--pk:#ff8fa3;--gr:#7ee787;--pu:#c792ea;--line:#25315a}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;background:#070a14;color:var(--fg);overflow:hidden;
+  font-family:"PingFang TC","Helvetica Neue",system-ui,sans-serif;
+  background-image:radial-gradient(1200px 660px at 50% -12%,#16203c,#070a14 74%)}
+#wrap{position:fixed;left:50%;top:50%;width:1280px;height:720px;transform:translate(-50%,-50%) scale(var(--k,1));transform-origin:center center}
+#stage{position:absolute;left:0;top:0;width:1280px;height:620px}
+#cv{position:absolute;left:0;top:0;width:1280px;height:620px;display:block}
+.topbar{position:absolute;left:34px;right:34px;top:14px;height:40px;display:flex;align-items:center;gap:10px;z-index:3}
+.topbar .ttl{font-size:14px;color:var(--dim);white-space:nowrap;letter-spacing:.4px}
+.topbar .ttl b{color:var(--cy);font-weight:600}
+.topbar .spacer{flex:1}
+.stops{display:flex;gap:6px}
+.stops button{font:inherit;font-size:13px;padding:5px 11px;border-radius:999px;cursor:pointer;
+  border:1px solid var(--line);background:#111a33;color:#8fa0cc;transition:.2s}
+.stops button:hover{border-color:#41558c;color:var(--fg)}
+.stops button.on{color:#fff;border-color:var(--cy);background:linear-gradient(180deg,#2a3a68,#1b2748);box-shadow:0 0 14px rgba(102,217,239,.32)}
+.stops button.done{color:#cfe3ff;border-color:#3d5a92}
+#center{position:absolute;left:280px;right:280px;top:86px;text-align:center;pointer-events:none;transition:opacity .5s ease;z-index:2}
+#plate{display:inline-block;padding:14px 26px;border-radius:16px;border:1px solid #2b3967;
+  background:linear-gradient(180deg,rgba(23,33,64,.92),rgba(13,19,40,.86));box-shadow:0 10px 40px rgba(0,0,0,.45)}
+#plate .k{font-size:12px;letter-spacing:2px;color:var(--dim)}
+#plate .h{font-size:26px;margin-top:6px;font-weight:600}
+#plate .b{font-size:16px;margin-top:8px;line-height:1.6;color:#c8d6f5}
+#plate .tagline{margin-top:10px;font-size:14px;color:var(--gold)}
+#plate.hide{display:none}
+#chips{position:absolute;left:0;right:0;top:452px;display:flex;justify-content:center;gap:14px;z-index:2;pointer-events:none}
+#chips .chip{opacity:0;transform:translateY(14px);transition:opacity .6s ease,transform .6s ease;
+  padding:10px 18px;border-radius:14px;border:1px solid #35477c;background:rgba(17,26,51,.86);text-align:center;min-width:150px}
+#chips .chip.on{opacity:1;transform:none}
+#chips .chip .t{font-size:12px;color:var(--dim)}
+#chips .chip .w{font-size:19px;color:var(--gold);margin-top:4px;font-weight:600}
+#subs{position:absolute;left:120px;right:120px;bottom:6px;min-height:74px;display:flex;align-items:center;justify-content:center;
+  flex-wrap:wrap;gap:2px 4px;font-size:21px;line-height:1.55;text-align:center;z-index:3}
+#subs .ck{color:#6f7fae;transition:color .28s ease,text-shadow .28s ease}
+#subs .ck.on{color:#fff;text-shadow:0 0 16px rgba(102,217,239,.55)}
+#subs .ck.done{color:#c3d3f4}
+#bar{position:absolute;left:0;right:0;top:628px;height:64px;display:flex;align-items:center;gap:14px;padding:0 34px}
+#bar button{font:inherit;cursor:pointer;border-radius:11px;border:1px solid var(--line);background:#111a33;color:#cfe0ff;padding:9px 14px;transition:.2s}
+#bar button:hover{border-color:#41558c}
+#bar button.pri{background:linear-gradient(180deg,#2f4373,#1d2b4f);border-color:var(--cy);color:#fff}
+#bar .time{font-variant-numeric:tabular-nums;color:var(--dim);font-size:14px;min-width:96px}
+#prog{flex:1;height:6px;border-radius:99px;background:#1a2444;position:relative;overflow:hidden;cursor:pointer}
+#prog i{position:absolute;left:0;top:0;bottom:0;width:0;background:linear-gradient(90deg,#66d9ef,#ffd166);transition:width .18s linear}
+#hint{position:absolute;left:0;right:0;top:694px;height:26px;text-align:center;font-size:14px;color:var(--gold)}
+#hint.hide{display:none}
+#wrap.sound-off #sndbtn{color:var(--gold);border-color:#7a6528}
+/* ---------- 章節地圖側欄 ---------- */
+.mapbtn{font:inherit;font-size:13px;padding:5px 11px;border-radius:999px;cursor:pointer;margin-left:6px;
+  border:1px solid var(--line);background:#111a33;color:#8fa0cc;transition:.2s;white-space:nowrap}
+.mapbtn:hover{border-color:#41558c;color:var(--fg)}
+.mapbtn.on{color:#fff;border-color:var(--gold);background:linear-gradient(180deg,#3a3352,#241f36)}
+#map{position:absolute;left:0;top:0;bottom:0;width:336px;z-index:4;padding:78px 16px 14px;
+  background:linear-gradient(180deg,rgba(9,14,30,.975),rgba(7,10,20,.95));border-right:1px solid #22305a;
+  transform:translateX(-103%);transition:transform .28s ease;overflow:auto}
+#map.on{transform:none}
+#map h4{font-size:13px;color:var(--dim);letter-spacing:1px;font-weight:600;margin:2px 0 8px}
+#map .cap{font-size:11px;color:#6f7fae;letter-spacing:1px;margin:12px 0 6px;border-top:1px solid #1d2a4d;padding-top:9px}
+#map .mrow{display:flex;align-items:flex-start;gap:9px;text-align:left;font:inherit;font-size:14px;cursor:pointer;
+  width:100%;padding:8px 10px;margin-bottom:4px;border-radius:10px;border:1px solid transparent;
+  background:transparent;color:#c8d6f5;transition:.15s}
+#map .mrow:hover{background:#131d38;border-color:#2b3a68}
+#map .mrow.on{background:linear-gradient(180deg,#25335c,#1a2543);border-color:var(--cy);color:#fff}
+#map .mrow.done{color:#8ea6d6}
+#map .mrow i{width:20px;height:20px;flex:0 0 20px;border-radius:50%;border:1px solid #3a4a78;font-style:normal;
+  font-size:12px;line-height:18px;text-align:center;color:#9fb0da;margin-top:1px}
+#map .mrow.on i{border-color:var(--cy);color:#fff}
+#map .mrow .tx{flex:1;min-width:0}
+#map .mrow .tx b{display:block;font-weight:600;font-size:14px}
+#map .mrow .tx span{display:block;font-size:12px;color:#8fa0cc;margin-top:2px;
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+#wrap.map-open #center{opacity:0}
+/* ---------- 片頭標題卡／片尾重點回顧卡 ---------- */
+.cards{position:absolute;inset:0;z-index:3;display:none;align-items:center;justify-content:center}
+.cards.on{display:flex}
+.cards .card{max-width:1000px;padding:28px 38px;border-radius:20px;border:1px solid #2b3967;
+  background:linear-gradient(180deg,rgba(20,29,58,.965),rgba(11,16,34,.945));box-shadow:0 18px 60px rgba(0,0,0,.55);
+  animation:cardin .45s ease both}
+.cards .eyebrow{font-size:13px;letter-spacing:3px;color:var(--gold);text-align:center}
+.cards .bigtitle{font-size:42px;font-weight:600;text-align:center;margin-top:14px;line-height:1.25}
+.cards .cardsub{font-size:18px;color:#c8d6f5;text-align:center;margin-top:12px;line-height:1.6}
+.cards .meta{display:flex;justify-content:center;gap:10px;margin-top:18px;flex-wrap:wrap}
+.cards .meta span{font-size:14px;color:#9fb0da;border:1px solid #34456f;border-radius:999px;padding:5px 13px}
+.cards .route{margin-top:20px;font-size:14px;color:#8fa0cc;text-align:center;border-top:1px solid #22305a;padding-top:14px}
+.cards h5{font-size:15px;letter-spacing:2px;color:var(--gold);text-align:center;margin-bottom:16px}
+.cards .rrow{display:flex;gap:12px;align-items:flex-start;padding:9px 12px;border-radius:12px;border:1px solid #26345c;
+  background:rgba(14,21,42,.6);margin-bottom:9px}
+.cards .rrow i{width:26px;height:26px;flex:0 0 26px;border-radius:50%;border:1px solid #3a4a78;font-style:normal;
+  font-size:13px;line-height:24px;text-align:center;color:#cfe0ff}
+.cards .rrow b{font-size:15px}
+.cards .rrow .rsub{font-size:14px;color:#9fb0da;margin-top:2px;line-height:1.5}
+.cards .keyline{margin-top:12px;font-size:15px;color:#ffd166;text-align:center;line-height:1.6}
+#bug{position:absolute;left:-9999px;top:-9999px}
+</style>
+</head>
+<body>
+<div id="wrap">
+  <div id="stage">
+    <canvas id="cv" width="2560" height="1240"></canvas>
+    <div class="topbar">
+      <span class="ttl">一科練五科　觀點動畫　<b id="unit-title"></b></span>
+      <span class="spacer"></span>
+      <span class="stops" id="stops"></span>
+      <button class="mapbtn" id="mapbtn" type="button">章節地圖</button>
+    </div>
+    <div id="center"><div id="plate"><div class="k" id="p-k"></div><div class="h" id="p-h"></div><div class="b" id="p-b"></div><div class="tagline" id="p-t"></div></div></div>
+    <div id="chips"></div>
+    <div id="subs"></div>
+    <div id="map"><h4>章節地圖</h4><div id="map-body"></div></div>
+    <div class="cards" id="card-title"></div>
+    <div class="cards" id="card-recap"></div>
+  </div>
+  <div id="bar">
+    <button class="pri" id="playbtn" type="button">播放</button>
+    <button id="restart" type="button">從頭</button>
+    <button id="sndbtn" type="button">語音：開</button>
+    <button id="spdbtn" type="button">速度 1.0×</button>
+    <span class="time" id="time">00:00 / 00:00</span>
+    <div id="prog"><i></i></div>
+  </div>
+  <div id="hint" class="hide"></div>
+  <div id="bug"></div>
+</div>
+<script>
+(function(){
+  'use strict';
+  var D = {"unit": {"id": "classify-then-act", "title": "先分類，再下手", "subtitle": "判斷「這是哪一類」是所有解題動作的第一步", "yearLabel": "115 學年度", "startSubject": "chinese", "keyIdea": "作答的第一步永遠不是計算，而是分類：這題屬於哪一類（文類、物質種類、模型、位置關係、題型）？分類決定了要用哪一套工具、哪一個公式、哪一個判準。分類錯了，後面的計算再漂亮也是零分。", "chips": [{"tag": "先認類別", "word": "這是什麼"}, {"tag": "再選工具", "word": "該用什麼"}, {"tag": "別急著算", "word": "分類錯了全錯"}], "nodes": [{"subject": "chinese", "name": "國文", "n": 19, "role": "起點", "point": "先認出「這是神話」，才知道變形要讀成生死觀", "why": "題目問哪一句引文符合神話中的變形再生概念。如果把它當成一般記敘文，會覺得「變成鳥、變成石頭」只是奇幻情節；但神話的文類功能就是用「變形」來代替死亡——所以「生也死之徒，死也生之始，孰知其紀」才是同一個思維。先確定文類，判斷標準就自動出現了。", "next": "同樣的動作搬到化學：先確定這瓶東西是哪一類，才知道要用什麼方法檢驗。", "sceneNode": 7}, {"subject": "chemistry", "name": "化學", "n": 2, "role": "判類", "point": "先分清溶液／膠體／懸浮液，才知道要不要照光", "why": "奈米銀抗菌噴霧的粒徑落在 1～1000 nm，屬於膠體而非真溶液。檢驗的關鍵動作是拿雷射筆照過去：膠體會出現一條清楚的光徑（廷得耳效應），真溶液不會。判斷「是哪一類」直接決定了要用哪一種檢驗方法——這一步沒做，後面再多性質都無從比對。", "next": "物理遇到光，也要先確定它是波還是粒子。", "sceneNode": 10}, {"subject": "physics", "name": "物理", "n": 14, "role": "建模", "point": "先確定光的粒子性，才知道能量為什麼與光強度無關", "why": "光電效應的核心是「一個電子吸收一個光子」，光電子獲得的能量只由入射光頻率 f 決定，與光強度無關——強度變大只是光子數變多、電流變大。若一開始就把光當成連續的波，這題的四個選項會全部讀反。選對模型，答案自己走出來；選錯模型，怎麼算都不對。", "next": "數學的圓與直線，同樣要先分清「是哪一種位置關係」。", "sceneNode": 13}, {"subject": "math-a", "name": "數A", "n": 6, "role": "判位", "point": "先判斷位置關係，才知道要用絃心距還是切線性質", "why": "P、Q 是圓上兩點且對稱於直線 x − 2y + 6 = 0，代表 PQ 垂直於該直線，圓心與 PQ 的關係是「弦」。先把分類做對（這是弦，不是切線），再把點到直線距離拿來當絃心距：P 到直線距離為 10/√5 = 2√5，得 PQ = 4√5、半弦長 2√5，最後 r² = 4² + (2√5)² = 36，r = 6。分類一確定，公式就不用猜。", "next": "閱讀測驗也一樣：先確定文章在講哪一種主張，主旨才找得到。", "sceneNode": 16}, {"subject": "english", "name": "英文", "n": 21, "role": "收束", "point": "先認出文章的類型，主旨才不會抓錯", "why": "同一篇文章被問 \"Which of the following states the purpose of the passage?\"，四個選項分別指向預測犯罪、自我保護、說明合作為何困難、示範訴訟策略。文章講的是囚徒困境——個體理性如何讓合作變得難以達成，所以答案是 (C)。答錯的人通常是還沒確定文章類型（說明一種理論）就急著選，把文中舉的例子當成了主旨。", "next": "", "sceneNode": 19}], "chapters": {"title": 0, "open": 1, "idea": 5, "stops": [{"label": "第 1 站　國文　第 19 題", "sub": "先認出「這是神話」，才知道變形要讀成生死觀", "scene": 7, "no": 1}, {"label": "第 2 站　化學　第 2 題", "sub": "先分清溶液／膠體／懸浮液，才知道要不要照光", "scene": 10, "no": 2}, {"label": "第 3 站　物理　第 14 題", "sub": "先確定光的粒子性，才知道能量為什麼與光強度無關", "scene": 13, "no": 3}, {"label": "第 4 站　數A　第 6 題", "sub": "先判斷位置關係，才知道要用絃心距還是切線性質", "scene": 16, "no": 4}, {"label": "第 5 站　英文　第 21 題", "sub": "先認出文章的類型，主旨才不會抓錯", "scene": 19, "no": 5}], "close": 21, "recap": 22}, "recap": [{"no": 1, "subject": "chinese", "name": "國文", "n": 19, "role": "起點", "point": "先認出「這是神話」，才知道變形要讀成生死觀", "scene": 7}, {"no": 2, "subject": "chemistry", "name": "化學", "n": 2, "role": "判類", "point": "先分清溶液／膠體／懸浮液，才知道要不要照光", "scene": 10}, {"no": 3, "subject": "physics", "name": "物理", "n": 14, "role": "建模", "point": "先確定光的粒子性，才知道能量為什麼與光強度無關", "scene": 13}, {"no": 4, "subject": "math-a", "name": "數A", "n": 6, "role": "判位", "point": "先判斷位置關係，才知道要用絃心距還是切線性質", "scene": 16}, {"no": 5, "subject": "english", "name": "英文", "n": 21, "role": "收束", "point": "先認出文章的類型，主旨才不會抓錯", "scene": 19}]}, "scenes": [{"kind": "title", "phase": "", "text": "一科練五科，觀點動畫。這一集談的是「先分類，再下手」。判斷「這是哪一類」是所有解題動作的第一步。路線是：國文第 19 題、化學第 2 題、物理第 14 題、數A第 6 題、英文第 21 題。", "audio": "classify-then-act/audio/seg01.mp3", "dur": 20.91, "reveal": null, "total": null, "stage": null, "i": null, "chunks": [{"t": "一科練五科，", "t0": 0.0, "t1": 1.3206315789473686, "i": 0}, {"t": "觀點動畫。", "t0": 1.3206315789473686, "t1": 2.421157894736842, "i": 1}, {"t": "這一集談的是「先分類，", "t0": 2.421157894736842, "t1": 4.842315789473684, "i": 2}, {"t": "再下手」。", "t0": 4.842315789473684, "t1": 5.942842105263159, "i": 3}, {"t": "判斷「這是哪一類」是所有解題動作的第一步。", "t0": 5.942842105263159, "t1": 10.565052631578949, "i": 4}, {"t": "路線是：", "t0": 10.565052631578949, "t1": 11.445473684210526, "i": 5}, {"t": "國文第 19 題、", "t0": 11.445473684210526, "t1": 13.426421052631579, "i": 6}, {"t": "化學第 2 題、", "t0": 13.426421052631579, "t1": 15.187263157894737, "i": 7}, {"t": "物理第 14 題、", "t0": 15.187263157894737, "t1": 17.16821052631579, "i": 8}, {"t": "數A第 6 題、", "t0": 17.16821052631579, "t1": 18.929052631578948, "i": 9}, {"t": "英文第 21 題。", "t0": 18.929052631578948, "t1": 20.91, "i": 10}]}, {"kind": "open", "phase": "", "text": "這一集要談的是：先分類，再下手。判斷「這是哪一類」是所有解題動作的第一步", "audio": "classify-then-act/audio/seg02.mp3", "dur": 8.36, "reveal": null, "total": null, "stage": null, "i": null, "chunks": [{"t": "這一集要談的是：", "t0": 0.0, "t1": 1.8577777777777778, "i": 0}, {"t": "先分類，", "t0": 1.8577777777777778, "t1": 2.7866666666666666, "i": 1}, {"t": "再下手。", "t0": 2.7866666666666666, "t1": 3.7155555555555555, "i": 2}, {"t": "判斷「這是哪一類」是所有解題動作的第一步", "t0": 3.7155555555555555, "t1": 8.36, "i": 3}]}, {"kind": "path", "phase": "", "text": "這一組練「先分類」這個動作。", "audio": "classify-then-act/audio/seg03.mp3", "dur": 3.68, "reveal": 1, "total": 3, "stage": null, "i": null, "chunks": [{"t": "這一組練「先分類」這個動作。", "t0": 0.0, "t1": 3.68, "i": 0}]}, {"kind": "path", "phase": "", "text": "國文從題組出發：同一句話，放在神話裡和在論說文裡，意思完全不同——你得先認出文類，才知道「變形」不是奇幻設定而是生死觀；化學拿到一瓶噴霧，要先判斷它是真溶液、膠體還是懸浮液，才知道該不該拿雷射筆照它；物理看到光電效應的數據，要先確認光具有粒子性，才知道電子獲得的能量為什麼和光強度無關；數學看到圓與直線，要先判斷兩者是相交、相切還是相離，才知道要用絃心距還是切線性質；英文的閱讀測驗也是——先認出這篇在講什麼類型的主張，才知道「主旨」要往哪裡找。", "audio": "classify-then-act/audio/seg04.mp3", "dur": 48.15, "reveal": 2, "total": 3, "stage": null, "i": null, "chunks": [{"t": "國文從題組出發：", "t0": 0.0, "t1": 1.727354260089686, "i": 0}, {"t": "同一句話，", "t0": 1.727354260089686, "t1": 2.8069506726457396, "i": 1}, {"t": "放在神話裡和在論說文裡，", "t0": 2.8069506726457396, "t1": 5.397982062780269, "i": 2}, {"t": "意思完全不同——你得先認出文類，", "t0": 5.397982062780269, "t1": 8.85269058295964, "i": 3}, {"t": "才知道「變形」不是奇幻設定而是生死觀；", "t0": 8.85269058295964, "t1": 12.955156950672645, "i": 4}, {"t": "化學拿到一瓶噴霧，", "t0": 12.955156950672645, "t1": 14.898430493273542, "i": 5}, {"t": "要先判斷它是真溶液、", "t0": 14.898430493273542, "t1": 17.057623318385648, "i": 6}, {"t": "膠體還是懸浮液，", "t0": 17.057623318385648, "t1": 18.78497757847534, "i": 7}, {"t": "才知道該不該拿雷射筆照它；", "t0": 18.78497757847534, "t1": 21.591928251121075, "i": 8}, {"t": "物理看到光電效應的數據，", "t0": 21.591928251121075, "t1": 24.182959641255607, "i": 9}, {"t": "要先確認光具有粒子性，", "t0": 24.182959641255607, "t1": 26.558071748878923, "i": 10}, {"t": "才知道電子獲得的能量為什麼和光強度無關；", "t0": 26.558071748878923, "t1": 30.87645739910314, "i": 11}, {"t": "數學看到圓與直線，", "t0": 30.87645739910314, "t1": 32.81973094170404, "i": 12}, {"t": "要先判斷兩者是相交、", "t0": 32.81973094170404, "t1": 34.978923766816145, "i": 13}, {"t": "相切還是相離，", "t0": 34.978923766816145, "t1": 36.49035874439462, "i": 14}, {"t": "才知道要用絃心距還是切線性質；", "t0": 36.49035874439462, "t1": 39.729147982062784, "i": 15}, {"t": "英文的閱讀測驗也是——先認出這篇在講什麼類型的主張，", "t0": 39.729147982062784, "t1": 45.34304932735426, "i": 16}, {"t": "才知道「主旨」要往哪裡找。", "t0": 45.34304932735426, "t1": 48.15, "i": 17}]}, {"kind": "path", "phase": "", "text": "五題合起來就是一個動作：別急著算，先問「這是哪一類」。", "audio": "classify-then-act/audio/seg05.mp3", "dur": 6.44, "reveal": 3, "total": 3, "stage": null, "i": null, "chunks": [{"t": "五題合起來就是一個動作：", "t0": 0.0, "t1": 2.8622222222222224, "i": 0}, {"t": "別急著算，", "t0": 2.8622222222222224, "t1": 4.054814814814815, "i": 1}, {"t": "先問「這是哪一類」。", "t0": 4.054814814814815, "t1": 6.440000000000001, "i": 2}]}, {"kind": "idea", "phase": "", "text": "作答的第一步永遠不是計算，而是分類：這題屬於哪一類（文類、物質種類、模型、位置關係、題型）？分類決定了要用哪一套工具、哪一個公式、哪一個判準。", "audio": "classify-then-act/audio/seg06.mp3", "dur": 15.81, "reveal": null, "total": null, "stage": 0, "i": null, "chunks": [{"t": "作答的第一步永遠不是計算，", "t0": 0.0, "t1": 2.894788732394366, "i": 0}, {"t": "而是分類：", "t0": 2.894788732394366, "t1": 4.0081690140845065, "i": 1}, {"t": "這題屬於哪一類（文類、", "t0": 4.0081690140845065, "t1": 6.457605633802817, "i": 2}, {"t": "物質種類、", "t0": 6.457605633802817, "t1": 7.570985915492957, "i": 3}, {"t": "模型、", "t0": 7.570985915492957, "t1": 8.239014084507042, "i": 4}, {"t": "位置關係、", "t0": 8.239014084507042, "t1": 9.352394366197183, "i": 5}, {"t": "題型）？", "t0": 9.352394366197183, "t1": 10.243098591549296, "i": 6}, {"t": "分類決定了要用哪一套工具、", "t0": 10.243098591549296, "t1": 13.137887323943662, "i": 7}, {"t": "哪一個公式、", "t0": 13.137887323943662, "t1": 14.473943661971832, "i": 8}, {"t": "哪一個判準。", "t0": 14.473943661971832, "t1": 15.81, "i": 9}]}, {"kind": "idea", "phase": "", "text": "分類錯了，後面的計算再漂亮也是零分。", "audio": "classify-then-act/audio/seg07.mp3", "dur": 4.53, "reveal": null, "total": null, "stage": 1, "i": null, "chunks": [{"t": "分類錯了，", "t0": 0.0, "t1": 1.2583333333333335, "i": 0}, {"t": "後面的計算再漂亮也是零分。", "t0": 1.2583333333333335, "t1": 4.53, "i": 1}]}, {"kind": "stop", "phase": "node", "text": "第 1 站，國文第 19 題。先認出「這是神話」，才知道變形要讀成生死觀。", "audio": "classify-then-act/audio/seg08.mp3", "dur": 8.57, "reveal": null, "total": null, "stage": null, "i": 0, "chunks": [{"t": "第 1 站，", "t0": 0.0, "t1": 1.3897297297297297, "i": 0}, {"t": "國文第 19 題。", "t0": 1.3897297297297297, "t1": 3.4743243243243245, "i": 1}, {"t": "先認出「這是神話」，", "t0": 3.4743243243243245, "t1": 5.79054054054054, "i": 2}, {"t": "才知道變形要讀成生死觀。", "t0": 5.79054054054054, "t1": 8.57, "i": 3}]}, {"kind": "stop", "phase": "why", "text": "題目問哪一句引文符合神話中的變形再生概念。如果把它當成一般記敘文，會覺得「變成鳥、變成石頭」只是奇幻情節；但神話的文類功能就是用「變形」來代替死亡——所以「生也死之徒，死也生之始，孰知其紀」才是同一個思維。", "audio": "classify-then-act/audio/seg09.mp3", "dur": 22.61, "reveal": null, "total": null, "stage": null, "i": 0, "chunks": [{"t": "題目問哪一句引文符合神話中的變形再生概念。", "t0": 0.0, "t1": 4.609805825242718, "i": 0}, {"t": "如果把它當成一般記敘文，", "t0": 4.609805825242718, "t1": 7.243980582524272, "i": 1}, {"t": "會覺得「變成鳥、", "t0": 7.243980582524272, "t1": 9.000097087378641, "i": 2}, {"t": "變成石頭」只是奇幻情節；", "t0": 9.000097087378641, "t1": 11.634271844660194, "i": 3}, {"t": "但神話的文類功能就是用「變形」來代替死亡——所以「生也死之徒，", "t0": 11.634271844660194, "t1": 18.439223300970873, "i": 4}, {"t": "死也生之始，", "t0": 18.439223300970873, "t1": 19.756310679611648, "i": 5}, {"t": "孰知其紀」才是同一個思維。", "t0": 19.756310679611648, "t1": 22.61, "i": 6}]}, {"kind": "stop", "phase": "next", "text": "同樣的動作搬到化學：先確定這瓶東西是哪一類，才知道要用什麼方法檢驗。", "audio": "classify-then-act/audio/seg10.mp3", "dur": 7.93, "reveal": null, "total": null, "stage": null, "i": 0, "chunks": [{"t": "同樣的動作搬到化學：", "t0": 0.0, "t1": 2.3323529411764703, "i": 0}, {"t": "先確定這瓶東西是哪一類，", "t0": 2.3323529411764703, "t1": 5.131176470588235, "i": 1}, {"t": "才知道要用什麼方法檢驗。", "t0": 5.131176470588235, "t1": 7.93, "i": 2}]}, {"kind": "stop", "phase": "node", "text": "第 2 站，化學第 2 題。先分清溶液／膠體／懸浮液，才知道要不要照光。", "audio": "classify-then-act/audio/seg11.mp3", "dur": 8.36, "reveal": null, "total": null, "stage": null, "i": 1, "chunks": [{"t": "第 2 站，", "t0": 0.0, "t1": 1.3933333333333333, "i": 0}, {"t": "化學第 2 題。", "t0": 1.3933333333333333, "t1": 3.251111111111111, "i": 1}, {"t": "先分清溶液／膠體／懸浮液，", "t0": 3.251111111111111, "t1": 6.27, "i": 2}, {"t": "才知道要不要照光。", "t0": 6.27, "t1": 8.36, "i": 3}]}, {"kind": "stop", "phase": "why", "text": "奈米銀抗菌噴霧的粒徑落在1～1000nm，屬於膠體而非真溶液。檢驗的關鍵動作是拿雷射筆照過去：膠體會出現一條清楚的光徑（廷得耳效應），真溶液不會。判斷「是哪一類」直接決定了要用哪一種檢驗方法——這一步沒做，後面再多性質都無從比對。", "audio": "classify-then-act/audio/seg12.mp3", "dur": 25.17, "reveal": null, "total": null, "stage": null, "i": 1, "chunks": [{"t": "奈米銀抗菌噴霧的粒徑落在1～1000nm，", "t0": 0.0, "t1": 4.596260869565218, "i": 0}, {"t": "屬於膠體而非真溶液。", "t0": 4.596260869565218, "t1": 6.784956521739131, "i": 1}, {"t": "檢驗的關鍵動作是拿雷射筆照過去：", "t0": 6.784956521739131, "t1": 10.286869565217392, "i": 2}, {"t": "膠體會出現一條清楚的光徑（廷得耳效應），", "t0": 10.286869565217392, "t1": 14.664260869565219, "i": 3}, {"t": "真溶液不會。", "t0": 14.664260869565219, "t1": 15.977478260869566, "i": 4}, {"t": "判斷「是哪一類」直接決定了要用哪一種檢驗方法——這一步沒做，", "t0": 15.977478260869566, "t1": 22.543565217391308, "i": 5}, {"t": "後面再多性質都無從比對。", "t0": 22.543565217391308, "t1": 25.17, "i": 6}]}, {"kind": "stop", "phase": "next", "text": "物理遇到光，也要先確定它是波還是粒子。", "audio": "classify-then-act/audio/seg13.mp3", "dur": 4.74, "reveal": null, "total": null, "stage": null, "i": 1, "chunks": [{"t": "物理遇到光，", "t0": 0.0, "t1": 1.496842105263158, "i": 0}, {"t": "也要先確定它是波還是粒子。", "t0": 1.496842105263158, "t1": 4.74, "i": 1}]}, {"kind": "stop", "phase": "node", "text": "第 3 站，物理第 14 題。先確定光的粒子性，才知道能量為什麼與光強度無關。", "audio": "classify-then-act/audio/seg14.mp3", "dur": 9.0, "reveal": null, "total": null, "stage": null, "i": 2, "chunks": [{"t": "第 3 站，", "t0": 0.0, "t1": 1.3846153846153846, "i": 0}, {"t": "物理第 14 題。", "t0": 1.3846153846153846, "t1": 3.4615384615384617, "i": 1}, {"t": "先確定光的粒子性，", "t0": 3.4615384615384617, "t1": 5.538461538461538, "i": 2}, {"t": "才知道能量為什麼與光強度無關。", "t0": 5.538461538461538, "t1": 9.0, "i": 3}]}, {"kind": "stop", "phase": "why", "text": "光電效應的核心是「一個電子吸收一個光子」，光電子獲得的能量只由入射光頻率f決定，與光強度無關——強度變大只是光子數變多、電流變大。若一開始就把光當成連續的波，這題的四個選項會全部讀反。", "audio": "classify-then-act/audio/seg15.mp3", "dur": 20.27, "reveal": null, "total": null, "stage": null, "i": 2, "chunks": [{"t": "光電效應的核心是「一個電子吸收一個光子」，", "t0": 0.0, "t1": 4.626847826086957, "i": 0}, {"t": "光電子獲得的能量只由入射光頻率f決定，", "t0": 4.626847826086957, "t1": 8.81304347826087, "i": 1}, {"t": "與光強度無關——強度變大只是光子數變多、", "t0": 8.81304347826087, "t1": 13.219565217391304, "i": 2}, {"t": "電流變大。", "t0": 13.219565217391304, "t1": 14.321195652173913, "i": 3}, {"t": "若一開始就把光當成連續的波，", "t0": 14.321195652173913, "t1": 17.405760869565217, "i": 4}, {"t": "這題的四個選項會全部讀反。", "t0": 17.405760869565217, "t1": 20.27, "i": 5}]}, {"kind": "stop", "phase": "next", "text": "數學的圓與直線，同樣要先分清「是哪一種位置關係」。", "audio": "classify-then-act/audio/seg16.mp3", "dur": 6.02, "reveal": null, "total": null, "stage": null, "i": 2, "chunks": [{"t": "數學的圓與直線，", "t0": 0.0, "t1": 1.9264, "i": 0}, {"t": "同樣要先分清「是哪一種位置關係」。", "t0": 1.9264, "t1": 6.02, "i": 1}]}, {"kind": "stop", "phase": "node", "text": "第 4 站，數A第 6 題。先判斷位置關係，才知道要用絃心距還是切線性質。", "audio": "classify-then-act/audio/seg17.mp3", "dur": 8.57, "reveal": null, "total": null, "stage": null, "i": 3, "chunks": [{"t": "第 4 站，", "t0": 0.0, "t1": 1.3897297297297297, "i": 0}, {"t": "數A第 6 題。", "t0": 1.3897297297297297, "t1": 3.2427027027027027, "i": 1}, {"t": "先判斷位置關係，", "t0": 3.2427027027027027, "t1": 5.095675675675676, "i": 2}, {"t": "才知道要用絃心距還是切線性質。", "t0": 5.095675675675676, "t1": 8.57, "i": 3}]}, {"kind": "stop", "phase": "why", "text": "P、Q是圓上兩點且對稱於直線x−2y+6=0，代表PQ垂直於該直線，圓心與PQ的關係是「弦」。先把分類做對（這是弦，不是切線），再把點到直線距離拿來當絃心距：P到直線距離為10/√5=2√5，得PQ=4√5、半弦長2√5，最後r²=4²+(2√5)²=36，r=6。", "audio": "classify-then-act/audio/seg18.mp3", "dur": 29.0, "reveal": null, "total": null, "stage": null, "i": 3, "chunks": [{"t": "P、", "t0": 0.0, "t1": 0.43609022556390975, "i": 0}, {"t": "Q是圓上兩點且對稱於直線x−2y+6=0，", "t0": 0.43609022556390975, "t1": 5.015037593984962, "i": 1}, {"t": "代表PQ垂直於該直線，", "t0": 5.015037593984962, "t1": 7.413533834586466, "i": 2}, {"t": "圓心與PQ的關係是「弦」。", "t0": 7.413533834586466, "t1": 10.24812030075188, "i": 3}, {"t": "先把分類做對（這是弦，", "t0": 10.24812030075188, "t1": 12.646616541353383, "i": 4}, {"t": "不是切線），", "t0": 12.646616541353383, "t1": 13.954887218045112, "i": 5}, {"t": "再把點到直線距離拿來當絃心距：", "t0": 13.954887218045112, "t1": 17.225563909774436, "i": 6}, {"t": "P到直線距離為10/√5=2√5，", "t0": 17.225563909774436, "t1": 20.93233082706767, "i": 7}, {"t": "得PQ=4√5、", "t0": 20.93233082706767, "t1": 22.67669172932331, "i": 8}, {"t": "半弦長2√5，", "t0": 22.67669172932331, "t1": 24.203007518796994, "i": 9}, {"t": "最後r²=4²+(2√5)²=36，", "t0": 24.203007518796994, "t1": 28.127819548872182, "i": 10}, {"t": "r=6。", "t0": 28.127819548872182, "t1": 29.0, "i": 11}]}, {"kind": "stop", "phase": "next", "text": "閱讀測驗也一樣：先確定文章在講哪一種主張，主旨才找得到。", "audio": "classify-then-act/audio/seg19.mp3", "dur": 6.66, "reveal": null, "total": null, "stage": null, "i": 3, "chunks": [{"t": "閱讀測驗也一樣：", "t0": 0.0, "t1": 1.9028571428571428, "i": 0}, {"t": "先確定文章在講哪一種主張，", "t0": 1.9028571428571428, "t1": 4.995, "i": 1}, {"t": "主旨才找得到。", "t0": 4.995, "t1": 6.660000000000001, "i": 2}]}, {"kind": "stop", "phase": "node", "text": "第 5 站，英文第 21 題。先認出文章的類型，主旨才不會抓錯。", "audio": "classify-then-act/audio/seg20.mp3", "dur": 7.51, "reveal": null, "total": null, "stage": null, "i": 4, "chunks": [{"t": "第 5 站，", "t0": 0.0, "t1": 1.408125, "i": 0}, {"t": "英文第 21 題。", "t0": 1.408125, "t1": 3.5203124999999997, "i": 1}, {"t": "先認出文章的類型，", "t0": 3.5203124999999997, "t1": 5.6325, "i": 2}, {"t": "主旨才不會抓錯。", "t0": 5.6325, "t1": 7.51, "i": 3}]}, {"kind": "stop", "phase": "why", "text": "同一篇文章被問\"Whichofthefollowingstatesthepurposeofthepassage?\"，四個選項分別指向預測犯罪、自我保護、說明合作為何困難、示範訴訟策略。", "audio": "classify-then-act/audio/seg21.mp3", "dur": 20.27, "reveal": null, "total": null, "stage": null, "i": 4, "chunks": [{"t": "同一篇文章被問\"Whichofthefollowingstatesthepurposeofthepassage?", "t0": 0.0, "t1": 12.338260869565216, "i": 0}, {"t": "\"，", "t0": 12.338260869565216, "t1": 12.778913043478262, "i": 1}, {"t": "四個選項分別指向預測犯罪、", "t0": 12.778913043478262, "t1": 15.643152173913045, "i": 2}, {"t": "自我保護、", "t0": 15.643152173913045, "t1": 16.74478260869565, "i": 3}, {"t": "說明合作為何困難、", "t0": 16.74478260869565, "t1": 18.72771739130435, "i": 4}, {"t": "示範訴訟策略。", "t0": 18.72771739130435, "t1": 20.27, "i": 5}]}, {"kind": "close", "phase": "", "text": "五個科目，同一個核心觀念。先分類，再下手——練一科，等於把其他四科的同一個觀念也走過一次。", "audio": "classify-then-act/audio/seg22.mp3", "dur": 10.27, "reveal": null, "total": null, "stage": null, "i": null, "chunks": [{"t": "五個科目，", "t0": 0.0, "t1": 1.141111111111111, "i": 0}, {"t": "同一個核心觀念。", "t0": 1.141111111111111, "t1": 2.9668888888888887, "i": 1}, {"t": "先分類，", "t0": 2.9668888888888887, "t1": 3.879777777777778, "i": 2}, {"t": "再下手——練一科，", "t0": 3.879777777777778, "t1": 5.933777777777777, "i": 3}, {"t": "等於把其他四科的同一個觀念也走過一次。", "t0": 5.933777777777777, "t1": 10.27, "i": 4}]}, {"kind": "recap", "phase": "", "text": "重點回顧。第 1 站，國文第 19 題，先認出「這是神話」，才知道變形要讀成生死觀；第 2 站，化學第 2 題，先分清溶液／膠體／懸浮液，才知道要不要照光；第 3 站，物理第 14 題，先確定光的粒子性，才知道能量為什麼與光強度無關；第 4 站，數A第 6 題，先判斷位置關係，才知道要用絃心距還是切線性質；第 5 站，英文第 21 題，先認出文章的類型，主旨才不會抓錯。五題指向同一件事：作答的第一步永遠不是計算，而是分類：這題屬於哪一類（文類、物質種類、模型、位置關係、題型）？分類決定了要用哪一套工具、哪一個公式、哪一個判準。", "audio": "classify-then-act/audio/seg23.mp3", "dur": 57.3, "reveal": null, "total": null, "stage": null, "i": null, "chunks": [{"t": "重點回顧。", "t0": 0.0, "t1": 1.0770676691729324, "i": 0}, {"t": "第 1 站，", "t0": 1.0770676691729324, "t1": 2.369548872180451, "i": 1}, {"t": "國文第 19 題，", "t0": 2.369548872180451, "t1": 4.30827067669173, "i": 2}, {"t": "先認出「這是神話」，", "t0": 4.30827067669173, "t1": 6.462406015037594, "i": 3}, {"t": "才知道變形要讀成生死觀；", "t0": 6.462406015037594, "t1": 9.047368421052632, "i": 4}, {"t": "第 2 站，", "t0": 9.047368421052632, "t1": 10.339849624060149, "i": 5}, {"t": "化學第 2 題，", "t0": 10.339849624060149, "t1": 12.063157894736841, "i": 6}, {"t": "先分清溶液／膠體／懸浮液，", "t0": 12.063157894736841, "t1": 14.863533834586466, "i": 7}, {"t": "才知道要不要照光；", "t0": 14.863533834586466, "t1": 16.802255639097744, "i": 8}, {"t": "第 3 站，", "t0": 16.802255639097744, "t1": 18.094736842105263, "i": 9}, {"t": "物理第 14 題，", "t0": 18.094736842105263, "t1": 20.03345864661654, "i": 10}, {"t": "先確定光的粒子性，", "t0": 20.03345864661654, "t1": 21.972180451127816, "i": 11}, {"t": "才知道能量為什麼與光強度無關；", "t0": 21.972180451127816, "t1": 25.203383458646613, "i": 12}, {"t": "第 4 站，", "t0": 25.203383458646613, "t1": 26.495864661654135, "i": 13}, {"t": "數A第 6 題，", "t0": 26.495864661654135, "t1": 28.219172932330824, "i": 14}, {"t": "先判斷位置關係，", "t0": 28.219172932330824, "t1": 29.942481203007517, "i": 15}, {"t": "才知道要用絃心距還是切線性質；", "t0": 29.942481203007517, "t1": 33.17368421052631, "i": 16}, {"t": "第 5 站，", "t0": 33.17368421052631, "t1": 34.46616541353384, "i": 17}, {"t": "英文第 21 題，", "t0": 34.46616541353384, "t1": 36.40488721804511, "i": 18}, {"t": "先認出文章的類型，", "t0": 36.40488721804511, "t1": 38.34360902255639, "i": 19}, {"t": "主旨才不會抓錯。", "t0": 38.34360902255639, "t1": 40.06691729323308, "i": 20}, {"t": "五題指向同一件事：", "t0": 40.06691729323308, "t1": 42.005639097744364, "i": 21}, {"t": "作答的第一步永遠不是計算，", "t0": 42.005639097744364, "t1": 44.80601503759399, "i": 22}, {"t": "而是分類：", "t0": 44.80601503759399, "t1": 45.88308270676691, "i": 23}, {"t": "這題屬於哪一類（文類、", "t0": 45.88308270676691, "t1": 48.252631578947366, "i": 24}, {"t": "物質種類、", "t0": 48.252631578947366, "t1": 49.3296992481203, "i": 25}, {"t": "模型、", "t0": 49.3296992481203, "t1": 49.975939849624055, "i": 26}, {"t": "位置關係、", "t0": 49.975939849624055, "t1": 51.05300751879699, "i": 27}, {"t": "題型）？", "t0": 51.05300751879699, "t1": 51.91466165413534, "i": 28}, {"t": "分類決定了要用哪一套工具、", "t0": 51.91466165413534, "t1": 54.71503759398496, "i": 29}, {"t": "哪一個公式、", "t0": 54.71503759398496, "t1": 56.00751879699248, "i": 30}, {"t": "哪一個判準。", "t0": 56.00751879699248, "t1": 57.3, "i": 31}]}, {"kind": "end", "phase": "", "text": "這條線的起點可以是任何一科。挑一科開始，就等於走過五科。", "audio": "classify-then-act/audio/seg24.mp3", "dur": 6.66, "reveal": null, "total": null, "stage": null, "i": null, "chunks": [{"t": "這條線的起點可以是任何一科。", "t0": 0.0, "t1": 3.3300000000000005, "i": 0}, {"t": "挑一科開始，", "t0": 3.3300000000000005, "t1": 4.757142857142857, "i": 1}, {"t": "就等於走過五科。", "t0": 4.757142857142857, "t1": 6.660000000000001, "i": 2}]}], "meta": {"voice": "zh-CN-XiaoxiaoNeural", "rate": "-6%", "charsPerSec": 4.7, "estimate": 366.8, "generated": "2026-10-13 09:34:46"}};
+  var SUBCOL = {'english':'#ff8fa3','chemistry':'#7ee787','physics':'#66d9ef','math-a':'#ffd166','chinese':'#c792ea',
+                'math-b':'#ffd166','history':'#f0a868','geography':'#7ee787','civics':'#66d9ef'};
+  var $ = function(id){return document.getElementById(id);};
+  var wrap=$('wrap'), cv=$('cv'), ctx=cv.getContext('2d');
+  var CW=1280, CH=620, CX=640, CY=304, RX=392, RY=166;
+  var scenes=D.scenes, unit=D.unit, nodes=unit.nodes, N=nodes.length;
+  var estDur = scenes.map(function(s){return s.dur;});
+
+  /* ---------- 音檔：載入 metadata 取得精確長度，建時間軸 ---------- */
+  var AUD=[], DUR=estDur.slice(), starts=[], soundOn=true, playing=false, speed=1, t=0, cur=0, audioReady=false;
+  scenes.forEach(function(s,i){
+    var a=new Audio();
+    a.preload='auto'; a.src=s.audio;
+    a.addEventListener('loadedmetadata',function(){ if(isFinite(a.duration)&&a.duration>0){ DUR[i]=a.duration; timeline(); } });
+    a.addEventListener('ended',function(){ if(soundOn&&playing&&cur===i){ goTo(i+1,true); } });
+    AUD.push(a);
+  });
+  function timeline(){ var s=0; starts=[]; for(var i=0;i<DUR.length;i++){ starts.push(s); s+=DUR[i]; } total=s; $('time').textContent='00:00 / '+fmt(total); }
+  var total=0; timeline();
+  function fmt(x){ x=Math.max(0,x||0); var m=Math.floor(x/60), s=Math.floor(x%60); return (m<10?'0':'')+m+':'+(s<10?'0':'')+s; }
+
+  /* ---------- 場景幾何 ---------- */
+  function pos(i){ var a=(-90+i*72)*Math.PI/180; return [CX+RX*Math.cos(a), CY+RY*Math.sin(a)]; }
+  function col(i){ var n=nodes[i]; return SUBCOL[n.subject]||'#66d9ef'; }
+  var stars=[]; for(var i=0;i<120;i++){ stars.push({x:Math.random()*CW,y:Math.random()*CH,r:Math.random()*1.5+.4,p:Math.random()*6.28}); }
+  function ease(p){ return p<0?0:(p>1?1:1-Math.pow(1-p,3)); }
+  function clamp(x,a,b){ return x<a?a:(x>b?b:x); }
+
+  /* ---------- 畫布繪製 ---------- */
+  function bg(tt){
+    var g=ctx.createLinearGradient(0,0,0,CH); g.addColorStop(0,'#0a1024'); g.addColorStop(1,'#060912');
+    ctx.fillStyle=g; ctx.fillRect(0,0,CW,CH);
+    for(var i=0;i<stars.length;i++){ var s=stars[i]; var al=.25+.35*Math.sin(tt*1.1+s.p);
+      ctx.fillStyle='rgba(160,190,255,'+al.toFixed(3)+')'; ctx.beginPath(); ctx.arc(s.x,s.y,s.r,0,6.2832); ctx.fill(); }
+  }
+  function nodeShape(i,alpha,scale,fill){
+    var p=pos(i), r=34*scale;
+    ctx.save(); ctx.globalAlpha=alpha;
+    if(fill){ ctx.shadowColor=col(i); ctx.shadowBlur=26; }
+    ctx.beginPath(); ctx.arc(p[0],p[1],r,0,6.2832);
+    ctx.fillStyle=fill?col(i):'rgba(18,27,52,.95)'; ctx.fill();
+    ctx.lineWidth=2; ctx.strokeStyle=fill?col(i):'#31406e'; ctx.stroke();
+    ctx.shadowBlur=0;
+    ctx.fillStyle=fill?'#08101f':'#c8d6f5'; ctx.font='600 17px "PingFang TC",system-ui,sans-serif';
+    ctx.textAlign='center'; ctx.textBaseline='middle';
+    ctx.fillText(String(i+1),p[0],p[1]+1);
+    ctx.globalAlpha=1; ctx.fillStyle=fill?'#e9eefc':'#8fa0cc'; ctx.font='600 19px "PingFang TC",system-ui,sans-serif';
+    ctx.fillText(nodes[i].name, p[0], p[1]+r+24);
+    if(nodes[i].role){ ctx.fillStyle='#ffd166'; ctx.font='13px "PingFang TC",system-ui,sans-serif';
+      ctx.fillText(nodes[i].role, p[0], p[1]+r+45); }
+    ctx.restore();
+  }
+  function ring(alpha,dash){ ctx.save(); ctx.globalAlpha=alpha; ctx.setLineDash(dash?[8,10]:[]);
+    ctx.strokeStyle='#2b3a68'; ctx.lineWidth=2; ctx.beginPath();
+    ctx.ellipse(CX,CY,RX,RY,0,0,6.2832); ctx.stroke(); ctx.restore(); }
+  function hub(alpha,scale,label){
+    ctx.save(); ctx.globalAlpha=alpha;
+    ctx.shadowColor='#ffd166'; ctx.shadowBlur=34;
+    var g=ctx.createRadialGradient(CX,CY,4,CX,CY,72*scale);
+    g.addColorStop(0,'rgba(255,209,102,.95)'); g.addColorStop(1,'rgba(255,209,102,.18)');
+    ctx.beginPath(); ctx.arc(CX,CY,72*scale,0,6.2832); ctx.fillStyle=g; ctx.fill();
+    ctx.shadowBlur=0; ctx.beginPath(); ctx.arc(CX,CY,72*scale,0,6.2832);
+    ctx.strokeStyle='rgba(255,209,102,.85)'; ctx.lineWidth=2; ctx.stroke();
+    ctx.fillStyle='#fff8e2'; ctx.font='600 18px "PingFang TC",system-ui,sans-serif';
+    ctx.textAlign='center'; ctx.textBaseline='middle'; ctx.fillText(label||'核心觀念',CX,CY);
+    ctx.restore();
+  }
+  function edge(i,prog,color){
+    var p=pos(i), xa=CX+ (p[0]-CX)*prog, ya=CY+(p[1]-CY)*prog;
+    ctx.save(); ctx.lineWidth=3; ctx.strokeStyle=color||'rgba(102,217,239,.75)';
+    ctx.shadowColor=color||'#66d9ef'; ctx.shadowBlur=14;
+    ctx.beginPath(); ctx.moveTo(CX,CY); ctx.lineTo(xa,ya); ctx.stroke(); ctx.restore();
+  }
+  function arcBetween(i,j,prog,color){
+    var a=pos(i), b=pos(j), mx=(a[0]+b[0])/2, my=(a[1]+b[1])/2;
+    var nx=(my-CY), ny=-(mx-CX), L=Math.hypot(nx,ny)||1, bulge=34;
+    var cx2=mx+nx/L*bulge, cy2=my+ny/L*bulge;
+    ctx.save(); ctx.lineWidth=2.5; ctx.strokeStyle=color; ctx.setLineDash([7,7]);
+    ctx.lineDashOffset=-performance.now()/60;
+    ctx.beginPath(); ctx.moveTo(a[0],a[1]);
+    ctx.quadraticCurveTo(cx2,cy2,a[0]+(b[0]-a[0])*prog,a[1]+(b[1]-a[1])*prog); ctx.stroke(); ctx.restore();
+  }
+  function glowText(txt,x,y,size,color,alpha){
+    ctx.save(); ctx.globalAlpha=alpha; ctx.fillStyle=color; ctx.textAlign='center'; ctx.textBaseline='middle';
+    ctx.shadowColor=color; ctx.shadowBlur=22; ctx.font='600 '+size+'px "PingFang TC",system-ui,sans-serif';
+    ctx.fillText(txt,x,y); ctx.restore();
+  }
+
+  /* ---------- 依場景繪製 ---------- */
+  function draw(tt,scene,p){
+    bg(tt);
+    var kind=scene.kind, phase=scene.phase;
+    var visited = (kind==='stop')? scene.i : ((kind==='close'||kind==='end'||kind==='recap')? N-1 : -1);
+    if(kind==='title'||kind==='recap'){
+      var p2=clamp(p*1.4,0,1);
+      ring(kind==='title'? .3+.5*p2 : 1, kind==='recap');
+      for(var q=0;q<N;q++){ edge(q, kind==='title'? .5*p2 : 1, col(q)); nodeShape(q, kind==='title'? .3+.7*p2 : 1, .95, kind==='recap'); }
+      return;
+    }
+    if(kind==='open'){
+      var a=clamp((p-.12)/.4,0,1);
+      ring(a*.7,true);
+      for(var i=0;i<N;i++){ nodeShape(i, clamp(a*1.15-i*.06,0,1), .9); }
+      glowText(unit.title, CX, CY-8, 46, '#e9eefc', clamp(p*2.4,0,1));
+      glowText('五科 × 一個核心觀念', CX, CY+44, 20, '#ffd166', clamp((p-.35)*2.2,0,1));
+      return;
+    }
+    if(kind==='path'){
+      ring(.55,true);
+      var revealed = scene.reveal;
+      for(var i=0;i<N;i++){
+        var on = i<revealed-1 ? 1 : (i===revealed-1 ? clamp(p*2.2,0,1) : .0);
+        if(on<=0){ continue; }
+        nodeShape(i,on,.86,false);
+      }
+      return;
+    }
+    if(kind==='idea'){
+      ring(.4,true);
+      for(var i=0;i<N;i++){ nodeShape(i,.3,.8,false); }
+      hub(clamp(p*2,0,1), .9+.06*Math.sin(tt*3), '核心觀念');
+      return;
+    }
+    if(kind==='stop'){
+      ring(.4,true);
+      for(var i=0;i<N;i++){
+        if(i<visited){ nodeShape(i,.95,.9,true); edge(i,1,col(i)); }
+        else if(i>visited){ nodeShape(i,.28,.82,false); }
+      }
+      var pul = .5+.5*Math.sin(tt*4);
+      if(phase==='node'){
+        edge(visited, clamp(p*1.4,0,1), 'rgba(255,209,102,.8)');
+        nodeShape(visited,.55+.45*clamp(p*1.5,0,1),1.06+.16*pul,true);
+        hub(.85,.72,'核心觀念');
+      } else if(phase==='why'){
+        edge(visited,1,col(visited));
+        nodeShape(visited,1,1.12+.10*pul,true);
+        hub(.9,.8,'核心觀念');
+        ctx.save(); ctx.globalAlpha=clamp(p*1.6,0,1);
+        ctx.strokeStyle='rgba(233,238,252,.5)'; ctx.lineWidth=2; ctx.setLineDash([4,6]);
+        ctx.beginPath(); ctx.arc(pos(visited)[0],pos(visited)[1],58+6*pul,0,6.2832); ctx.stroke(); ctx.restore();
+      } else {
+        edge(visited,1,col(visited));
+        nodeShape(visited,1,1.08,true);
+        hub(.7,.7,'核心觀念');
+        if(visited+1<N){ arcBetween(visited,visited+1,clamp(p*1.5,0,1),'rgba(255,209,102,.9)');
+          glowText('下一站：'+nodes[visited+1].name, CX, CY+112, 20, '#ffd166', clamp((p-.3)*2,0,1)); }
+      }
+      return;
+    }
+    if(kind==='close'||kind==='end'){
+      ring(1,false);
+      for(var i=0;i<N;i++){ nodeShape(i,1,.95,true); edge(i,1,col(i)); }
+      var da=tt*0.9%(2*Math.PI);
+      var lx=CX+RX*Math.cos(da), ly=CY+RY*Math.sin(da);
+      ctx.save(); ctx.shadowColor='#ffd166'; ctx.shadowBlur=30; ctx.fillStyle='#ffd166';
+      ctx.beginPath(); ctx.arc(lx,ly,7,0,6.2832); ctx.fill(); ctx.restore();
+      if(kind==='close'){
+        glowText('核心觀念', CX, CY, 30, '#ffd166', .9);
+        glowText('五科串成一條線', CX, CY+126, 24, '#e9eefc', clamp(p*1.8,0,1));
+      } else {
+        glowText(unit.title, CX, CY-4, 40, '#e9eefc', clamp(p*1.6,0,1));
+        glowText('練一科，走過五科', CX, CY+52, 24, '#ffd166', clamp((p-.25)*1.8,0,1));
+      }
+      return;
+    }
+  }
+
+  /* ---------- 文字／字幕／面板 ---------- */
+  var plate=$('plate'), subs=$('subs'), chips=$('chips'), stopsBox=$('stops');
+  stopsBox.innerHTML = nodes.map(function(n,i){ return '<button type="button" data-i="'+i+'">'+n.name+'</button>'; }).join('');
+  chips.innerHTML = (unit.chips||[]).map(function(c){ return '<div class="chip"><div class="t">'+c.tag+'</div><div class="w">'+c.word+'</div></div>'; }).join('');
+  $('unit-title').textContent = unit.title;
+
+  /* ---------- 片頭標題卡／片尾重點回顧卡（DOM 卡片） ---------- */
+  var cardTitle=$('card-title'), cardRecap=$('card-recap');
+  var CH_=unit.chapters||{}, recapRows=unit.recap||[];
+  var route = nodes.map(function(n){ return n.name; }).join('　→　');
+  cardTitle.innerHTML = '<div class="card" id="title-card">'
+    + '<div class="eyebrow">一科練五科　觀點動畫</div>'
+    + '<div class="bigtitle" id="title-card-h">'+unit.title+'</div>'
+    + '<div class="cardsub" id="title-card-sub">'+((unit.yearLabel?unit.yearLabel+'｜':'')+unit.subtitle)+'</div>'
+    + '<div class="meta"><span>五科 × 一個核心觀念</span><span>'+N+' 站</span>'
+    +   '<span>'+(unit.yearLabel||'')+'</span><span>約 '+Math.max(1,Math.round((D.meta?D.meta.estimate:0)/60))+' 分鐘</span></div>'
+    + '<div class="route" id="title-card-route">學習路線：'+route+'</div>'
+    + '</div>';
+  cardRecap.innerHTML = '<div class="card recap" id="recap-card">'
+    + '<h5>重點回顧</h5>'
+    + recapRows.map(function(r){
+        return '<div class="rrow" data-scene="'+r.scene+'"><i>'+r.no+'</i><div><b>'+r.name+'　第 '+r.n+' 題</b>'
+             + '<div class="rsub">'+r.point+'</div></div></div>'; }).join('')
+    + '<div class="keyline">'+String(unit.keyIdea||'').split('。')[0]+'。</div>'
+    + '</div>';
+
+  /* ---------- 章節地圖側欄 ---------- */
+  var mapBox=$('map'), mapBody=$('map-body'), mapbtn=$('mapbtn');
+  mapBody.innerHTML =
+      '<button class="mrow" type="button" data-scene="'+(CH_.title||0)+'"><i>起</i><div class="tx"><b>片頭標題卡</b><span>'+unit.title+'</span></div></button>'
+    + '<button class="mrow" type="button" data-scene="'+(CH_.idea||0)+'"><i>核</i><div class="tx"><b>核心觀念</b><span>'+String(unit.keyIdea||'').slice(0,26)+'</span></div></button>'
+    + '<div class="cap">五科學習路徑（點一下跳到該站）</div>'
+    + (CH_.stops||[]).map(function(c){
+        return '<button class="mrow" type="button" data-scene="'+c.scene+'" data-no="'+c.no+'"><i>'+c.no+'</i>'
+             + '<div class="tx"><b>'+c.label+'</b><span>'+c.sub+'</span></div></button>'; }).join('')
+    + '<div class="cap">收束</div>'
+    + '<button class="mrow" type="button" data-scene="'+(CH_.close||0)+'"><i>束</i><div class="tx"><b>五科串成一條線</b><span>收束與總覽</span></div></button>'
+    + '<button class="mrow" type="button" data-scene="'+(CH_.recap||0)+'"><i>顧</i><div class="tx"><b>重點回顧卡</b><span>五站重點一次看完</span></div></button>';
+  var mapRows = mapBody.querySelectorAll('.mrow');
+  function mapOpen(on){ mapBox.classList.toggle('on',!!on); mapbtn.classList.toggle('on',!!on);
+    wrap.classList.toggle('map-open',!!on); mapbtn.textContent = on?'收起地圖':'章節地圖'; }
+  mapbtn.addEventListener('click',function(){ mapOpen(!mapBox.classList.contains('on')); });
+  mapBody.addEventListener('click',function(ev){ var b=ev.target.closest('.mrow'); if(!b){return;}
+    var sc=Number(b.getAttribute('data-scene')); playing=true; goTo(sc,true); paint(); });
+  var chipEls = chips.querySelectorAll('.chip'), subEls=[];
+  function setSub(scene){
+    if(subEls.__key===scene.text) { return; }
+    subs.innerHTML=''; subEls=[];
+    (scene.chunks||[]).forEach(function(c){
+      var sp=document.createElement('span'); sp.className='ck'; sp.textContent=c.t; subs.appendChild(sp); subEls.push(c);
+    });
+    subEls.__key=scene.text;
+  }
+  function paintSub(tt,scene){
+    var lt=tt-starts[cur];
+    for(var i=0;i<subEls.length;i++){
+      var el=subs.children[i], c=subEls[i]; if(!el){continue;}
+      var on = lt>=c.t0 && lt<=c.t1;
+      el.className='ck'+(on?' on':(lt>c.t1?' done':''));
+    }
+  }
+  function panel(scene){
+    var k=$('p-k'), h=$('p-h'), b=$('p-b'), tg=$('p-t');
+    var kind=scene.kind, ph=scene.phase;
+    tg.textContent='';
+    if(kind==='title'){ k.textContent='一科練五科 觀點動畫'; h.textContent=unit.title;
+      b.textContent=(unit.yearLabel?unit.yearLabel+'｜':'')+unit.subtitle; tg.textContent='五科 × 一個核心觀念'; }
+    else if(kind==='open'){ k.textContent='一科練五科 觀點動畫'; h.textContent=unit.title;
+      b.textContent=(unit.yearLabel?unit.yearLabel+'｜':'')+unit.subtitle; tg.textContent='五科 × 一個核心觀念'; }
+    else if(kind==='path'){ var nm=nodes.slice(0,scene.reveal).map(function(n){return n.name;}).join(' → ');
+      k.textContent='五科學習路徑'; h.textContent='一站接一站'; b.textContent=nm; }
+    else if(kind==='idea'){ k.textContent='核心觀念'; h.textContent='先問：什麼沒有變？'; b.textContent=unit.keyIdea; }
+    else if(kind==='stop'){
+      var n=nodes[scene.i];
+      if(ph==='node'){ k.textContent='第 '+(scene.i+1)+' 站'+(n.role?'（'+n.role+'）':''); h.textContent=n.name+'　第 '+n.n+' 題'; b.textContent=n.point; }
+      else if(ph==='why'){ k.textContent='為什麼是這一站'; h.textContent=n.name+'　第 '+n.n+' 題'; b.textContent=n.why; }
+      else { k.textContent='接下一站'; h.textContent='沿著同一條線往下'; b.textContent=n.next; }
+    }
+    else if(kind==='close'){ k.textContent='收束'; h.textContent='五科串成一條線'; b.textContent=unit.keyIdea.split('。')[0]+'。'; }
+    else if(kind==='recap'){ k.textContent='重點回顧'; h.textContent=unit.title+'　五站重點';
+      b.textContent=(unit.recap||[]).map(function(r){ return r.name+'第 '+r.n+' 題'; }).join('、'); }
+    else { k.textContent=''; h.textContent=unit.title; b.textContent='練一科，走過五科。'; }
+  }
+  function paintPanel(scene){
+    panel(scene);
+    var si = scenes.indexOf(scene);
+    plate.classList.toggle('hide', scene.kind==='close'||scene.kind==='end'||scene.kind==='title'||scene.kind==='recap');
+    cardTitle.classList.toggle('on', scene.kind==='title');
+    cardRecap.classList.toggle('on', scene.kind==='recap');
+    var i = scene.kind==='stop'? scene.i : -1;
+    var bts=stopsBox.querySelectorAll('button');
+    for(var k=0;k<bts.length;k++){
+      bts[k].className = (Number(bts[k].getAttribute('data-i'))===i)?'on':(Number(bts[k].getAttribute('data-i'))<i?'done':'');
+    }
+    for(var c=0;c<chipEls.length;c++){ chipEls[c].classList.toggle('on', scene.kind==='idea' ? true : false); }
+    /* 章節地圖：目前場景高亮、已走過的站標記 done */
+    var mv = (scene.kind==='stop')? scene.i : ((scene.kind==='close'||scene.kind==='end'||scene.kind==='recap')? N-1 : -1);
+    for(var m=0;m<mapRows.length;m++){
+      var mm=mapRows[m], ms=Number(mm.getAttribute('data-scene')), mno=Number(mm.getAttribute('data-no')||0);
+      var cls = (ms===si) ? 'mrow on' : ((mno && mno-1<mv) ? 'mrow done' : 'mrow');
+      if(mm.className!==cls){ mm.className=cls; }
+    }
+  }
+
+  /* ---------- 時間軸控制 ---------- */
+  function sceneAt(x){ for(var i=scenes.length-1;i>=0;i--){ if(x>=starts[i]-0.001) return i; } return 0; }
+  function goTo(i,autoplay){
+    i=clamp(i,0,scenes.length-1);
+    if(soundOn){ try{ AUD[cur].pause(); }catch(e){} }
+    cur=i; t=starts[i];
+    if(soundOn&&autoplay){ AUD[i].playbackRate=speed; AUD[i].currentTime=0; AUD[i].play().catch(function(){ soundOn=false; markSound(); }); }
+    setSub(scenes[i]); paintPanel(scenes[i]);
+  }
+  var last=performance.now();
+  function frame(now){
+    var dt=(now-last)/1000; last=now;
+    if(playing){
+      if(soundOn&&audioReady&&AUD[cur]&&!AUD[cur].paused){ t=starts[cur]+AUD[cur].currentTime; }
+      else { t+=dt*speed; }
+      var si=sceneAt(t), nxt=starts[cur]+DUR[cur];
+      if(t>=nxt-0.02){
+        if(cur<scenes.length-1){ goTo(cur+1,true); }
+        else { t=total; playing=false; paint(); }
+      }
+    }
+    render(t);
+    requestAnimationFrame(frame);
+  }
+  function render(x){
+    var si=sceneAt(x), sc=scenes[si], p=DUR[si]? (x-starts[si])/DUR[si] : 0;
+    if(si!==cur){ cur=si; setSub(sc); paintPanel(sc); }
+    draw(performance.now()/1000, sc, clamp(p,0,1));
+    paintSub(x,sc);
+    $('prog').firstChild.style.width=clamp(total?x/total:0,0,1)*100+'%';
+    $('time').textContent=fmt(x)+' / '+fmt(total);
+  }
+  function paint(){ playbtn.textContent = playing?'暫停':'播放'; }
+  var playbtn=$('playbtn');
+  function toggle(){
+    if(!playing){
+      playing=true; audioReady=true;
+      if(soundOn){ AUD[cur].playbackRate=speed; AUD[cur].play().then(function(){ $('hint').classList.add('hide'); })
+        .catch(function(){ soundOn=false; markSound(); $('hint').classList.remove('hide'); $('hint').textContent='瀏覽器阻擋自動播放：按「語音：關」再切回「開」即可開啟旁白。'; }); }
+      else { last=performance.now(); }
+    } else { playing=false; if(soundOn){ try{AUD[cur].pause();}catch(e){} } }
+    paint();
+  }
+  function markSound(){ wrap.classList.toggle('sound-off',!soundOn); $('sndbtn').textContent='語音：'+(soundOn?'開':'關'); }
+  playbtn.addEventListener('click',toggle);
+  $('restart').addEventListener('click',function(){ goTo(0,true); playing=true; paint(); });
+  $('sndbtn').addEventListener('click',function(){ soundOn=!soundOn; markSound();
+    if(soundOn){ AUD[cur].playbackRate=speed; AUD[cur].play(); } else { try{AUD[cur].pause();}catch(e){} last=performance.now(); } });
+  var SPD=[1,1.25,1.5,0.75], si=0;
+  $('spdbtn').addEventListener('click',function(){ si=(si+1)%SPD.length; speed=SPD[si];
+    $('spdbtn').textContent='速度 '+speed.toFixed(2)+'×'; AUD.forEach(function(a){a.playbackRate=speed;}); });
+  $('prog').addEventListener('click',function(ev){ var r=this.getBoundingClientRect(); var x=(ev.clientX-r.left)/r.width*total; goTo(sceneAt(x),true); });
+  stopsBox.addEventListener('click',function(ev){ var b=ev.target.closest('button'); if(!b){return;}
+    var i=Number(b.getAttribute('data-i')), sc=nodes[i].sceneNode; playing=true; goTo(sc,true); paint(); });
+  document.addEventListener('keydown',function(ev){
+    if(ev.code==='Space'){ ev.preventDefault(); toggle(); }
+    if(ev.code==='ArrowRight'){ goTo(cur+1,true); }
+    if(ev.code==='ArrowLeft'){ goTo(cur-1,true); }
+  });
+  cv.addEventListener('click',function(){ if(!playing){ toggle(); } });
+
+  /* 尺寸自適應 */
+  function fit(){ var k=Math.min(window.innerWidth/1300, window.innerHeight/732); wrap.style.setProperty('--k',Math.max(.3,k)); }
+  window.addEventListener('resize',fit); fit();
+  markSound(); goTo(0,false); paint();
+  requestAnimationFrame(frame);
+  /* 自動開播：可自動播放就帶語音，被擋就靜音播放（畫面照走，字幕照跑） */
+  setTimeout(function(){
+    if(!playing && cur===0){
+      playing=true; audioReady=true;
+      AUD[0].playbackRate=speed;
+      AUD[0].play().catch(function(){ soundOn=false; markSound();
+        $('hint').classList.remove('hide');
+        $('hint').textContent='已自動靜音播放；按「播放」或點畫面即可開啟旁白（含語音與字幕同步）。';
+        last=performance.now(); });
+      paint();
+    }
+  }, 260);
+
+  /* 驗收用鉤子（DOM 證據法） */
+  window.__xanim = {
+    ready:true, data:D,
+    state:function(){ return {playing:playing,sound:soundOn,cur:cur,t:t,total:total,scenes:scenes.length,
+      kind:scenes[cur].kind, phase:scenes[cur].phase, sub:scenes[cur].text, durs:DUR}; },
+    jump:function(i){ playing=true; goTo(i,false); paint(); },
+    ui:function(){ var q=function(sel){ return cardRecap.querySelector(sel)||{}; };
+      return {
+        titleCard:{on:cardTitle.classList.contains('on'),
+          title:($('title-card-h')||{}).textContent||'', sub:($('title-card-sub')||{}).textContent||'',
+          route:($('title-card-route')||{}).textContent||'', metas:cardTitle.querySelectorAll('.meta span').length},
+        recapCard:{on:cardRecap.classList.contains('on'), rows:cardRecap.querySelectorAll('.rrow').length,
+          key:q('.keyline').textContent||''},
+        map:{exists:!!mapBox, open:mapBox.classList.contains('on'), rows:mapRows.length,
+          stops:(CH_.stops||[]).length, scenes:(CH_.stops||[]).map(function(c){return c.scene;}),
+          labels:(CH_.stops||[]).map(function(c){return c.label;}),
+          onRow:((mapBody.querySelector('.mrow.on')||{}).textContent||'').replace(/\s+/g,' ').trim()},
+        chapters:CH_, chips:chipEls.length, stops:stopsBox.querySelectorAll('button').length
+      }; },
+    mapOpen:function(on){ mapOpen(on); return mapBox.classList.contains('on'); },
+    chapters:function(){ return CH_; },
+    stop:function(){ playing=false; if(soundOn){try{AUD[cur].pause();}catch(e){}} paint(); }
+  };
+})();
+</script>
+</body>
+</html>
