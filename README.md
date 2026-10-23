@@ -1,5 +1,7 @@
 # 考古題解題學習站（資料驅動・科目不限）
 
+**Language:** [![中文](https://img.shields.io/badge/%E4%B8%AD%E6%96%87-%E4%B8%AD%E6%96%87%E7%89%88-blue?style=flat-square)](README.md) [![English](https://img.shields.io/badge/English-English-blue?style=flat-square)](README.en.md)
+
 純靜態的考古題練習站：**沒有建置工具、沒有框架、沒有 CDN**，所有頁面用相對路徑，
 可直接離線用瀏覽器打開（`file://`），也可整包丟上 GitHub Pages 的子路徑。
 
