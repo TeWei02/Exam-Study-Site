@@ -12,6 +12,17 @@
 
 ---
 
+<div align="center">
+
+# Demo Preview
+
+純靜態考古題練習站：科目分組、跨科目搜尋、單題作答與詳解，支援離線 PWA 安裝。
+
+<video controls width="640" src="assets/demo-preview.webm"></video>
+
+</div>
+
+
 ## 一、三步驟：新增一個科目／一年份題庫
 
 假設要新增「116 學年度・物理」：

@@ -14,6 +14,17 @@ any page code**.
 
 ---
 
+<div align="center">
+
+# Demo Preview
+
+Static past-exam practice site: subject grouping, cross-subject search, per-question answering with solutions, and offline-ready PWA install.
+
+<video controls width="640" src="assets/demo-preview.webm"></video>
+
+</div>
+
+
 ## 1. Adding a Subject / a Year's Question Bank in Three Steps
 
 Suppose you want to add "116 Academic Year · Physics":
