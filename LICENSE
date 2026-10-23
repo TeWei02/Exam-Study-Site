@@ -1,11 +1,3 @@
-# 授權
-
-## 站台程式碼
-
-本倉庫的**站台程式碼**（HTML、CSS、JavaScript 與 `tools/` 下的建置工具）
-採用 MIT License，歡迎取用、修改，拿去做自己的題庫站。
-
-```
 MIT License
 
 Copyright (c) 2026 Te-Wei Ko (TeWei02)
@@ -27,10 +19,3 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
-```
-
-## 試題與詳解內容
-
-**不在**上述 MIT 授權範圍內。試題與詳解的著作權屬原發布單位與解答作者所有，
-本倉庫僅為學習用途整理呈現，不作商業使用。若你是原始著作人，希望調整標示方式
-或移除內容，請開 issue 或來信告知。
