@@ -9,6 +9,14 @@ dist/
 *.log
 .cache/
 
+# 聽力音檔：實體僅保留在本機工作區，不納入版控與歷史
+assets/anim/**/audio/
+*.mp3
+
+# 暫存
+__pycache__/
+*_tmp_*
+
 # Editors
 .idea/
 .vscode/
