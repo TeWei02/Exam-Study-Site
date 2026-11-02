@@ -408,6 +408,8 @@
       h += '<a class="nav-ocw" href="' + esc(url('quiz/index.html')) + '">學習資源</a>';
       /* 2026 大事：全站唯一的完整專區入口（events.html）；首頁只留摘要，不再有兩套入口 */
       h += '<a class="nav-ocw" href="' + esc(url('events.html')) + '">2026 大事</a>';
+      /* 五年命題地圖：111–115 五科命題主題對照（propmap.html + assets/js/data/propmap.js） */
+      h += '<a class="nav-ocw" href="' + esc(url('propmap.html')) + '">命題地圖</a>';
       for (var i = 0; i < SUBJECTS.length; i++) {
         var s = SUBJECTS[i];
         h += '<a' + (String(s.id) === String(activeId) ? ' class="on"' : '') +
@@ -1637,6 +1639,7 @@
       '<span class="ce-tag">一科訓練五科</span>' +
       '<span class="ce-txt">把《' + nm + '》和其他四科串起來練：五科各取一題，用觀點動畫看懂同一個核心觀念在不同科目的長相。</span>' +
       '<a class="btn btn-primary ce-go" href="' + esc(url('cross.html')) + '">看跨科觀點動畫</a>' +
+      '<a class="btn ce-go" href="' + esc(url('propmap.html')) + '">五年命題地圖</a>' +
       '<a class="btn ce-go" href="' + esc(url('events.html') + '?subject=' + encodeURIComponent(s.id) + '#ev-points') + '">2026 大事對照點</a>' +
       '</div>';
   }

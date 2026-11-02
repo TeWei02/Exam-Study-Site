@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>觀點動畫｜一科練五科</title>
+<script>/* 驗收用：JS 錯誤計數器（掛在 <html data-js-errors>） */
+(function(){window.__errs=0;function bump(){window.__errs++;document.documentElement.setAttribute('data-js-errors',String(window.__errs));}
+document.documentElement.setAttribute('data-js-errors','0');
+window.addEventListener('error',bump);window.addEventListener('unhandledrejection',bump);})();</script>
+<style>
+:root{--fg:#e9eefc;--dim:#93a1c8;--gold:#ffd166;--cy:#66d9ef;--pk:#ff8fa3;--gr:#7ee787;--pu:#c792ea;--line:#25315a}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;background:#070a14;color:var(--fg);overflow:hidden;
+  font-family:"PingFang TC","Helvetica Neue",system-ui,sans-serif;
+  background-image:radial-gradient(1200px 660px at 50% -12%,#16203c,#070a14 74%)}
+#wrap{position:fixed;left:50%;top:50%;width:1280px;height:720px;transform:translate(-50%,-50%) scale(var(--k,1));transform-origin:center center}
+#stage{position:absolute;left:0;top:0;width:1280px;height:620px}
+#cv{position:absolute;left:0;top:0;width:1280px;height:620px;display:block}
+.topbar{position:absolute;left:34px;right:34px;top:14px;height:40px;display:flex;align-items:center;gap:10px;z-index:3}
+.topbar .ttl{font-size:14px;color:var(--dim);white-space:nowrap;letter-spacing:.4px}
+.topbar .ttl b{color:var(--cy);font-weight:600}
+.topbar .spacer{flex:1}
+.stops{display:flex;gap:6px}
+.stops button{font:inherit;font-size:13px;padding:5px 11px;border-radius:999px;cursor:pointer;
+  border:1px solid var(--line);background:#111a33;color:#8fa0cc;transition:.2s}
+.stops button:hover{border-color:#41558c;color:var(--fg)}
+.stops button.on{color:#fff;border-color:var(--cy);background:linear-gradient(180deg,#2a3a68,#1b2748);box-shadow:0 0 14px rgba(102,217,239,.32)}
+.stops button.done{color:#cfe3ff;border-color:#3d5a92}
+#center{position:absolute;left:280px;right:280px;top:86px;text-align:center;pointer-events:none;transition:opacity .5s ease;z-index:2}
+#plate{display:inline-block;padding:14px 26px;border-radius:16px;border:1px solid #2b3967;
+  background:linear-gradient(180deg,rgba(23,33,64,.92),rgba(13,19,40,.86));box-shadow:0 10px 40px rgba(0,0,0,.45)}
+#plate .k{font-size:12px;letter-spacing:2px;color:var(--dim)}
+#plate .h{font-size:26px;margin-top:6px;font-weight:600}
+#plate .b{font-size:16px;margin-top:8px;line-height:1.6;color:#c8d6f5}
+#plate .tagline{margin-top:10px;font-size:14px;color:var(--gold)}
+#plate.hide{display:none}
+#chips{position:absolute;left:0;right:0;top:452px;display:flex;justify-content:center;gap:14px;z-index:2;pointer-events:none}
+#chips .chip{opacity:0;transform:translateY(14px);transition:opacity .6s ease,transform .6s ease;
+  padding:10px 18px;border-radius:14px;border:1px solid #35477c;background:rgba(17,26,51,.86);text-align:center;min-width:150px}
+#chips .chip.on{opacity:1;transform:none}
+#chips .chip .t{font-size:12px;color:var(--dim)}
+#chips .chip .w{font-size:19px;color:var(--gold);margin-top:4px;font-weight:600}
+#subs{position:absolute;left:120px;right:120px;bottom:6px;min-height:74px;display:flex;align-items:center;justify-content:center;
+  flex-wrap:wrap;gap:2px 4px;font-size:21px;line-height:1.55;text-align:center;z-index:3}
+#subs .ck{color:#6f7fae;transition:color .28s ease,text-shadow .28s ease}
+#subs .ck.on{color:#fff;text-shadow:0 0 16px rgba(102,217,239,.55)}
+#subs .ck.done{color:#c3d3f4}
+#bar{position:absolute;left:0;right:0;top:628px;height:64px;display:flex;align-items:center;gap:14px;padding:0 34px}
+#bar button{font:inherit;cursor:pointer;border-radius:11px;border:1px solid var(--line);background:#111a33;color:#cfe0ff;padding:9px 14px;transition:.2s}
+#bar button:hover{border-color:#41558c}
+#bar button.pri{background:linear-gradient(180deg,#2f4373,#1d2b4f);border-color:var(--cy);color:#fff}
+#bar .time{font-variant-numeric:tabular-nums;color:var(--dim);font-size:14px;min-width:96px}
+#prog{flex:1;height:6px;border-radius:99px;background:#1a2444;position:relative;overflow:hidden;cursor:pointer}
+#prog i{position:absolute;left:0;top:0;bottom:0;width:0;background:linear-gradient(90deg,#66d9ef,#ffd166);transition:width .18s linear}
+#hint{position:absolute;left:0;right:0;top:694px;height:26px;text-align:center;font-size:14px;color:var(--gold)}
+#hint.hide{display:none}
+#wrap.sound-off #sndbtn{color:var(--gold);border-color:#7a6528}
+/* ---------- 章節地圖側欄 ---------- */
+.mapbtn{font:inherit;font-size:13px;padding:5px 11px;border-radius:999px;cursor:pointer;margin-left:6px;
+  border:1px solid var(--line);background:#111a33;color:#8fa0cc;transition:.2s;white-space:nowrap}
+.mapbtn:hover{border-color:#41558c;color:var(--fg)}
+.mapbtn.on{color:#fff;border-color:var(--gold);background:linear-gradient(180deg,#3a3352,#241f36)}
+#map{position:absolute;left:0;top:0;bottom:0;width:336px;z-index:4;padding:78px 16px 14px;
+  background:linear-gradient(180deg,rgba(9,14,30,.975),rgba(7,10,20,.95));border-right:1px solid #22305a;
+  transform:translateX(-103%);transition:transform .28s ease;overflow:auto}
+#map.on{transform:none}
+#map h4{font-size:13px;color:var(--dim);letter-spacing:1px;font-weight:600;margin:2px 0 8px}
+#map .cap{font-size:11px;color:#6f7fae;letter-spacing:1px;margin:12px 0 6px;border-top:1px solid #1d2a4d;padding-top:9px}
+#map .mrow{display:flex;align-items:flex-start;gap:9px;text-align:left;font:inherit;font-size:14px;cursor:pointer;
+  width:100%;padding:8px 10px;margin-bottom:4px;border-radius:10px;border:1px solid transparent;
+  background:transparent;color:#c8d6f5;transition:.15s}
+#map .mrow:hover{background:#131d38;border-color:#2b3a68}
+#map .mrow.on{background:linear-gradient(180deg,#25335c,#1a2543);border-color:var(--cy);color:#fff}
+#map .mrow.done{color:#8ea6d6}
+#map .mrow i{width:20px;height:20px;flex:0 0 20px;border-radius:50%;border:1px solid #3a4a78;font-style:normal;
+  font-size:12px;line-height:18px;text-align:center;color:#9fb0da;margin-top:1px}
+#map .mrow.on i{border-color:var(--cy);color:#fff}
+#map .mrow .tx{flex:1;min-width:0}
+#map .mrow .tx b{display:block;font-weight:600;font-size:14px}
+#map .mrow .tx span{display:block;font-size:12px;color:#8fa0cc;margin-top:2px;
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+#wrap.map-open #center{opacity:0}
+/* ---------- 片頭標題卡／片尾重點回顧卡 ---------- */
+.cards{position:absolute;inset:0;z-index:3;display:none;align-items:center;justify-content:center}
+.cards.on{display:flex}
+.cards .card{max-width:1000px;padding:28px 38px;border-radius:20px;border:1px solid #2b3967;
+  background:linear-gradient(180deg,rgba(20,29,58,.965),rgba(11,16,34,.945));box-shadow:0 18px 60px rgba(0,0,0,.55);
+  animation:cardin .45s ease both}
+.cards .eyebrow{font-size:13px;letter-spacing:3px;color:var(--gold);text-align:center}
+.cards .bigtitle{font-size:42px;font-weight:600;text-align:center;margin-top:14px;line-height:1.25}
+.cards .cardsub{font-size:18px;color:#c8d6f5;text-align:center;margin-top:12px;line-height:1.6}
+.cards .meta{display:flex;justify-content:center;gap:10px;margin-top:18px;flex-wrap:wrap}
+.cards .meta span{font-size:14px;color:#9fb0da;border:1px solid #34456f;border-radius:999px;padding:5px 13px}
+.cards .route{margin-top:20px;font-size:14px;color:#8fa0cc;text-align:center;border-top:1px solid #22305a;padding-top:14px}
+.cards h5{font-size:15px;letter-spacing:2px;color:var(--gold);text-align:center;margin-bottom:16px}
+.cards .rrow{display:flex;gap:12px;align-items:flex-start;padding:9px 12px;border-radius:12px;border:1px solid #26345c;
+  background:rgba(14,21,42,.6);margin-bottom:9px}
+.cards .rrow i{width:26px;height:26px;flex:0 0 26px;border-radius:50%;border:1px solid #3a4a78;font-style:normal;
+  font-size:13px;line-height:24px;text-align:center;color:#cfe0ff}
+.cards .rrow b{font-size:15px}
+.cards .rrow .rsub{font-size:14px;color:#9fb0da;margin-top:2px;line-height:1.5}
+.cards .keyline{margin-top:12px;font-size:15px;color:#ffd166;text-align:center;line-height:1.6}
+#bug{position:absolute;left:-9999px;top:-9999px}
+</style>
+</head>
+<body>
+<div id="wrap">
+  <div id="stage">
+    <canvas id="cv" width="2560" height="1240"></canvas>
+    <div class="topbar">
+      <span class="ttl">一科練五科　觀點動畫　<b id="unit-title"></b></span>
+      <span class="spacer"></span>
+      <span class="stops" id="stops"></span>
+      <button class="mapbtn" id="mapbtn" type="button">章節地圖</button>
+    </div>
+    <div id="center"><div id="plate"><div class="k" id="p-k"></div><div class="h" id="p-h"></div><div class="b" id="p-b"></div><div class="tagline" id="p-t"></div></div></div>
+    <div id="chips"></div>
+    <div id="subs"></div>
+    <div id="map"><h4>章節地圖</h4><div id="map-body"></div></div>
+    <div class="cards" id="card-title"></div>
+    <div class="cards" id="card-recap"></div>
+  </div>
+  <div id="bar">
+    <button class="pri" id="playbtn" type="button">播放</button>
+    <button id="restart" type="button">從頭</button>
+    <button id="sndbtn" type="button">語音：開</button>
+    <button id="spdbtn" type="button">速度 1.0×</button>
+    <span class="time" id="time">00:00 / 00:00</span>
+    <div id="prog"><i></i></div>
+  </div>
+  <div id="hint" class="hide"></div>
+  <div id="bug"></div>
+</div>
+<script>
+(function(){
+  'use strict';
+  var D = {"unit": {"id": "bonding-rules-and-variety", "title": "接法決定結果", "subtitle": "零件就那幾種，換一種接法就是另一種東西", "yearLabel": "115 學年度", "startSubject": "chemistry", "keyIdea": "看到「有幾種可能」的題目，先做兩件事：① 數清楚有哪幾種零件、每種幾個（可行範圍）；② 寫下接法必須遵守的規則（方程式、格律、語法）。零件是有限的，變化來自接法——把接法寫成規則，變化就被算出來了。", "chips": [{"tag": "先數零件", "word": "有幾個"}, {"tag": "再看接法", "word": "怎麼接"}, {"tag": "接法定性", "word": "換法換物"}], "nodes": [{"subject": "chemistry", "name": "化學", "n": 19, "role": "起點", "point": "同一組原子，單鍵／雙鍵／參鍵就是不同的分子", "why": "題目要你挑出「不具有參鍵」的分子，判斷的唯一依據是路易士結構怎麼接：兩個原子之間共用一對電子是單鍵、兩對是雙鍵、三對是參鍵。碳的價電子是 4，氫只能接 1 條，所以碳與碳之間要接幾條，是被「每個人手上還剩幾隻手」逼出來的——原子種類一樣，接法不同，就是不同分子。", "next": "零件相同、接法不同，結果的數量會爆炸性增加——數學的組合題就是在算這件事。", "sceneNode": 7}, {"subject": "math-a", "name": "數A", "n": 18, "role": "計數", "point": "先寫下可行性條件，接法就被限縮成幾種", "why": "3 款餅乾各 100 公克、3 款飲料各 200 公克、3 款玩具各 300 公克，福袋要 1000 公克且三類都要有、款項不重複。把「接法」寫成式子：p + 2d + 3t = 10（p、d、t 各為 1～3 的整數），可行解只有 (1,3,1)、(3,2,1)、(2,1,2) 三組，再各乘上選款的方式數 C(3,p)C(3,d)C(3,t)，共 3×1×3 + 1×3×3 + 3×3×3 = 45 種。和上一題同一個套路：先數零件，再寫接法規則。", "next": "國文也有「接法規則」，而且規則嚴到少一條就不成立。", "sceneNode": 10}, {"subject": "chinese", "name": "國文", "n": 7, "role": "格律", "point": "字數相等、詞性相對、仄起平收：接法錯了就不是對聯", "why": "朱熹為開元寺撰的上下聯各有兩句，要判斷哪一組才接得起來，靠的不是讀起來順不順，而是三條硬規則：上下聯字數相等、對應位置詞性相對（名詞對名詞、動詞對動詞）、上聯末字仄聲、下聯末字平聲。字就是那些字，但規則一違反，整副聯就散了——這和化學的價數一樣：不是想接就能接，得看手上剩幾隻手。", "next": "英文的同一個位置也有「只能接哪一種字」的規則。", "sceneNode": 13}, {"subject": "english", "name": "英文", "n": 18, "role": "語法", "point": "同一個位置接 that／where／which／thus，指涉對象就換了", "why": "克漏字的空格在同一個位置，四個選項 (A) that (B) where (C) which (D) thus 都能「填進去」，但只有一個接得對：關係代名詞要接先行詞，先行詞是「地方」用 where、是「事物」用 which／that，thus 是副詞根本不能當連接詞。空格前後的字沒變，換一個接法，整句的關係就換了一套。", "next": "把「接法」換成力，就是物理的連結與平衡。", "sceneNode": 16}, {"subject": "physics", "name": "物理", "n": 2, "role": "收束", "point": "兩端各接一條繩，力必須接得相等，讀數才是定值", "why": "彈簧秤靜止平放在光滑桌面上，左端繩受 T、右端掛勾繩受 T′，方向相反。因為秤靜止（合力為零）且繩子質量可忽略，兩端的張力必須相等 T = T′；而掛勾受到的拉力量值就是讀數 F，所以 T = F = T′。如果只看到「兩邊都在拉」就以為讀數是兩者相加或相減，就是漏掉了「靜止平衡」這條接法規則。", "next": "", "sceneNode": 19}], "chapters": {"title": 0, "open": 1, "idea": 5, "stops": [{"label": "第 1 站　化學　第 19 題", "sub": "同一組原子，單鍵／雙鍵／參鍵就是不同的分子", "scene": 7, "no": 1}, {"label": "第 2 站　數A　第 18 題", "sub": "先寫下可行性條件，接法就被限縮成幾種", "scene": 10, "no": 2}, {"label": "第 3 站　國文　第 7 題", "sub": "字數相等、詞性相對、仄起平收：接法錯了就不是對聯", "scene": 13, "no": 3}, {"label": "第 4 站　英文　第 18 題", "sub": "同一個位置接 that／where／which／thus，指涉對象就換了", "scene": 16, "no": 4}, {"label": "第 5 站　物理　第 2 題", "sub": "兩端各接一條繩，力必須接得相等，讀數才是定值", "scene": 19, "no": 5}], "close": 21, "recap": 22}, "recap": [{"no": 1, "subject": "chemistry", "name": "化學", "n": 19, "role": "起點", "point": "同一組原子，單鍵／雙鍵／參鍵就是不同的分子", "scene": 7}, {"no": 2, "subject": "math-a", "name": "數A", "n": 18, "role": "計數", "point": "先寫下可行性條件，接法就被限縮成幾種", "scene": 10}, {"no": 3, "subject": "chinese", "name": "國文", "n": 7, "role": "格律", "point": "字數相等、詞性相對、仄起平收：接法錯了就不是對聯", "scene": 13}, {"no": 4, "subject": "english", "name": "英文", "n": 18, "role": "語法", "point": "同一個位置接 that／where／which／thus，指涉對象就換了", "scene": 16}, {"no": 5, "subject": "physics", "name": "物理", "n": 2, "role": "收束", "point": "兩端各接一條繩，力必須接得相等，讀數才是定值", "scene": 19}]}, "scenes": [{"kind": "title", "phase": "", "text": "一科練五科，觀點動畫。這一集談的是「接法決定結果」。零件就那幾種，換一種接法就是另一種東西。路線是：化學第 19 題、數A第 18 題、國文第 7 題、英文第 18 題、物理第 2 題。", "audio": "bonding-rules-and-variety/audio/seg01.mp3", "dur": 20.49, "reveal": null, "total": null, "stage": null, "i": null, "chunks": [{"t": "一科練五科，", "t0": 0.0, "t1": 1.3219354838709678, "i": 0}, {"t": "觀點動畫。", "t0": 1.3219354838709678, "t1": 2.423548387096774, "i": 1}, {"t": "這一集談的是「接法決定結果」。", "t0": 2.423548387096774, "t1": 5.728387096774194, "i": 2}, {"t": "零件就那幾種，", "t0": 5.728387096774194, "t1": 7.2706451612903225, "i": 3}, {"t": "換一種接法就是另一種東西。", "t0": 7.2706451612903225, "t1": 10.13483870967742, "i": 4}, {"t": "路線是：", "t0": 10.13483870967742, "t1": 11.016129032258064, "i": 5}, {"t": "化學第 19 題、", "t0": 11.016129032258064, "t1": 12.999032258064515, "i": 6}, {"t": "數A第 18 題、", "t0": 12.999032258064515, "t1": 14.981935483870966, "i": 7}, {"t": "國文第 7 題、", "t0": 14.981935483870966, "t1": 16.744516129032256, "i": 8}, {"t": "英文第 18 題、", "t0": 16.744516129032256, "t1": 18.72741935483871, "i": 9}, {"t": "物理第 2 題。", "t0": 18.72741935483871, "t1": 20.49, "i": 10}]}, {"kind": "open", "phase": "", "text": "這一集要談的是：接法決定結果。零件就那幾種，換一種接法就是另一種東西", "audio": "bonding-rules-and-variety/audio/seg02.mp3", "dur": 7.93, "reveal": null, "total": null, "stage": null, "i": null, "chunks": [{"t": "這一集要談的是：", "t0": 0.0, "t1": 1.8658823529411763, "i": 0}, {"t": "接法決定結果。", "t0": 1.8658823529411763, "t1": 3.4985294117647054, "i": 1}, {"t": "零件就那幾種，", "t0": 3.4985294117647054, "t1": 5.131176470588235, "i": 2}, {"t": "換一種接法就是另一種東西", "t0": 5.131176470588235, "t1": 7.93, "i": 3}]}, {"kind": "path", "phase": "", "text": "這一組練的是「同一組零件，接法不同就是不同的東西」。", "audio": "bonding-rules-and-variety/audio/seg03.mp3", "dur": 6.23, "reveal": 1, "total": 3, "stage": null, "i": null, "chunks": [{"t": "這一組練的是「同一組零件，", "t0": 0.0, "t1": 3.115, "i": 0}, {"t": "接法不同就是不同的東西」。", "t0": 3.115, "t1": 6.23, "i": 1}]}, {"kind": "path", "phase": "", "text": "化學從碳的四價出發：同樣是兩個碳原子，接成單鍵、雙鍵還是參鍵，就是完全不同的分子；數學把相同款式的餅乾、飲料、玩具接成一個1000公克的福袋，接法一改，組合數就完全不一樣；國文用對聯示範，字就那些字，但字數、詞性、平仄接錯了就不是對聯；英文的關係代名詞在同一個位置換一個字，整句的指涉就換了人；物理用彈簧秤收尾——兩端各接一條繩子，力必須接得剛好相等，讀數才會停在一個定值。", "audio": "bonding-rules-and-variety/audio/seg04.mp3", "dur": 40.49, "reveal": 2, "total": 3, "stage": null, "i": null, "chunks": [{"t": "化學從碳的四價出發：", "t0": 0.0, "t1": 2.16524064171123, "i": 0}, {"t": "同樣是兩個碳原子，", "t0": 2.16524064171123, "t1": 4.113957219251337, "i": 1}, {"t": "接成單鍵、", "t0": 4.113957219251337, "t1": 5.196577540106952, "i": 2}, {"t": "雙鍵還是參鍵，", "t0": 5.196577540106952, "t1": 6.712245989304813, "i": 3}, {"t": "就是完全不同的分子；", "t0": 6.712245989304813, "t1": 8.877486631016044, "i": 4}, {"t": "數學把相同款式的餅乾、", "t0": 8.877486631016044, "t1": 11.259251336898396, "i": 5}, {"t": "飲料、", "t0": 11.259251336898396, "t1": 11.908823529411766, "i": 6}, {"t": "玩具接成一個1000公克的福袋，", "t0": 11.908823529411766, "t1": 15.373208556149732, "i": 7}, {"t": "接法一改，", "t0": 15.373208556149732, "t1": 16.45582887700535, "i": 8}, {"t": "組合數就完全不一樣；", "t0": 16.45582887700535, "t1": 18.621069518716578, "i": 9}, {"t": "國文用對聯示範，", "t0": 18.621069518716578, "t1": 20.353262032085564, "i": 10}, {"t": "字就那些字，", "t0": 20.353262032085564, "t1": 21.6524064171123, "i": 11}, {"t": "但字數、", "t0": 21.6524064171123, "t1": 22.518502673796792, "i": 12}, {"t": "詞性、", "t0": 22.518502673796792, "t1": 23.16807486631016, "i": 13}, {"t": "平仄接錯了就不是對聯；", "t0": 23.16807486631016, "t1": 25.549839572192518, "i": 14}, {"t": "英文的關係代名詞在同一個位置換一個字，", "t0": 25.549839572192518, "t1": 29.66379679144385, "i": 15}, {"t": "整句的指涉就換了人；", "t0": 29.66379679144385, "t1": 31.829037433155083, "i": 16}, {"t": "物理用彈簧秤收尾——兩端各接一條繩子，", "t0": 31.829037433155083, "t1": 35.94299465240642, "i": 17}, {"t": "力必須接得剛好相等，", "t0": 35.94299465240642, "t1": 38.10823529411765, "i": 18}, {"t": "讀數才會停在一個定值。", "t0": 38.10823529411765, "t1": 40.49, "i": 19}]}, {"kind": "path", "phase": "", "text": "五題合起來，就是一句話：先數清楚有哪些零件，再決定怎麼接。", "audio": "bonding-rules-and-variety/audio/seg05.mp3", "dur": 6.87, "reveal": 3, "total": 3, "stage": null, "i": null, "chunks": [{"t": "五題合起來，", "t0": 0.0, "t1": 1.4213793103448276, "i": 0}, {"t": "就是一句話：", "t0": 1.4213793103448276, "t1": 2.842758620689655, "i": 1}, {"t": "先數清楚有哪些零件，", "t0": 2.842758620689655, "t1": 5.211724137931035, "i": 2}, {"t": "再決定怎麼接。", "t0": 5.211724137931035, "t1": 6.869999999999999, "i": 3}]}, {"kind": "idea", "phase": "", "text": "看到「有幾種可能」的題目，先做兩件事：①數清楚有哪幾種零件、每種幾個（可行範圍）；②寫下接法必須遵守的規則（方程式、格律、語法）。", "audio": "bonding-rules-and-variety/audio/seg06.mp3", "dur": 14.53, "reveal": null, "total": null, "stage": 0, "i": null, "chunks": [{"t": "看到「有幾種可能」的題目，", "t0": 0.0, "t1": 2.9059999999999997, "i": 0}, {"t": "先做兩件事：", "t0": 2.9059999999999997, "t1": 4.247230769230769, "i": 1}, {"t": "①數清楚有哪幾種零件、", "t0": 4.247230769230769, "t1": 6.706153846153846, "i": 2}, {"t": "每種幾個（可行範圍）；", "t0": 6.706153846153846, "t1": 9.165076923076924, "i": 3}, {"t": "②寫下接法必須遵守的規則（方程式、", "t0": 9.165076923076924, "t1": 12.96523076923077, "i": 4}, {"t": "格律、", "t0": 12.96523076923077, "t1": 13.635846153846153, "i": 5}, {"t": "語法）。", "t0": 13.635846153846153, "t1": 14.53, "i": 6}]}, {"kind": "idea", "phase": "", "text": "零件是有限的，變化來自接法——把接法寫成規則，變化就被算出來了。", "audio": "bonding-rules-and-variety/audio/seg07.mp3", "dur": 7.51, "reveal": null, "total": null, "stage": 1, "i": null, "chunks": [{"t": "零件是有限的，", "t0": 0.0, "t1": 1.6428125, "i": 0}, {"t": "變化來自接法——把接法寫成規則，", "t0": 1.6428125, "t1": 5.3978125, "i": 1}, {"t": "變化就被算出來了。", "t0": 5.3978125, "t1": 7.51, "i": 2}]}, {"kind": "stop", "phase": "node", "text": "第 1 站，化學第 19 題。同一組原子，單鍵／雙鍵／參鍵就是不同的分子。", "audio": "bonding-rules-and-variety/audio/seg08.mp3", "dur": 8.57, "reveal": null, "total": null, "stage": null, "i": 0, "chunks": [{"t": "第 1 站，", "t0": 0.0, "t1": 1.3897297297297297, "i": 0}, {"t": "化學第 19 題。", "t0": 1.3897297297297297, "t1": 3.4743243243243245, "i": 1}, {"t": "同一組原子，", "t0": 3.4743243243243245, "t1": 4.864054054054054, "i": 2}, {"t": "單鍵／雙鍵／參鍵就是不同的分子。", "t0": 4.864054054054054, "t1": 8.57, "i": 3}]}, {"kind": "stop", "phase": "why", "text": "題目要你挑出「不具有參鍵」的分子，判斷的唯一依據是路易士結構怎麼接：兩個原子之間共用一對電子是單鍵、兩對是雙鍵、三對是參鍵。碳的價電子是4，氫只能接1條，所以碳與碳之間要接幾條，是被「每個人手上還剩幾隻手」逼出來的——原子種類一樣，接法不同，就是不同分子。", "audio": "bonding-rules-and-variety/audio/seg09.mp3", "dur": 27.93, "reveal": null, "total": null, "stage": null, "i": 0, "chunks": [{"t": "題目要你挑出「不具有參鍵」的分子，", "t0": 0.0, "t1": 3.709453125, "i": 0}, {"t": "判斷的唯一依據是路易士結構怎麼接：", "t0": 3.709453125, "t1": 7.41890625, "i": 1}, {"t": "兩個原子之間共用一對電子是單鍵、", "t0": 7.41890625, "t1": 10.91015625, "i": 2}, {"t": "兩對是雙鍵、", "t0": 10.91015625, "t1": 12.219375, "i": 3}, {"t": "三對是參鍵。", "t0": 12.219375, "t1": 13.52859375, "i": 4}, {"t": "碳的價電子是4，", "t0": 13.52859375, "t1": 15.27421875, "i": 5}, {"t": "氫只能接1條，", "t0": 15.27421875, "t1": 16.801640625, "i": 6}, {"t": "所以碳與碳之間要接幾條，", "t0": 16.801640625, "t1": 19.420078125, "i": 7}, {"t": "是被「每個人手上還剩幾隻手」逼出來的——原子種類一樣，", "t0": 19.420078125, "t1": 25.3115625, "i": 8}, {"t": "接法不同，", "t0": 25.3115625, "t1": 26.402578124999998, "i": 9}, {"t": "就是不同分子。", "t0": 26.402578124999998, "t1": 27.93, "i": 10}]}, {"kind": "stop", "phase": "next", "text": "零件相同、接法不同，結果的數量會爆炸性增加——數學的組合題就是在算這件事。", "audio": "bonding-rules-and-variety/audio/seg10.mp3", "dur": 8.57, "reveal": null, "total": null, "stage": null, "i": 0, "chunks": [{"t": "零件相同、", "t0": 0.0, "t1": 1.1581081081081082, "i": 0}, {"t": "接法不同，", "t0": 1.1581081081081082, "t1": 2.3162162162162163, "i": 1}, {"t": "結果的數量會爆炸性增加——數學的組合題就是在算這件事。", "t0": 2.3162162162162163, "t1": 8.57, "i": 2}]}, {"kind": "stop", "phase": "node", "text": "第 2 站，數A第 18 題。先寫下可行性條件，接法就被限縮成幾種。", "audio": "bonding-rules-and-variety/audio/seg11.mp3", "dur": 7.93, "reveal": null, "total": null, "stage": null, "i": 1, "chunks": [{"t": "第 2 站，", "t0": 0.0, "t1": 1.3994117647058824, "i": 0}, {"t": "數A第 18 題。", "t0": 1.3994117647058824, "t1": 3.4985294117647054, "i": 1}, {"t": "先寫下可行性條件，", "t0": 3.4985294117647054, "t1": 5.597647058823529, "i": 2}, {"t": "接法就被限縮成幾種。", "t0": 5.597647058823529, "t1": 7.93, "i": 3}]}, {"kind": "stop", "phase": "why", "text": "3款餅乾各100公克、3款飲料各200公克、3款玩具各300公克，福袋要1000公克且三類都要有、款項不重複。把「接法」寫成式子：p+2d+3t=10（p、d、t各為1～3的整數），可行解只有(1,3,1)、(3,2,1)、(2,1,2)三組，再各乘上選款的方式數C(3,p)C(3,d)C(3,t)，共3×1×3+1×3×3+3×3×3=45種。", "audio": "bonding-rules-and-variety/audio/seg12.mp3", "dur": 37.72, "reveal": null, "total": null, "stage": null, "i": 1, "chunks": [{"t": "3款餅乾各100公克、", "t0": 0.0, "t1": 2.384597701149425, "i": 0}, {"t": "3款飲料各200公克、", "t0": 2.384597701149425, "t1": 4.76919540229885, "i": 1}, {"t": "3款玩具各300公克，", "t0": 4.76919540229885, "t1": 7.153793103448276, "i": 2}, {"t": "福袋要1000公克且三類都要有、", "t0": 7.153793103448276, "t1": 10.622298850574712, "i": 3}, {"t": "款項不重複。", "t0": 10.622298850574712, "t1": 11.922988505747126, "i": 4}, {"t": "把「接法」寫成式子：", "t0": 11.922988505747126, "t1": 14.090804597701148, "i": 5}, {"t": "p+2d+3t=10（p、", "t0": 14.090804597701148, "t1": 16.908965517241377, "i": 6}, {"t": "d、", "t0": 16.908965517241377, "t1": 17.342528735632182, "i": 7}, {"t": "t各為1～3的整數），", "t0": 17.342528735632182, "t1": 19.72712643678161, "i": 8}, {"t": "可行解只有(1,", "t0": 19.72712643678161, "t1": 21.461379310344824, "i": 9}, {"t": "3,", "t0": 21.461379310344824, "t1": 21.89494252873563, "i": 10}, {"t": "1)、", "t0": 21.89494252873563, "t1": 22.54528735632184, "i": 11}, {"t": "(3,", "t0": 22.54528735632184, "t1": 23.195632183908046, "i": 12}, {"t": "2,", "t0": 23.195632183908046, "t1": 23.629195402298848, "i": 13}, {"t": "1)、", "t0": 23.629195402298848, "t1": 24.279540229885054, "i": 14}, {"t": "(2,", "t0": 24.279540229885054, "t1": 24.929885057471264, "i": 15}, {"t": "1,", "t0": 24.929885057471264, "t1": 25.36344827586207, "i": 16}, {"t": "2)三組，", "t0": 25.36344827586207, "t1": 26.44735632183908, "i": 17}, {"t": "再各乘上選款的方式數C(3,", "t0": 26.44735632183908, "t1": 29.482298850574715, "i": 18}, {"t": "p)C(3,", "t0": 29.482298850574715, "t1": 30.782988505747124, "i": 19}, {"t": "d)C(3,", "t0": 30.782988505747124, "t1": 32.08367816091954, "i": 20}, {"t": "t)，", "t0": 32.08367816091954, "t1": 32.73402298850575, "i": 21}, {"t": "共3×1×3+1×3×3+3×3×3=45種。", "t0": 32.73402298850575, "t1": 37.72, "i": 22}]}, {"kind": "stop", "phase": "next", "text": "國文也有「接法規則」，而且規則嚴到少一條就不成立。", "audio": "bonding-rules-and-variety/audio/seg13.mp3", "dur": 6.02, "reveal": null, "total": null, "stage": null, "i": 1, "chunks": [{"t": "國文也有「接法規則」，", "t0": 0.0, "t1": 2.6488, "i": 0}, {"t": "而且規則嚴到少一條就不成立。", "t0": 2.6488, "t1": 6.02, "i": 1}]}, {"kind": "stop", "phase": "node", "text": "第 3 站，國文第 7 題。字數相等、詞性相對、仄起平收：接法錯了就不是對聯。", "audio": "bonding-rules-and-variety/audio/seg14.mp3", "dur": 9.0, "reveal": null, "total": null, "stage": null, "i": 2, "chunks": [{"t": "第 3 站，", "t0": 0.0, "t1": 1.3846153846153846, "i": 0}, {"t": "國文第 7 題。", "t0": 1.3846153846153846, "t1": 3.230769230769231, "i": 1}, {"t": "字數相等、", "t0": 3.230769230769231, "t1": 4.384615384615385, "i": 2}, {"t": "詞性相對、", "t0": 4.384615384615385, "t1": 5.538461538461538, "i": 3}, {"t": "仄起平收：", "t0": 5.538461538461538, "t1": 6.6923076923076925, "i": 4}, {"t": "接法錯了就不是對聯。", "t0": 6.6923076923076925, "t1": 9.0, "i": 5}]}, {"kind": "stop", "phase": "why", "text": "朱熹為開元寺撰的上下聯各有兩句，要判斷哪一組才接得起來，靠的不是讀起來順不順，而是三條硬規則：上下聯字數相等、對應位置詞性相對（名詞對名詞、動詞對動詞）、上聯末字仄聲、下聯末字平聲。", "audio": "bonding-rules-and-variety/audio/seg15.mp3", "dur": 20.06, "reveal": null, "total": null, "stage": null, "i": 2, "chunks": [{"t": "朱熹為開元寺撰的上下聯各有兩句，", "t0": 0.0, "t1": 3.5270329670329668, "i": 0}, {"t": "要判斷哪一組才接得起來，", "t0": 3.5270329670329668, "t1": 6.172307692307692, "i": 1}, {"t": "靠的不是讀起來順不順，", "t0": 6.172307692307692, "t1": 8.597142857142856, "i": 2}, {"t": "而是三條硬規則：", "t0": 8.597142857142856, "t1": 10.36065934065934, "i": 3}, {"t": "上下聯字數相等、", "t0": 10.36065934065934, "t1": 12.124175824175824, "i": 4}, {"t": "對應位置詞性相對（名詞對名詞、", "t0": 12.124175824175824, "t1": 15.43076923076923, "i": 5}, {"t": "動詞對動詞）、", "t0": 15.43076923076923, "t1": 16.973846153846154, "i": 6}, {"t": "上聯末字仄聲、", "t0": 16.973846153846154, "t1": 18.516923076923078, "i": 7}, {"t": "下聯末字平聲。", "t0": 18.516923076923078, "t1": 20.06, "i": 8}]}, {"kind": "stop", "phase": "next", "text": "英文的同一個位置也有「只能接哪一種字」的規則。", "audio": "bonding-rules-and-variety/audio/seg16.mp3", "dur": 5.59, "reveal": null, "total": null, "stage": null, "i": 2, "chunks": [{"t": "英文的同一個位置也有「只能接哪一種字」的規則。", "t0": 0.0, "t1": 5.59, "i": 0}]}, {"kind": "stop", "phase": "node", "text": "第 4 站，英文第 18 題。同一個位置接 that／where／which／thus，指涉對象就換了。", "audio": "bonding-rules-and-variety/audio/seg17.mp3", "dur": 11.76, "reveal": null, "total": null, "stage": null, "i": 3, "chunks": [{"t": "第 4 站，", "t0": 0.0, "t1": 1.356923076923077, "i": 0}, {"t": "英文第 18 題。", "t0": 1.356923076923077, "t1": 3.3923076923076922, "i": 1}, {"t": "同一個位置接 that／where／which／thus，", "t0": 3.3923076923076922, "t1": 9.950769230769229, "i": 2}, {"t": "指涉對象就換了。", "t0": 9.950769230769229, "t1": 11.76, "i": 3}]}, {"kind": "stop", "phase": "why", "text": "克漏字的空格在同一個位置，四個選項(A)that(B)where(C)which(D)thus都能「填進去」，但只有一個接得對：關係代名詞要接先行詞，先行詞是「地方」用where、是「事物」用which／that，thus是副詞根本不能當連接詞。", "audio": "bonding-rules-and-variety/audio/seg18.mp3", "dur": 26.87, "reveal": null, "total": null, "stage": null, "i": 3, "chunks": [{"t": "克漏字的空格在同一個位置，", "t0": 0.0, "t1": 2.839918699186992, "i": 0}, {"t": "四個選項(A)that(B)where(C)which(D)thus都能「填進去」，", "t0": 2.839918699186992, "t1": 12.015040650406505, "i": 1}, {"t": "但只有一個接得對：", "t0": 12.015040650406505, "t1": 13.981138211382115, "i": 2}, {"t": "關係代名詞要接先行詞，", "t0": 13.981138211382115, "t1": 16.384146341463413, "i": 3}, {"t": "先行詞是「地方」用where、", "t0": 16.384146341463413, "t1": 19.6609756097561, "i": 4}, {"t": "是「事物」用which／that，", "t0": 19.6609756097561, "t1": 23.374715447154472, "i": 5}, {"t": "thus是副詞根本不能當連接詞。", "t0": 23.374715447154472, "t1": 26.87, "i": 6}]}, {"kind": "stop", "phase": "next", "text": "把「接法」換成力，就是物理的連結與平衡。", "audio": "bonding-rules-and-variety/audio/seg19.mp3", "dur": 4.96, "reveal": null, "total": null, "stage": null, "i": 3, "chunks": [{"t": "把「接法」換成力，", "t0": 0.0, "t1": 2.232, "i": 0}, {"t": "就是物理的連結與平衡。", "t0": 2.232, "t1": 4.96, "i": 1}]}, {"kind": "stop", "phase": "node", "text": "第 5 站，物理第 2 題。兩端各接一條繩，力必須接得相等，讀數才是定值。", "audio": "bonding-rules-and-variety/audio/seg20.mp3", "dur": 8.57, "reveal": null, "total": null, "stage": null, "i": 4, "chunks": [{"t": "第 5 站，", "t0": 0.0, "t1": 1.3897297297297297, "i": 0}, {"t": "物理第 2 題。", "t0": 1.3897297297297297, "t1": 3.2427027027027027, "i": 1}, {"t": "兩端各接一條繩，", "t0": 3.2427027027027027, "t1": 5.095675675675676, "i": 2}, {"t": "力必須接得相等，", "t0": 5.095675675675676, "t1": 6.948648648648649, "i": 3}, {"t": "讀數才是定值。", "t0": 6.948648648648649, "t1": 8.57, "i": 4}]}, {"kind": "stop", "phase": "why", "text": "彈簧秤靜止平放在光滑桌面上，左端繩受T、右端掛勾繩受T′，方向相反。因為秤靜止（合力為零）且繩子質量可忽略，兩端的張力必須相等T=T′；而掛勾受到的拉力量值就是讀數F，所以T=F=T′。", "audio": "bonding-rules-and-variety/audio/seg21.mp3", "dur": 20.49, "reveal": null, "total": null, "stage": null, "i": 4, "chunks": [{"t": "彈簧秤靜止平放在光滑桌面上，", "t0": 0.0, "t1": 3.0845161290322576, "i": 0}, {"t": "左端繩受T、", "t0": 3.0845161290322576, "t1": 4.406451612903226, "i": 1}, {"t": "右端掛勾繩受T′，", "t0": 4.406451612903226, "t1": 6.389354838709677, "i": 2}, {"t": "方向相反。", "t0": 6.389354838709677, "t1": 7.490967741935483, "i": 3}, {"t": "因為秤靜止（合力為零）且繩子質量可忽略，", "t0": 7.490967741935483, "t1": 11.897419354838707, "i": 4}, {"t": "兩端的張力必須相等T=T′；", "t0": 11.897419354838707, "t1": 14.981935483870966, "i": 5}, {"t": "而掛勾受到的拉力量值就是讀數F，", "t0": 14.981935483870966, "t1": 18.507096774193545, "i": 6}, {"t": "所以T=F=T′。", "t0": 18.507096774193545, "t1": 20.49, "i": 7}]}, {"kind": "close", "phase": "", "text": "五個科目，同一個核心觀念。接法決定結果——練一科，等於把其他四科的同一個觀念也走過一次。", "audio": "bonding-rules-and-variety/audio/seg22.mp3", "dur": 10.06, "reveal": null, "total": null, "stage": null, "i": null, "chunks": [{"t": "五個科目，", "t0": 0.0, "t1": 1.1431818181818183, "i": 0}, {"t": "同一個核心觀念。", "t0": 1.1431818181818183, "t1": 2.972272727272727, "i": 1}, {"t": "接法決定結果——練一科，", "t0": 2.972272727272727, "t1": 5.715909090909091, "i": 2}, {"t": "等於把其他四科的同一個觀念也走過一次。", "t0": 5.715909090909091, "t1": 10.06, "i": 3}]}, {"kind": "recap", "phase": "", "text": "重點回顧。第 1 站，化學第 19 題，同一組原子，單鍵／雙鍵／參鍵就是不同的分子；第 2 站，數A第 18 題，先寫下可行性條件，接法就被限縮成幾種；第 3 站，國文第 7 題，字數相等、詞性相對、仄起平收：接法錯了就不是對聯；第 4 站，英文第 18 題，同一個位置接 that／where／which／thus，指涉對象就換了；第 5 站，物理第 2 題，兩端各接一條繩，力必須接得相等，讀數才是定值。五題指向同一件事：看到「有幾種可能」的題目，先做兩件事：①數清楚有哪幾種零件、每種幾個（可行範圍）；②寫下接法必須遵守的規則（方程式、格律、語法）。零件是有限的，變化來自接法——把接法寫成規則，變化就被算出來了。", "audio": "bonding-rules-and-variety/audio/seg23.mp3", "dur": 66.66, "reveal": null, "total": null, "stage": null, "i": null, "chunks": [{"t": "重點回顧。", "t0": 0.0, "t1": 1.0751612903225805, "i": 0}, {"t": "第 1 站，", "t0": 1.0751612903225805, "t1": 2.365354838709677, "i": 1}, {"t": "化學第 19 題，", "t0": 2.365354838709677, "t1": 4.300645161290322, "i": 2}, {"t": "同一組原子，", "t0": 4.300645161290322, "t1": 5.590838709677419, "i": 3}, {"t": "單鍵／雙鍵／參鍵就是不同的分子；", "t0": 5.590838709677419, "t1": 9.031354838709676, "i": 4}, {"t": "第 2 站，", "t0": 9.031354838709676, "t1": 10.321548387096774, "i": 5}, {"t": "數A第 18 題，", "t0": 10.321548387096774, "t1": 12.25683870967742, "i": 6}, {"t": "先寫下可行性條件，", "t0": 12.25683870967742, "t1": 14.192129032258062, "i": 7}, {"t": "接法就被限縮成幾種；", "t0": 14.192129032258062, "t1": 16.342451612903226, "i": 8}, {"t": "第 3 站，", "t0": 16.342451612903226, "t1": 17.632645161290323, "i": 9}, {"t": "國文第 7 題，", "t0": 17.632645161290323, "t1": 19.35290322580645, "i": 10}, {"t": "字數相等、", "t0": 19.35290322580645, "t1": 20.42806451612903, "i": 11}, {"t": "詞性相對、", "t0": 20.42806451612903, "t1": 21.503225806451614, "i": 12}, {"t": "仄起平收：", "t0": 21.503225806451614, "t1": 22.57838709677419, "i": 13}, {"t": "接法錯了就不是對聯；", "t0": 22.57838709677419, "t1": 24.728709677419353, "i": 14}, {"t": "第 4 站，", "t0": 24.728709677419353, "t1": 26.01890322580645, "i": 15}, {"t": "英文第 18 題，", "t0": 26.01890322580645, "t1": 27.954193548387096, "i": 16}, {"t": "同一個位置接 that／where／which／thus，", "t0": 27.954193548387096, "t1": 34.19012903225806, "i": 17}, {"t": "指涉對象就換了；", "t0": 34.19012903225806, "t1": 35.910387096774194, "i": 18}, {"t": "第 5 站，", "t0": 35.910387096774194, "t1": 37.20058064516129, "i": 19}, {"t": "物理第 2 題，", "t0": 37.20058064516129, "t1": 38.92083870967742, "i": 20}, {"t": "兩端各接一條繩，", "t0": 38.92083870967742, "t1": 40.64109677419355, "i": 21}, {"t": "力必須接得相等，", "t0": 40.64109677419355, "t1": 42.36135483870967, "i": 22}, {"t": "讀數才是定值。", "t0": 42.36135483870967, "t1": 43.866580645161285, "i": 23}, {"t": "五題指向同一件事：", "t0": 43.866580645161285, "t1": 45.801870967741934, "i": 24}, {"t": "看到「有幾種可能」的題目，", "t0": 45.801870967741934, "t1": 48.59729032258065, "i": 25}, {"t": "先做兩件事：", "t0": 48.59729032258065, "t1": 49.88748387096774, "i": 26}, {"t": "①數清楚有哪幾種零件、", "t0": 49.88748387096774, "t1": 52.25283870967742, "i": 27}, {"t": "每種幾個（可行範圍）；", "t0": 52.25283870967742, "t1": 54.6181935483871, "i": 28}, {"t": "②寫下接法必須遵守的規則（方程式、", "t0": 54.6181935483871, "t1": 58.273741935483876, "i": 29}, {"t": "格律、", "t0": 58.273741935483876, "t1": 58.918838709677416, "i": 30}, {"t": "語法）。", "t0": 58.918838709677416, "t1": 59.77896774193548, "i": 31}, {"t": "零件是有限的，", "t0": 59.77896774193548, "t1": 61.284193548387094, "i": 32}, {"t": "變化來自接法——把接法寫成規則，", "t0": 61.284193548387094, "t1": 64.72470967741936, "i": 33}, {"t": "變化就被算出來了。", "t0": 64.72470967741936, "t1": 66.66, "i": 34}]}, {"kind": "end", "phase": "", "text": "這條線的起點可以是任何一科。挑一科開始，就等於走過五科。", "audio": "bonding-rules-and-variety/audio/seg24.mp3", "dur": 6.66, "reveal": null, "total": null, "stage": null, "i": null, "chunks": [{"t": "這條線的起點可以是任何一科。", "t0": 0.0, "t1": 3.3300000000000005, "i": 0}, {"t": "挑一科開始，", "t0": 3.3300000000000005, "t1": 4.757142857142857, "i": 1}, {"t": "就等於走過五科。", "t0": 4.757142857142857, "t1": 6.660000000000001, "i": 2}]}], "meta": {"voice": "zh-CN-XiaoxiaoNeural", "rate": "-6%", "charsPerSec": 4.7, "estimate": 391.5, "generated": "2026-10-13 09:34:46"}};
+  var SUBCOL = {'english':'#ff8fa3','chemistry':'#7ee787','physics':'#66d9ef','math-a':'#ffd166','chinese':'#c792ea',
+                'math-b':'#ffd166','history':'#f0a868','geography':'#7ee787','civics':'#66d9ef'};
+  var $ = function(id){return document.getElementById(id);};
+  var wrap=$('wrap'), cv=$('cv'), ctx=cv.getContext('2d');
+  var CW=1280, CH=620, CX=640, CY=304, RX=392, RY=166;
+  var scenes=D.scenes, unit=D.unit, nodes=unit.nodes, N=nodes.length;
+  var estDur = scenes.map(function(s){return s.dur;});
+
+  /* ---------- 音檔：載入 metadata 取得精確長度，建時間軸 ---------- */
+  var AUD=[], DUR=estDur.slice(), starts=[], soundOn=true, playing=false, speed=1, t=0, cur=0, audioReady=false;
+  scenes.forEach(function(s,i){
+    var a=new Audio();
+    a.preload='auto'; a.src=s.audio;
+    a.addEventListener('loadedmetadata',function(){ if(isFinite(a.duration)&&a.duration>0){ DUR[i]=a.duration; timeline(); } });
+    a.addEventListener('ended',function(){ if(soundOn&&playing&&cur===i){ goTo(i+1,true); } });
+    AUD.push(a);
+  });
+  function timeline(){ var s=0; starts=[]; for(var i=0;i<DUR.length;i++){ starts.push(s); s+=DUR[i]; } total=s; $('time').textContent='00:00 / '+fmt(total); }
+  var total=0; timeline();
+  function fmt(x){ x=Math.max(0,x||0); var m=Math.floor(x/60), s=Math.floor(x%60); return (m<10?'0':'')+m+':'+(s<10?'0':'')+s; }
+
+  /* ---------- 場景幾何 ---------- */
+  function pos(i){ var a=(-90+i*72)*Math.PI/180; return [CX+RX*Math.cos(a), CY+RY*Math.sin(a)]; }
+  function col(i){ var n=nodes[i]; return SUBCOL[n.subject]||'#66d9ef'; }
+  var stars=[]; for(var i=0;i<120;i++){ stars.push({x:Math.random()*CW,y:Math.random()*CH,r:Math.random()*1.5+.4,p:Math.random()*6.28}); }
+  function ease(p){ return p<0?0:(p>1?1:1-Math.pow(1-p,3)); }
+  function clamp(x,a,b){ return x<a?a:(x>b?b:x); }
+
+  /* ---------- 畫布繪製 ---------- */
+  function bg(tt){
+    var g=ctx.createLinearGradient(0,0,0,CH); g.addColorStop(0,'#0a1024'); g.addColorStop(1,'#060912');
+    ctx.fillStyle=g; ctx.fillRect(0,0,CW,CH);
+    for(var i=0;i<stars.length;i++){ var s=stars[i]; var al=.25+.35*Math.sin(tt*1.1+s.p);
+      ctx.fillStyle='rgba(160,190,255,'+al.toFixed(3)+')'; ctx.beginPath(); ctx.arc(s.x,s.y,s.r,0,6.2832); ctx.fill(); }
+  }
+  function nodeShape(i,alpha,scale,fill){
+    var p=pos(i), r=34*scale;
+    ctx.save(); ctx.globalAlpha=alpha;
+    if(fill){ ctx.shadowColor=col(i); ctx.shadowBlur=26; }
+    ctx.beginPath(); ctx.arc(p[0],p[1],r,0,6.2832);
+    ctx.fillStyle=fill?col(i):'rgba(18,27,52,.95)'; ctx.fill();
+    ctx.lineWidth=2; ctx.strokeStyle=fill?col(i):'#31406e'; ctx.stroke();
+    ctx.shadowBlur=0;
+    ctx.fillStyle=fill?'#08101f':'#c8d6f5'; ctx.font='600 17px "PingFang TC",system-ui,sans-serif';
+    ctx.textAlign='center'; ctx.textBaseline='middle';
+    ctx.fillText(String(i+1),p[0],p[1]+1);
+    ctx.globalAlpha=1; ctx.fillStyle=fill?'#e9eefc':'#8fa0cc'; ctx.font='600 19px "PingFang TC",system-ui,sans-serif';
+    ctx.fillText(nodes[i].name, p[0], p[1]+r+24);
+    if(nodes[i].role){ ctx.fillStyle='#ffd166'; ctx.font='13px "PingFang TC",system-ui,sans-serif';
+      ctx.fillText(nodes[i].role, p[0], p[1]+r+45); }
+    ctx.restore();
+  }
+  function ring(alpha,dash){ ctx.save(); ctx.globalAlpha=alpha; ctx.setLineDash(dash?[8,10]:[]);
+    ctx.strokeStyle='#2b3a68'; ctx.lineWidth=2; ctx.beginPath();
+    ctx.ellipse(CX,CY,RX,RY,0,0,6.2832); ctx.stroke(); ctx.restore(); }
+  function hub(alpha,scale,label){
+    ctx.save(); ctx.globalAlpha=alpha;
+    ctx.shadowColor='#ffd166'; ctx.shadowBlur=34;
+    var g=ctx.createRadialGradient(CX,CY,4,CX,CY,72*scale);
+    g.addColorStop(0,'rgba(255,209,102,.95)'); g.addColorStop(1,'rgba(255,209,102,.18)');
+    ctx.beginPath(); ctx.arc(CX,CY,72*scale,0,6.2832); ctx.fillStyle=g; ctx.fill();
+    ctx.shadowBlur=0; ctx.beginPath(); ctx.arc(CX,CY,72*scale,0,6.2832);
+    ctx.strokeStyle='rgba(255,209,102,.85)'; ctx.lineWidth=2; ctx.stroke();
+    ctx.fillStyle='#fff8e2'; ctx.font='600 18px "PingFang TC",system-ui,sans-serif';
+    ctx.textAlign='center'; ctx.textBaseline='middle'; ctx.fillText(label||'核心觀念',CX,CY);
+    ctx.restore();
+  }
+  function edge(i,prog,color){
+    var p=pos(i), xa=CX+ (p[0]-CX)*prog, ya=CY+(p[1]-CY)*prog;
+    ctx.save(); ctx.lineWidth=3; ctx.strokeStyle=color||'rgba(102,217,239,.75)';
+    ctx.shadowColor=color||'#66d9ef'; ctx.shadowBlur=14;
+    ctx.beginPath(); ctx.moveTo(CX,CY); ctx.lineTo(xa,ya); ctx.stroke(); ctx.restore();
+  }
+  function arcBetween(i,j,prog,color){
+    var a=pos(i), b=pos(j), mx=(a[0]+b[0])/2, my=(a[1]+b[1])/2;
+    var nx=(my-CY), ny=-(mx-CX), L=Math.hypot(nx,ny)||1, bulge=34;
+    var cx2=mx+nx/L*bulge, cy2=my+ny/L*bulge;
+    ctx.save(); ctx.lineWidth=2.5; ctx.strokeStyle=color; ctx.setLineDash([7,7]);
+    ctx.lineDashOffset=-performance.now()/60;
+    ctx.beginPath(); ctx.moveTo(a[0],a[1]);
+    ctx.quadraticCurveTo(cx2,cy2,a[0]+(b[0]-a[0])*prog,a[1]+(b[1]-a[1])*prog); ctx.stroke(); ctx.restore();
+  }
+  function glowText(txt,x,y,size,color,alpha){
+    ctx.save(); ctx.globalAlpha=alpha; ctx.fillStyle=color; ctx.textAlign='center'; ctx.textBaseline='middle';
+    ctx.shadowColor=color; ctx.shadowBlur=22; ctx.font='600 '+size+'px "PingFang TC",system-ui,sans-serif';
+    ctx.fillText(txt,x,y); ctx.restore();
+  }
+
+  /* ---------- 依場景繪製 ---------- */
+  function draw(tt,scene,p){
+    bg(tt);
+    var kind=scene.kind, phase=scene.phase;
+    var visited = (kind==='stop')? scene.i : ((kind==='close'||kind==='end'||kind==='recap')? N-1 : -1);
+    if(kind==='title'||kind==='recap'){
+      var p2=clamp(p*1.4,0,1);
+      ring(kind==='title'? .3+.5*p2 : 1, kind==='recap');
+      for(var q=0;q<N;q++){ edge(q, kind==='title'? .5*p2 : 1, col(q)); nodeShape(q, kind==='title'? .3+.7*p2 : 1, .95, kind==='recap'); }
+      return;
+    }
+    if(kind==='open'){
+      var a=clamp((p-.12)/.4,0,1);
+      ring(a*.7,true);
+      for(var i=0;i<N;i++){ nodeShape(i, clamp(a*1.15-i*.06,0,1), .9); }
+      glowText(unit.title, CX, CY-8, 46, '#e9eefc', clamp(p*2.4,0,1));
+      glowText('五科 × 一個核心觀念', CX, CY+44, 20, '#ffd166', clamp((p-.35)*2.2,0,1));
+      return;
+    }
+    if(kind==='path'){
+      ring(.55,true);
+      var revealed = scene.reveal;
+      for(var i=0;i<N;i++){
+        var on = i<revealed-1 ? 1 : (i===revealed-1 ? clamp(p*2.2,0,1) : .0);
+        if(on<=0){ continue; }
+        nodeShape(i,on,.86,false);
+      }
+      return;
+    }
+    if(kind==='idea'){
+      ring(.4,true);
+      for(var i=0;i<N;i++){ nodeShape(i,.3,.8,false); }
+      hub(clamp(p*2,0,1), .9+.06*Math.sin(tt*3), '核心觀念');
+      return;
+    }
+    if(kind==='stop'){
+      ring(.4,true);
+      for(var i=0;i<N;i++){
+        if(i<visited){ nodeShape(i,.95,.9,true); edge(i,1,col(i)); }
+        else if(i>visited){ nodeShape(i,.28,.82,false); }
+      }
+      var pul = .5+.5*Math.sin(tt*4);
+      if(phase==='node'){
+        edge(visited, clamp(p*1.4,0,1), 'rgba(255,209,102,.8)');
+        nodeShape(visited,.55+.45*clamp(p*1.5,0,1),1.06+.16*pul,true);
+        hub(.85,.72,'核心觀念');
+      } else if(phase==='why'){
+        edge(visited,1,col(visited));
+        nodeShape(visited,1,1.12+.10*pul,true);
+        hub(.9,.8,'核心觀念');
+        ctx.save(); ctx.globalAlpha=clamp(p*1.6,0,1);
+        ctx.strokeStyle='rgba(233,238,252,.5)'; ctx.lineWidth=2; ctx.setLineDash([4,6]);
+        ctx.beginPath(); ctx.arc(pos(visited)[0],pos(visited)[1],58+6*pul,0,6.2832); ctx.stroke(); ctx.restore();
+      } else {
+        edge(visited,1,col(visited));
+        nodeShape(visited,1,1.08,true);
+        hub(.7,.7,'核心觀念');
+        if(visited+1<N){ arcBetween(visited,visited+1,clamp(p*1.5,0,1),'rgba(255,209,102,.9)');
+          glowText('下一站：'+nodes[visited+1].name, CX, CY+112, 20, '#ffd166', clamp((p-.3)*2,0,1)); }
+      }
+      return;
+    }
+    if(kind==='close'||kind==='end'){
+      ring(1,false);
+      for(var i=0;i<N;i++){ nodeShape(i,1,.95,true); edge(i,1,col(i)); }
+      var da=tt*0.9%(2*Math.PI);
+      var lx=CX+RX*Math.cos(da), ly=CY+RY*Math.sin(da);
+      ctx.save(); ctx.shadowColor='#ffd166'; ctx.shadowBlur=30; ctx.fillStyle='#ffd166';
+      ctx.beginPath(); ctx.arc(lx,ly,7,0,6.2832); ctx.fill(); ctx.restore();
+      if(kind==='close'){
+        glowText('核心觀念', CX, CY, 30, '#ffd166', .9);
+        glowText('五科串成一條線', CX, CY+126, 24, '#e9eefc', clamp(p*1.8,0,1));
+      } else {
+        glowText(unit.title, CX, CY-4, 40, '#e9eefc', clamp(p*1.6,0,1));
+        glowText('練一科，走過五科', CX, CY+52, 24, '#ffd166', clamp((p-.25)*1.8,0,1));
+      }
+      return;
+    }
+  }
+
+  /* ---------- 文字／字幕／面板 ---------- */
+  var plate=$('plate'), subs=$('subs'), chips=$('chips'), stopsBox=$('stops');
+  stopsBox.innerHTML = nodes.map(function(n,i){ return '<button type="button" data-i="'+i+'">'+n.name+'</button>'; }).join('');
+  chips.innerHTML = (unit.chips||[]).map(function(c){ return '<div class="chip"><div class="t">'+c.tag+'</div><div class="w">'+c.word+'</div></div>'; }).join('');
+  $('unit-title').textContent = unit.title;
+
+  /* ---------- 片頭標題卡／片尾重點回顧卡（DOM 卡片） ---------- */
+  var cardTitle=$('card-title'), cardRecap=$('card-recap');
+  var CH_=unit.chapters||{}, recapRows=unit.recap||[];
+  var route = nodes.map(function(n){ return n.name; }).join('　→　');
+  cardTitle.innerHTML = '<div class="card" id="title-card">'
+    + '<div class="eyebrow">一科練五科　觀點動畫</div>'
+    + '<div class="bigtitle" id="title-card-h">'+unit.title+'</div>'
+    + '<div class="cardsub" id="title-card-sub">'+((unit.yearLabel?unit.yearLabel+'｜':'')+unit.subtitle)+'</div>'
+    + '<div class="meta"><span>五科 × 一個核心觀念</span><span>'+N+' 站</span>'
+    +   '<span>'+(unit.yearLabel||'')+'</span><span>約 '+Math.max(1,Math.round((D.meta?D.meta.estimate:0)/60))+' 分鐘</span></div>'
+    + '<div class="route" id="title-card-route">學習路線：'+route+'</div>'
+    + '</div>';
+  cardRecap.innerHTML = '<div class="card recap" id="recap-card">'
+    + '<h5>重點回顧</h5>'
+    + recapRows.map(function(r){
+        return '<div class="rrow" data-scene="'+r.scene+'"><i>'+r.no+'</i><div><b>'+r.name+'　第 '+r.n+' 題</b>'
+             + '<div class="rsub">'+r.point+'</div></div></div>'; }).join('')
+    + '<div class="keyline">'+String(unit.keyIdea||'').split('。')[0]+'。</div>'
+    + '</div>';
+
+  /* ---------- 章節地圖側欄 ---------- */
+  var mapBox=$('map'), mapBody=$('map-body'), mapbtn=$('mapbtn');
+  mapBody.innerHTML =
+      '<button class="mrow" type="button" data-scene="'+(CH_.title||0)+'"><i>起</i><div class="tx"><b>片頭標題卡</b><span>'+unit.title+'</span></div></button>'
+    + '<button class="mrow" type="button" data-scene="'+(CH_.idea||0)+'"><i>核</i><div class="tx"><b>核心觀念</b><span>'+String(unit.keyIdea||'').slice(0,26)+'</span></div></button>'
+    + '<div class="cap">五科學習路徑（點一下跳到該站）</div>'
+    + (CH_.stops||[]).map(function(c){
+        return '<button class="mrow" type="button" data-scene="'+c.scene+'" data-no="'+c.no+'"><i>'+c.no+'</i>'
+             + '<div class="tx"><b>'+c.label+'</b><span>'+c.sub+'</span></div></button>'; }).join('')
+    + '<div class="cap">收束</div>'
+    + '<button class="mrow" type="button" data-scene="'+(CH_.close||0)+'"><i>束</i><div class="tx"><b>五科串成一條線</b><span>收束與總覽</span></div></button>'
+    + '<button class="mrow" type="button" data-scene="'+(CH_.recap||0)+'"><i>顧</i><div class="tx"><b>重點回顧卡</b><span>五站重點一次看完</span></div></button>';
+  var mapRows = mapBody.querySelectorAll('.mrow');
+  function mapOpen(on){ mapBox.classList.toggle('on',!!on); mapbtn.classList.toggle('on',!!on);
+    wrap.classList.toggle('map-open',!!on); mapbtn.textContent = on?'收起地圖':'章節地圖'; }
+  mapbtn.addEventListener('click',function(){ mapOpen(!mapBox.classList.contains('on')); });
+  mapBody.addEventListener('click',function(ev){ var b=ev.target.closest('.mrow'); if(!b){return;}
+    var sc=Number(b.getAttribute('data-scene')); playing=true; goTo(sc,true); paint(); });
+  var chipEls = chips.querySelectorAll('.chip'), subEls=[];
+  function setSub(scene){
+    if(subEls.__key===scene.text) { return; }
+    subs.innerHTML=''; subEls=[];
+    (scene.chunks||[]).forEach(function(c){
+      var sp=document.createElement('span'); sp.className='ck'; sp.textContent=c.t; subs.appendChild(sp); subEls.push(c);
+    });
+    subEls.__key=scene.text;
+  }
+  function paintSub(tt,scene){
+    var lt=tt-starts[cur];
+    for(var i=0;i<subEls.length;i++){
+      var el=subs.children[i], c=subEls[i]; if(!el){continue;}
+      var on = lt>=c.t0 && lt<=c.t1;
+      el.className='ck'+(on?' on':(lt>c.t1?' done':''));
+    }
+  }
+  function panel(scene){
+    var k=$('p-k'), h=$('p-h'), b=$('p-b'), tg=$('p-t');
+    var kind=scene.kind, ph=scene.phase;
+    tg.textContent='';
+    if(kind==='title'){ k.textContent='一科練五科 觀點動畫'; h.textContent=unit.title;
+      b.textContent=(unit.yearLabel?unit.yearLabel+'｜':'')+unit.subtitle; tg.textContent='五科 × 一個核心觀念'; }
+    else if(kind==='open'){ k.textContent='一科練五科 觀點動畫'; h.textContent=unit.title;
+      b.textContent=(unit.yearLabel?unit.yearLabel+'｜':'')+unit.subtitle; tg.textContent='五科 × 一個核心觀念'; }
+    else if(kind==='path'){ var nm=nodes.slice(0,scene.reveal).map(function(n){return n.name;}).join(' → ');
+      k.textContent='五科學習路徑'; h.textContent='一站接一站'; b.textContent=nm; }
+    else if(kind==='idea'){ k.textContent='核心觀念'; h.textContent='先問：什麼沒有變？'; b.textContent=unit.keyIdea; }
+    else if(kind==='stop'){
+      var n=nodes[scene.i];
+      if(ph==='node'){ k.textContent='第 '+(scene.i+1)+' 站'+(n.role?'（'+n.role+'）':''); h.textContent=n.name+'　第 '+n.n+' 題'; b.textContent=n.point; }
+      else if(ph==='why'){ k.textContent='為什麼是這一站'; h.textContent=n.name+'　第 '+n.n+' 題'; b.textContent=n.why; }
+      else { k.textContent='接下一站'; h.textContent='沿著同一條線往下'; b.textContent=n.next; }
+    }
+    else if(kind==='close'){ k.textContent='收束'; h.textContent='五科串成一條線'; b.textContent=unit.keyIdea.split('。')[0]+'。'; }
+    else if(kind==='recap'){ k.textContent='重點回顧'; h.textContent=unit.title+'　五站重點';
+      b.textContent=(unit.recap||[]).map(function(r){ return r.name+'第 '+r.n+' 題'; }).join('、'); }
+    else { k.textContent=''; h.textContent=unit.title; b.textContent='練一科，走過五科。'; }
+  }
+  function paintPanel(scene){
+    panel(scene);
+    var si = scenes.indexOf(scene);
+    plate.classList.toggle('hide', scene.kind==='close'||scene.kind==='end'||scene.kind==='title'||scene.kind==='recap');
+    cardTitle.classList.toggle('on', scene.kind==='title');
+    cardRecap.classList.toggle('on', scene.kind==='recap');
+    var i = scene.kind==='stop'? scene.i : -1;
+    var bts=stopsBox.querySelectorAll('button');
+    for(var k=0;k<bts.length;k++){
+      bts[k].className = (Number(bts[k].getAttribute('data-i'))===i)?'on':(Number(bts[k].getAttribute('data-i'))<i?'done':'');
+    }
+    for(var c=0;c<chipEls.length;c++){ chipEls[c].classList.toggle('on', scene.kind==='idea' ? true : false); }
+    /* 章節地圖：目前場景高亮、已走過的站標記 done */
+    var mv = (scene.kind==='stop')? scene.i : ((scene.kind==='close'||scene.kind==='end'||scene.kind==='recap')? N-1 : -1);
+    for(var m=0;m<mapRows.length;m++){
+      var mm=mapRows[m], ms=Number(mm.getAttribute('data-scene')), mno=Number(mm.getAttribute('data-no')||0);
+      var cls = (ms===si) ? 'mrow on' : ((mno && mno-1<mv) ? 'mrow done' : 'mrow');
+      if(mm.className!==cls){ mm.className=cls; }
+    }
+  }
+
+  /* ---------- 時間軸控制 ---------- */
+  function sceneAt(x){ for(var i=scenes.length-1;i>=0;i--){ if(x>=starts[i]-0.001) return i; } return 0; }
+  function goTo(i,autoplay){
+    i=clamp(i,0,scenes.length-1);
+    if(soundOn){ try{ AUD[cur].pause(); }catch(e){} }
+    cur=i; t=starts[i];
+    if(soundOn&&autoplay){ AUD[i].playbackRate=speed; AUD[i].currentTime=0; AUD[i].play().catch(function(){ soundOn=false; markSound(); }); }
+    setSub(scenes[i]); paintPanel(scenes[i]);
+  }
+  var last=performance.now();
+  function frame(now){
+    var dt=(now-last)/1000; last=now;
+    if(playing){
+      if(soundOn&&audioReady&&AUD[cur]&&!AUD[cur].paused){ t=starts[cur]+AUD[cur].currentTime; }
+      else { t+=dt*speed; }
+      var si=sceneAt(t), nxt=starts[cur]+DUR[cur];
+      if(t>=nxt-0.02){
+        if(cur<scenes.length-1){ goTo(cur+1,true); }
+        else { t=total; playing=false; paint(); }
+      }
+    }
+    render(t);
+    requestAnimationFrame(frame);
+  }
+  function render(x){
+    var si=sceneAt(x), sc=scenes[si], p=DUR[si]? (x-starts[si])/DUR[si] : 0;
+    if(si!==cur){ cur=si; setSub(sc); paintPanel(sc); }
+    draw(performance.now()/1000, sc, clamp(p,0,1));
+    paintSub(x,sc);
+    $('prog').firstChild.style.width=clamp(total?x/total:0,0,1)*100+'%';
+    $('time').textContent=fmt(x)+' / '+fmt(total);
+  }
+  function paint(){ playbtn.textContent = playing?'暫停':'播放'; }
+  var playbtn=$('playbtn');
+  function toggle(){
+    if(!playing){
+      playing=true; audioReady=true;
+      if(soundOn){ AUD[cur].playbackRate=speed; AUD[cur].play().then(function(){ $('hint').classList.add('hide'); })
+        .catch(function(){ soundOn=false; markSound(); $('hint').classList.remove('hide'); $('hint').textContent='瀏覽器阻擋自動播放：按「語音：關」再切回「開」即可開啟旁白。'; }); }
+      else { last=performance.now(); }
+    } else { playing=false; if(soundOn){ try{AUD[cur].pause();}catch(e){} } }
+    paint();
+  }
+  function markSound(){ wrap.classList.toggle('sound-off',!soundOn); $('sndbtn').textContent='語音：'+(soundOn?'開':'關'); }
+  playbtn.addEventListener('click',toggle);
+  $('restart').addEventListener('click',function(){ goTo(0,true); playing=true; paint(); });
+  $('sndbtn').addEventListener('click',function(){ soundOn=!soundOn; markSound();
+    if(soundOn){ AUD[cur].playbackRate=speed; AUD[cur].play(); } else { try{AUD[cur].pause();}catch(e){} last=performance.now(); } });
+  var SPD=[1,1.25,1.5,0.75], si=0;
+  $('spdbtn').addEventListener('click',function(){ si=(si+1)%SPD.length; speed=SPD[si];
+    $('spdbtn').textContent='速度 '+speed.toFixed(2)+'×'; AUD.forEach(function(a){a.playbackRate=speed;}); });
+  $('prog').addEventListener('click',function(ev){ var r=this.getBoundingClientRect(); var x=(ev.clientX-r.left)/r.width*total; goTo(sceneAt(x),true); });
+  stopsBox.addEventListener('click',function(ev){ var b=ev.target.closest('button'); if(!b){return;}
+    var i=Number(b.getAttribute('data-i')), sc=nodes[i].sceneNode; playing=true; goTo(sc,true); paint(); });
+  document.addEventListener('keydown',function(ev){
+    if(ev.code==='Space'){ ev.preventDefault(); toggle(); }
+    if(ev.code==='ArrowRight'){ goTo(cur+1,true); }
+    if(ev.code==='ArrowLeft'){ goTo(cur-1,true); }
+  });
+  cv.addEventListener('click',function(){ if(!playing){ toggle(); } });
+
+  /* 尺寸自適應 */
+  function fit(){ var k=Math.min(window.innerWidth/1300, window.innerHeight/732); wrap.style.setProperty('--k',Math.max(.3,k)); }
+  window.addEventListener('resize',fit); fit();
+  markSound(); goTo(0,false); paint();
+  requestAnimationFrame(frame);
+  /* 自動開播：可自動播放就帶語音，被擋就靜音播放（畫面照走，字幕照跑） */
+  setTimeout(function(){
+    if(!playing && cur===0){
+      playing=true; audioReady=true;
+      AUD[0].playbackRate=speed;
+      AUD[0].play().catch(function(){ soundOn=false; markSound();
+        $('hint').classList.remove('hide');
+        $('hint').textContent='已自動靜音播放；按「播放」或點畫面即可開啟旁白（含語音與字幕同步）。';
+        last=performance.now(); });
+      paint();
+    }
+  }, 260);
+
+  /* 驗收用鉤子（DOM 證據法） */
+  window.__xanim = {
+    ready:true, data:D,
+    state:function(){ return {playing:playing,sound:soundOn,cur:cur,t:t,total:total,scenes:scenes.length,
+      kind:scenes[cur].kind, phase:scenes[cur].phase, sub:scenes[cur].text, durs:DUR}; },
+    jump:function(i){ playing=true; goTo(i,false); paint(); },
+    ui:function(){ var q=function(sel){ return cardRecap.querySelector(sel)||{}; };
+      return {
+        titleCard:{on:cardTitle.classList.contains('on'),
+          title:($('title-card-h')||{}).textContent||'', sub:($('title-card-sub')||{}).textContent||'',
+          route:($('title-card-route')||{}).textContent||'', metas:cardTitle.querySelectorAll('.meta span').length},
+        recapCard:{on:cardRecap.classList.contains('on'), rows:cardRecap.querySelectorAll('.rrow').length,
+          key:q('.keyline').textContent||''},
+        map:{exists:!!mapBox, open:mapBox.classList.contains('on'), rows:mapRows.length,
+          stops:(CH_.stops||[]).length, scenes:(CH_.stops||[]).map(function(c){return c.scene;}),
+          labels:(CH_.stops||[]).map(function(c){return c.label;}),
+          onRow:((mapBody.querySelector('.mrow.on')||{}).textContent||'').replace(/\s+/g,' ').trim()},
+        chapters:CH_, chips:chipEls.length, stops:stopsBox.querySelectorAll('button').length
+      }; },
+    mapOpen:function(on){ mapOpen(on); return mapBox.classList.contains('on'); },
+    chapters:function(){ return CH_; },
+    stop:function(){ playing=false; if(soundOn){try{AUD[cur].pause();}catch(e){}} paint(); }
+  };
+})();
+</script>
+</body>
+</html>
