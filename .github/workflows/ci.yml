@@ -1,0 +1,38 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  static-checks:
+    name: Static site checks
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Static checks (required files, local links, tag balance, secrets)
+        run: python3 scripts/check_static.py
+
+      - name: Bilingual README cross-links
+        run: |
+          set -euo pipefail
+          test -f README.en.md
+          grep -q 'README.en.md' README.md
+          grep -q 'README.md' README.en.md
+          echo "README.md <-> README.en.md cross-links OK"
